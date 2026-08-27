@@ -7,8 +7,8 @@
 ========================================================= */
 
 .admin-app {
-  width: 100vw;
-  min-width: 0;
+  width: max(100vw, 90rem);
+  min-width: 90rem;
   height: 100vh;
   display: flex;
   overflow: hidden;
@@ -176,9 +176,9 @@
 
 .main-content {
   width: auto;
-  min-width: 0;
+  min-width: 75rem;
   height: 100%;
-  flex: 1 1 auto;
+  flex: 1 0 75rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -186,6 +186,8 @@
 
 .sidebar.closed + .main-content {
   width: auto;
+  min-width: 85rem;
+  flex-basis: 85rem;
 }
 
 .topbar {
@@ -254,6 +256,7 @@
   color: $text;
   font-size: 0.7rem;
   cursor: pointer;
+  font-size: 1rem;
 }
 
 .notification-button {
@@ -446,9 +449,12 @@
   display: flex;
   justify-content: space-between;
   height: 67%;
+  gap: 1rem;
 
   .school-across-india {
     height: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
     border: 0.05rem solid $border;
     border-radius: $radius;
 
