@@ -1,6 +1,6 @@
 export default function DataTable({ headers, rows, footer }) {
   return (
-    <div className="table-card">
+    <div className="table-card without-filter">
       <div className="table-wrapper">
         <table>
           <thead>

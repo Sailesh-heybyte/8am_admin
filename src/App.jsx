@@ -3,6 +3,7 @@ import "./App.scss";
 import AddSchoolModal from "./screens/adminLogin/popups/AddSchoolModal.jsx";
 import Dashboard from "./screens/adminLogin/Dashboard/index.jsx";
 import Schools from "./screens/adminLogin/Schools/index.jsx";
+import SchoolGroups from "./screens/adminLogin/SchoolGroups/index.jsx";
 
 const menuItems = [
   {
@@ -72,6 +73,7 @@ function App() {
         />
       ),
       schools: <Schools onAddSchool={() => setShowAddSchool(true)} />,
+      "school-groups": <SchoolGroups />,
     };
     return pages[activePage] || <Dashboard />;
   };

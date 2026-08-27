@@ -1,0 +1,110 @@
+@use "../../../styles/colors" as *;
+
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(20, 30, 45, 0.12);
+  backdrop-filter: blur(0.3rem);
+
+  .delete-confirmation-modal {
+    position: relative;
+    width: 25rem;
+    max-width: 100%;
+    min-height: 14rem;
+    border-radius: 0.9rem;
+    background: #f8f9fb;
+    box-shadow:
+      0 1rem 3rem rgba(0, 0, 0, 0.08),
+      0 0 0 0.05rem rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+
+    .delete-modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 1.9rem;
+      height: 1.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.05);
+      color: $text-muted;
+      font-size: 1.3rem;
+      font-weight: 300;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+        color: $text;
+      }
+    }
+    .delete-modal-content {
+      padding: 2.7rem 2.6rem 1.9rem;
+      text-align: center;
+
+      h2 {
+        margin: 0 0 0.75rem;
+        color: #2f3e4e;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      p {
+        max-width: 18rem;
+        margin: 0 auto;
+        color: #596572;
+        font-size: 0.72rem;
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .delete-modal-actions {
+        display: flex;
+        gap: 0.7rem;
+        margin-top: 1.45rem;
+
+        .delete-modal-cancel,
+        .delete-modal-confirm {
+          flex: 1;
+          height: 2.35rem;
+          border-radius: 0.35rem;
+          font-family: inherit;
+          font-size: 0.7rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .delete-modal-cancel {
+          border: 0.06rem solid #65717c;
+          background: transparent;
+          color: #56616c;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.04);
+          }
+        }
+
+        .delete-modal-confirm {
+          border: none;
+          background: #ed3f70;
+          color: $text-white;
+          box-shadow: 0 0.2rem 0.5rem rgba(237, 63, 112, 0.18);
+
+          &:hover {
+            background: #df3262;
+          }
+        }
+      }
+    }
+  }
+}
