@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
 
-import PageTitle from "../../../components/PageTitle.jsx";
-import DataTable from "../../../components/DataTable.jsx";
-import StatusBadge from "../../../components/StatusBadge.jsx";
+import PageTitle from "../../components/PageTitle.jsx";
+import DataTable from "../../components/DataTable.jsx";
+import StatusBadge from "../../components/StatusBadge.jsx";
+import ActionButtons from "../../components/ActionButtons.jsx";
 
 export default function Schools({ onAddSchool }) {
   const schools = [
@@ -117,6 +118,15 @@ export default function Schools({ onAddSchool }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search schools..."
           />
+          <button
+            className="secondary-button"
+            type="button"
+            onClick={() => {
+              setQuery(query.trim());
+            }}
+          >
+            Filter
+          </button>
         </div>
       </div>
 

@@ -1,6 +1,11 @@
-export default function DataTable({ headers, rows, footer }) {
+export default function DataTable({
+  headers,
+  rows,
+  footer,
+  withoutFilter = true,
+}) {
   return (
-    <div className="table-card without-filter">
+    <div className={`table-card ${withoutFilter ? "without-filter" : ""}`}>
       <div className="table-wrapper">
         <table>
           <thead>
