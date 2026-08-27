@@ -1,11 +1,7 @@
-import React from "react";
-import StatCard from "../../components/StatCard.jsx";
-import CardHeader from "../../components/CardHeader.jsx";
-import StatusBadge from "../../components/StatusBadge.jsx";
-import IndiaMap from "../../components/IndiaMap.jsx";
-import AlertRow from "../../components/AlertRow.jsx";
+import StatCard from "../../../components/StatCard.jsx";
+import StatusBadge from "../../../components/StatusBadge.jsx";
 
-export default function Dashboard({ onAddSchool }) {
+export default function Dashboard({ onAddSchool, onViewSchools }) {
   const schools = [
     [
       "Greenwood International School",
@@ -119,9 +115,13 @@ export default function Dashboard({ onAddSchool }) {
       </div>
 
       <div className=" super-dashboard-grid">
-        <div className="card">
-          <CardHeader title="Schools Across India" action="View All Schools" />
-
+        <div className="school-across-india">
+          <div className="school-across-india-header">
+            <p>Schools Across India</p>
+            <button className="card-action" onClick={onViewSchools}>
+              View All Schools
+            </button>
+          </div>
           <div className="dashboard-table">
             {/* Column Headers */}
             <div className="dashboard-row dashboard-header">
@@ -154,22 +154,56 @@ export default function Dashboard({ onAddSchool }) {
           </div>
         </div>
 
-        <div className="card dashboard-map-card">
-          <CardHeader title="Live Fleet Overview" action="View Full Map" />
-          <IndiaMap />
+        <div className="dashboard-map-card">
+          <div className="live-fleet-overview-header">
+            <p>Live Fleet Overview</p>
+            <button className="card-action">View Full Map</button>
+          </div>
+          <div className="map">
+            <div className="map-legend">
+              <span>
+                <i className="green-dot" /> On Route
+              </span>
+              <span>
+                <i className="purple-dot" /> At School
+              </span>
+              <span>
+                <i className="orange-dot" /> Delayed
+              </span>
+              <span>
+                <i className="red-dot" /> Offline
+              </span>
+            </div>
+          </div>
         </div>
-        <div className=" super-bottom-grid">
-          <div className="card alerts-overview">
-            <CardHeader title="Alerts Overview" action="View All" />
+        <div className="super-bottom-grid">
+          <div className=" alerts-overview">
+            <div className="alerts-overview-header">
+              <p>Alerts Overview</p>
+              <button className="card-action">View All</button>
+            </div>
             <div className="compact-alert-list">
-              {alerts.slice(0, 4).map((alert, index) => (
-                <AlertRow key={index} alert={alert} />
+              {alerts.slice(0, 3).map((alert, index) => (
+                <div className="alert-row">
+                  <span className={`alert-icon ${alert[4].toLowerCase()}`}>
+                    !
+                  </span>
+                  <div>
+                    <strong>{alert[0]}</strong>
+                    <span>
+                      {alert[1]} • {alert[2]}
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="card subscription-overview">
-            <CardHeader title="Subscription Overview" action="View All" />
+          <div className="subscription-overview">
+            <div className="subscription-overview-header">
+              <p>Subscription Overview</p>
+              <button className="card-action">View All</button>
+            </div>
             <div className="subscription-chart">
               <div className="donut purple-donut">
                 <div>

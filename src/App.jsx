@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "./App.scss";
-import AddSchoolModal from "./screens/Dashboard/popups/AddSchoolModal.jsx";
-import Dashboard from "./screens/Dashboard/index.jsx";
+import AddSchoolModal from "./screens/adminLogin/popups/AddSchoolModal.jsx";
+import Dashboard from "./screens/adminLogin/Dashboard/index.jsx";
+import Schools from "./screens/adminLogin/Schools/index.jsx";
 
 const menuItems = [
   {
@@ -64,14 +65,15 @@ function App() {
 
   const renderPage = () => {
     const pages = {
-      dashboard: <Dashboard onAddSchool={() => setShowAddSchool(true)} />,
+      dashboard: (
+        <Dashboard
+          onAddSchool={() => setShowAddSchool(true)}
+          onViewSchools={() => setActivePage("schools")}
+        />
+      ),
+      schools: <Schools onAddSchool={() => setShowAddSchool(true)} />,
     };
-
-    return (
-      pages[activePage] || (
-        <Dashboard onAddSchool={() => setShowAddSchool(true)} />
-      )
-    );
+    return pages[activePage] || <Dashboard />;
   };
 
   return (

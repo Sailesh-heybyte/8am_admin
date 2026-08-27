@@ -7,8 +7,9 @@
 ========================================================= */
 
 .admin-app {
-  width: 90rem;
-  height: 100%;
+  width: 100vw;
+  min-width: 0;
+  height: 100vh;
   display: flex;
   overflow: hidden;
   background: #ffffff;
@@ -174,16 +175,17 @@
 ========================= */
 
 .main-content {
-  width: 75rem;
+  width: auto;
+  min-width: 0;
   height: 100%;
-  flex-shrink: 0;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .sidebar.closed + .main-content {
-  width: 85rem;
+  width: auto;
 }
 
 .topbar {
@@ -279,9 +281,10 @@
 
 .page-content {
   width: 100%;
+  min-width: 0;
   height: 89%;
-  padding: 2% 1.5rem;
-  overflow-x: hidden;
+  padding: 0% 1.5rem 2% 1.5rem;
+  overflow: auto;
   scrollbar-width: none;
 }
 
@@ -290,7 +293,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2%;
+  height: 14%;
 
   h2 {
     margin: 0;
@@ -341,11 +344,11 @@
 
 .stats-grid {
   width: 100%;
-  height: 18%;
+  height: 19%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  margin-bottom: 1rem;
+  padding-bottom: 1rem;
 }
 
 .stats-grid.four {
@@ -441,13 +444,32 @@
 
 .super-dashboard-grid {
   display: flex;
-  gap: 1rem;
-  height: 67%;
   justify-content: space-between;
+  height: 67%;
+
+  .school-across-india {
+    height: 100%;
+    border: 0.05rem solid $border;
+    border-radius: $radius;
+
+    .school-across-india-header {
+      display: flex;
+      justify-content: space-between;
+      height: 15%;
+      border-bottom: 0.05rem solid $border;
+      align-items: center;
+      padding: 0 1rem;
+
+      p {
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+    }
+  }
 }
 
 .dashboard-table {
-  padding: 0.4rem 0;
+  height: 85%;
 }
 
 .dashboard-header {
@@ -467,7 +489,7 @@
 }
 
 .dashboard-row {
-  min-height: 3.22rem;
+  min-height: 16.66%;
   display: grid;
   grid-template-columns: 1.8fr 0.55fr 0.45fr 0.65fr;
   align-items: center;
@@ -522,7 +544,30 @@
 
 .dashboard-map-card {
   height: 100%;
-  width: 25rem;
+  width: 25.5rem;
+  border: 0.05rem solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+
+  .live-fleet-overview-header {
+    display: flex;
+    justify-content: space-between;
+    height: 14%;
+    border-bottom: 0.05rem solid $border;
+    align-items: center;
+    padding: 0 1rem;
+
+    p {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+  }
+
+  .map {
+    background: #e3e3e3;
+    height: 86%;
+    position: relative;
+  }
 }
 
 .india-map {
@@ -591,83 +636,115 @@
   flex-direction: column;
   height: 100%;
   justify-content: space-between;
-  width: 17rem;
-}
+  width: 17.3rem;
 
-.compact-alert-list {
-  padding: 0.2rem 0;
-}
+  .alerts-overview {
+    height: 54%;
+    border: 0.05rem solid $border;
+    border-radius: $radius;
 
-.alert-row {
-  min-height: 3rem;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.5rem 1rem;
-  border-bottom: 0.05rem solid $border;
+    .alerts-overview-header {
+      display: flex;
+      justify-content: space-between;
+      height: 25%;
+      border-bottom: 0.05rem solid $border;
+      align-items: center;
+      padding: 0 1rem;
 
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .alert-icon {
-    width: 1.6rem;
-    aspect-ratio: 1/1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 50%;
-    font-size: 0.65rem;
-    font-weight: 700;
-
-    &.critical,
-    &.high {
-      background: $red-light;
-      color: $red;
+      p {
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
     }
-    &.medium {
-      background: $orange-light;
-      color: $orange;
+
+    .compact-alert-list {
+      height: 75%;
+      padding: 0.2rem 0;
+
+      .alert-row {
+        min-height: 33.33%;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.5rem 1rem;
+        border-bottom: 0.05rem solid $border;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .alert-icon {
+          width: 1.6rem;
+          aspect-ratio: 1/1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          border-radius: 50%;
+          font-size: 0.65rem;
+          font-weight: 700;
+
+          &.critical,
+          &.high {
+            background: $red-light;
+            color: $red;
+          }
+          &.medium {
+            background: $orange-light;
+            color: $orange;
+          }
+          &.low {
+            background: $green-light;
+            color: $green;
+          }
+        }
+
+        > div {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+        }
+
+        strong {
+          color: $text;
+          font-size: 0.65rem;
+          font-weight: 500;
+        }
+        span {
+          color: $text-muted;
+          font-size: 0.58rem;
+        }
+      }
     }
-    &.low {
-      background: $green-light;
-      color: $green;
-    }
   }
-
-  > div {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  strong {
-    color: $text;
-    font-size: 0.65rem;
-    font-weight: 500;
-  }
-  span {
-    color: $text-muted;
-    font-size: 0.58rem;
-  }
-}
-
-.subscription-chart {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.alerts-overview {
-  height: 54%;
 }
 
 .subscription-overview {
   height: 43%;
+  border: 0.05rem solid $border;
+  border-radius: $radius;
+
+  .subscription-overview-header {
+    display: flex;
+    justify-content: space-between;
+    height: 25%;
+    border-bottom: 0.05rem solid $border;
+    align-items: center;
+    padding: 0 1rem;
+
+    p {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+  }
+  .subscription-chart {
+    height: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
 }
 
 .donut {
@@ -746,17 +823,29 @@
 ========================= */
 
 .filter-card {
-  min-height: 3.7rem;
   display: flex;
-  align-items: center;
   gap: 0.7rem;
-  margin-bottom: 1rem;
-  padding: 0.7rem 0.8rem;
-  border: 0.05rem solid $border;
-  border-radius: $radius;
+  padding: 1.5% 0.8rem;
   background: $white;
-  box-shadow: $shadow;
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+  border-top: 0.05rem solid $border;
+  border-left: 0.05rem solid $border;
+  border-right: 0.05rem solid $border;
+  height: 17%;
+  align-items: flex-end;
+  justify-content: space-between;
 
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      color: #000000;
+      font-size: 0.58rem;
+      margin-bottom: 5%;
+    }
+  }
   input,
   select {
     height: 2.3rem;
@@ -767,39 +856,72 @@
     color: $text-light;
     font-size: 0.68rem;
     outline: none;
+    width: 13rem;
 
     &:focus {
       border-color: $primary;
     }
   }
 
-  input {
-    width: 18rem;
-  }
   select {
     width: 10rem;
   }
 }
 
 .table-card {
-  max-height: 75%;
-}
+  height: auto;
+  max-height: 69%;
+  border: 0.05rem solid $border;
+  border-bottom-left-radius: $radius;
+  border-bottom-right-radius: $radius;
 
-.table-wrapper {
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
 
-  table {
+  .table-wrapper {
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-height: calc(100vh - 20rem);
+    flex: 0 1 auto;
+    overflow-y: auto;
+    scrollbar-width: none;
+
+    table {
+      width: 100%;
+      height: auto;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    thead {
+      th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        height: 2.75rem;
+        padding-left: 1rem;
+        background: $surface-hover;
+        box-shadow: inset 0 -0.05rem 0 $border;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 0.05rem solid $border;
+        &:last-child {
+          border-bottom: none;
+        }
+        td {
+          height: 3.2rem;
+        }
+      }
+    }
   }
 
-  thead tr th {
-    height: 10%;
-  }
-
-  tbody tr td {
-    height: 10%;
+  .table-empty {
+    height: 6rem;
+    color: $text-muted;
+    text-align: center;
   }
 }
 
@@ -813,8 +935,8 @@ th {
 }
 
 td {
-  padding: 0 0.75rem;
-  border-bottom: 0.05rem solid $border;
+  padding-left: 1rem;
+
   color: $text-light;
   font-size: 0.67rem;
   vertical-align: middle;
@@ -834,12 +956,15 @@ tbody tr:hover {
 
 .pagination {
   height: 3.5rem;
+  min-height: 3.5rem;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
   color: $text-muted;
   font-size: 0.62rem;
+  border-top: 0.05rem solid $border;
 
   > div {
     display: flex;
