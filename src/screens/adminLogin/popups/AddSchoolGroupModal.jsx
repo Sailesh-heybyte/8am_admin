@@ -100,7 +100,7 @@ const AddSchoolGroupModal = ({ isOpen, onClose, onSave }) => {
           </div>
 
           <button type="button" className="add-school-close" onClick={onClose}>
-            <i class="bi bi-x"></i>
+            <i className="bi bi-x"></i>
           </button>
         </div>
 

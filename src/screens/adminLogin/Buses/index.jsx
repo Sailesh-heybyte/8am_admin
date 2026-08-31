@@ -96,25 +96,25 @@ export default function Buses() {
         <StatCard
           title="Total Buses"
           value="1,426"
-          icon={<i class="bi bi-bus-front"></i>}
+          icon={<i className="bi bi-bus-front"></i>}
           type="blue"
         />
         <StatCard
           title="On Route"
           value="892"
-          icon={<i class="bi bi-geo"></i>}
+          icon={<i className="bi bi-geo"></i>}
           type="green"
         />
         <StatCard
           title="At School"
           value="312"
-          icon={<i class="bi bi-building"></i>}
+          icon={<i className="bi bi-building"></i>}
           type="purple"
         />
         <StatCard
           title="Offline"
           value="134"
-          icon={<i class="bi bi-exclamation-triangle"></i>}
+          icon={<i className="bi bi-exclamation-triangle"></i>}
           type="red"
         />
       </div>
@@ -141,14 +141,14 @@ export default function Buses() {
               title="edit"
               onClick={() => setIsAddBusOpen(true)}
             >
-              <i class="bi bi-pencil"></i>
+              <i className="bi bi-pencil"></i>
             </button>
             <button
               className="action-icon"
               title="Delete"
               onClick={() => setIsDeleteOpen(true)}
             >
-              <i class="bi bi-trash3"></i>
+              <i className="bi bi-trash3"></i>
             </button>
           </div>,
         ])}
