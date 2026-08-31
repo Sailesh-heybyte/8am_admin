@@ -5,6 +5,7 @@ import Dashboard from "./screens/adminLogin/Dashboard/index.jsx";
 import Schools from "./screens/adminLogin/Schools/index.jsx";
 import SchoolGroups from "./screens/adminLogin/SchoolGroups/index.jsx";
 import Buses from "./screens/adminLogin/Buses/index.jsx";
+import Students from "./screens/adminLogin/Students/index.jsx";
 
 const menuItems = [
   {
@@ -76,6 +77,7 @@ function App() {
       schools: <Schools onAddSchool={() => setShowAddSchool(true)} />,
       "school-groups": <SchoolGroups />,
       buses: <Buses />,
+      students: <Students />,
     };
     return pages[activePage] || <Dashboard />;
   };
