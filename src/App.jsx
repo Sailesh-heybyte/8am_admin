@@ -6,6 +6,7 @@ import Schools from "./screens/adminLogin/Schools/index.jsx";
 import SchoolGroups from "./screens/adminLogin/SchoolGroups/index.jsx";
 import Buses from "./screens/adminLogin/Buses/index.jsx";
 import Drivers from "./screens/adminLogin/Drivers/index.jsx";
+import Reports from "./screens/adminLogin/Reports/index.jsx";
 
 const menuItems = [
   {
@@ -78,6 +79,7 @@ function App() {
       "school-groups": <SchoolGroups />,
       buses: <Buses />,
       drivers: <Drivers />,
+      reports: <Reports />,
     };
     return pages[activePage] || <Dashboard />;
   };
