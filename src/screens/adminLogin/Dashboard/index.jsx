@@ -88,28 +88,28 @@ export default function Dashboard({ onAddSchool, onViewSchools }) {
           title="Total Schools"
           value="248"
           footer="+12 this month"
-          icon={<i class="bi bi-building"></i>}
+          icon={<i className="bi bi-building"></i>}
           type="blue"
         />
         <StatCard
           title="Total Students"
           value="12,840"
           footer="+620 this month"
-          icon={<i class="bi bi-people"></i>}
+          icon={<i className="bi bi-people"></i>}
           type="green"
         />
         <StatCard
           title="Total Buses"
           value="1,426"
           footer="+38 this month"
-          icon={<i class="bi bi-bus-front"></i>}
+          icon={<i className="bi bi-bus-front"></i>}
           type="purple"
         />
         <StatCard
           title="Active Alerts"
           value="86"
           footer="View all alerts"
-          icon={<i class="bi bi-bell"></i>}
+          icon={<i className="bi bi-bell"></i>}
           type="red"
         />
       </div>
