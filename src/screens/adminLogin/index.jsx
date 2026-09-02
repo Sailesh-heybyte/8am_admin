@@ -7,6 +7,7 @@ import SchoolGroups from "./SchoolGroups/index.jsx";
 import Buses from "./Buses/index.jsx";
 import Drivers from "./Drivers/index.jsx";
 import Settings from "./Settings/index.jsx";
+import UsersRoles from "./UsersRoles/index.jsx";
 
 const menuItems = [
   {
@@ -79,6 +80,7 @@ function App() {
       "school-groups": <SchoolGroups />,
       buses: <Buses />,
       drivers: <Drivers />,
+      "users-roles": <UsersRoles />,
       settings: <Settings />,
     };
     return pages[activePage] || <Dashboard />;
