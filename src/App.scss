@@ -129,7 +129,7 @@
 }
 
 .card-header {
-  min-height: 3.1rem;
+  height: 10%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -831,21 +831,23 @@ tbody tr:hover {
 ========================= */
 
 .fleet-layout {
-  min-height: 35rem;
+  height: 86%;
   display: grid;
   grid-template-columns: 20rem 1fr;
   gap: 1rem;
 }
 
-.fleet-list,
-.india-map-panel {
-  min-height: 35rem;
+.fleet-list {
+  height: 100%;
 }
 
 .fleet-filter {
   display: flex;
   gap: 0.45rem;
   padding: 0.7rem;
+  height: 12%;
+  justify-content: center;
+  align-items: center;
 
   input,
   select {
@@ -859,8 +861,14 @@ tbody tr:hover {
   }
 }
 
+.fleet-listing {
+  height: 78%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
 .fleet-item {
-  min-height: 3.2rem;
+  height: 14.3%;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -893,8 +901,25 @@ tbody tr:hover {
   background: $blue-light;
 }
 
-.india-map-panel {
+.map-panel {
+  height: 100%;
+  border: 0.05rem solid $border;
+  border-radius: $radius;
   overflow: hidden;
+  .map-title {
+    margin: 0;
+    font-size: 0.82rem;
+    height: 10%;
+    align-items: center;
+    display: flex;
+    padding: 0 1rem;
+    border-bottom: 0.05rem solid $border;
+  }
+
+  .map {
+    height: 90%;
+    background: #e3e3e3;
+  }
 }
 
 /* =========================
