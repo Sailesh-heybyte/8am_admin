@@ -927,22 +927,71 @@ tbody tr:hover {
 ========================= */
 
 .reports-dashboard {
-  display: grid;
-  grid-template-columns: 1.6fr 0.8fr;
+  height: 67%;
+  display: flex;
   gap: 1rem;
+  justify-content: space-between;
+
+  .top-schools {
+    height: 100%;
+    width: 23rem;
+
+    h3 {
+      font-size: 0.82rem;
+      height: 13%;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 0.05rem solid $border;
+      border: 0.05rem solid $border;
+      border-top-left-radius: $radius;
+      border-top-right-radius: $radius;
+    }
+
+    .rank-list {
+      max-height: 87%;
+      overflow-y: auto;
+      scrollbar-width: none;
+      border: 0.05rem solid $border;
+      border-bottom-left-radius: $radius;
+      border-bottom-right-radius: $radius;
+      // background: #ffcc00;
+    }
+  }
 }
 
-.report-large,
-.top-schools {
-  min-height: 22rem;
+.report-large {
+  height: 100%;
+  border: 0.05rem solid $border;
+  border-radius: $radius;
+  width: 47.8rem;
+
+  .trips-overview-header {
+    display: flex;
+    justify-content: space-between;
+    height: 13%;
+    padding: 0 1rem;
+    align-items: center;
+    border-bottom: 0.05rem solid $border;
+
+    h2 {
+      font-size: 0.82rem;
+    }
+
+    p {
+      color: #155eef;
+      font-size: 0.68rem;
+      cursor: pointer;
+    }
+  }
 }
 
 .line-chart {
-  height: 15rem;
-  margin: 1rem;
+  height: 72%;
+  padding: 1rem 1rem 0 1rem;
   display: flex;
   align-items: end;
-  gap: 0.7rem;
+  gap: 1.5rem;
   border-bottom: 0.05rem solid $border;
   background: repeating-linear-gradient(
     to top,
@@ -971,19 +1020,20 @@ tbody tr:hover {
 
 .chart-axis {
   display: flex;
-  justify-content: space-around;
-  padding: 0 1rem 1rem;
+  justify-content: space-between;
+  padding: 0 1rem;
   color: $text-muted;
-  font-size: 0.55rem;
+  font-size: 0.6rem;
+  height: 15%;
+  align-items: center;
 }
 
 .rank-row {
-  min-height: 3rem;
   display: grid;
   grid-template-columns: 1.5rem 1fr auto;
   align-items: center;
   gap: 0.5rem;
-  padding: 0 1rem;
+  padding: 3.1% 1rem;
   border-bottom: 0.05rem solid $border;
   font-size: 0.65rem;
 
