@@ -1,11 +1,13 @@
 import { useState } from "react";
+
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddStudentModal from "../popups/AddStudentModal.jsx";
+
 export default function Students() {
-  const students = [
+  const [students, setStudents] = useState([
     [
       "Krishna Sharma",
       "STU1256",
@@ -69,47 +71,153 @@ export default function Students() {
       "ST1310",
       "Active",
     ],
-  ];
+  ]);
+
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClass, setSelectedClass] = useState("All Classes");
+  const [selectedSchool, setSelectedSchool] = useState("All Schools");
+  const [selectedStatus, setSelectedStatus] = useState("All Status");
+
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const filteredStudents = students.filter((student) => {
+    const [name, studentId, studentClass, school, busRoute, cardId, status] =
+      student;
+
+    const search = searchTerm.toLowerCase().trim();
+
+    const matchesSearch =
+      !search ||
+      name.toLowerCase().includes(search) ||
+      studentId.toLowerCase().includes(search) ||
+      studentClass.toLowerCase().includes(search) ||
+      school.toLowerCase().includes(search) ||
+      busRoute.toLowerCase().includes(search) ||
+      cardId.toLowerCase().includes(search) ||
+      status.toLowerCase().includes(search);
+
+    const matchesClass =
+      selectedClass === "All Classes" || studentClass === selectedClass;
+
+    const matchesSchool =
+      selectedSchool === "All Schools" || school === selectedSchool;
+
+    const matchesStatus =
+      selectedStatus === "All Status" || status === selectedStatus;
+
+    return matchesSearch && matchesClass && matchesSchool && matchesStatus;
+  });
+
+  const handleEdit = (student) => {
+    console.log("Edit Student:", student);
+
+    setSelectedStudent(student);
+    setIsAddStudentOpen(true);
+  };
+
+  const handleDeleteClick = (student) => {
+    setSelectedStudent(student);
+    setIsDeleteOpen(true);
+  };
+
+  const handleDelete = () => {
+    if (!selectedStudent) return;
+
+    setStudents((prevStudents) =>
+      prevStudents.filter((student) => student !== selectedStudent),
+    );
+
+    setIsDeleteOpen(false);
+    setSelectedStudent(null);
+  };
+
+  const handleSaveStudent = (student) => {
+    console.log("Student Data:", student);
+
+    // Add your API call here
+
+    setIsAddStudentOpen(false);
+    setSelectedStudent(null);
+  };
+
   return (
     <>
       <PageTitle
         title="Students"
         description="Manage students, smart cards and school transport assignments."
         button="+ Add Student"
-        onButtonClick={() => setIsAddStudentOpen(true)}
+        onButtonClick={() => {
+          setSelectedStudent(null);
+          setIsAddStudentOpen(true);
+        }}
       />
+
       <div className="filter-card admin-filter">
         <div style={{ display: "flex", gap: "1rem" }}>
+          {/* Class Filter */}
           <div className="filter-group">
             <label>Filter by Class:</label>
-            <select>
+
+            <select
+              value={selectedClass}
+              onChange={(event) => setSelectedClass(event.target.value)}
+            >
               <option>All Classes</option>
-              <option>Class 1</option>
-              <option>Class 6</option>
-              <option>Class 10</option>
+
+              <option value="2-A">2-A</option>
+              <option value="3-B">3-B</option>
+              <option value="4-C">4-C</option>
+              <option value="5-A">5-A</option>
+              <option value="6-A">6-A</option>
+              <option value="6-B">6-B</option>
+              <option value="7-A">7-A</option>
             </select>
           </div>
+
+          {/* School Filter */}
           <div className="filter-group">
             <label>Filter by School:</label>
-            <select>
+
+            <select
+              value={selectedSchool}
+              onChange={(event) => setSelectedSchool(event.target.value)}
+            >
               <option>All Schools</option>
+
               <option>Greenwood International</option>
               <option>Delhi Public School</option>
+              <option>St. Mary's School</option>
+              <option>Ryan International</option>
             </select>
           </div>
+
+          {/* Status Filter */}
           <div className="filter-group">
             <label>Filter by Status:</label>
-            <select>
+
+            <select
+              value={selectedStatus}
+              onChange={(event) => setSelectedStatus(event.target.value)}
+            >
               <option>All Status</option>
               <option>Active</option>
               <option>Inactive</option>
             </select>
           </div>
         </div>
-        <input placeholder="Search students..." />
+
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="Search students..."
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+        />
       </div>
+
       <DataTable
         headers={[
           "Student",
@@ -120,52 +228,67 @@ export default function Students() {
           "Status",
           "Actions",
         ]}
-        rows={students.map((s) => [
-          <div className="student-cell">
-            <div className="student-avatar">{s[0].charAt(0)}</div>
+        rows={filteredStudents.map((student) => [
+          <div className="student-cell" key={student[1]}>
+            <div className="student-avatar">{student[0].charAt(0)}</div>
+
             <div>
-              <strong>{s[0]}</strong>
-              <span>{s[1]}</span>
+              <strong>{student[0]}</strong>
+              <span>{student[1]}</span>
             </div>
           </div>,
-          s[2],
-          s[3],
-          s[4],
-          s[5],
-          <StatusBadge status={s[6]} />,
+
+          student[2],
+
+          student[3],
+
+          student[4],
+
+          student[5],
+
+          <StatusBadge status={student[6]} />,
+
           <div className="action-buttons">
             <button
               className="action-icon"
-              title="edit"
-              onClick={() => setIsAddStudentOpen(true)}
+              title="Edit"
+              onClick={() => handleEdit(student)}
             >
-              <i class="bi bi-pencil"></i>
+              <i className="bi bi-pencil"></i>
             </button>
+
             <button
               className="action-icon"
               title="Delete"
-              onClick={() => setIsDeleteOpen(true)}
+              onClick={() => handleDeleteClick(student)}
             >
-              <i class="bi bi-trash3"></i>
+              <i className="bi bi-trash3"></i>
             </button>
           </div>,
         ])}
         withoutFilter={false}
-        footer="Showing 1–7 of 12,840 students"
+        footer={`Showing ${filteredStudents.length} of ${students.length} students`}
       />
+
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        // onConfirm={handleDelete}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setSelectedStudent(null);
+        }}
+        onConfirm={handleDelete}
         title="Are you sure?"
-        message="Are you sure you want to delete this item? This action cannot be undone."
+        message="Are you sure you want to delete this student? This action cannot be undone."
       />
+
       <AddStudentModal
         isOpen={isAddStudentOpen}
-        onClose={() => setIsAddStudentOpen(false)}
-        onSave={(student) => {
-          console.log("New Student:", student);
+        onClose={() => {
+          setIsAddStudentOpen(false);
+          setSelectedStudent(null);
         }}
+        onSave={handleSaveStudent}
+        student={selectedStudent}
       />
     </>
   );

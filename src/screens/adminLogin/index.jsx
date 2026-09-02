@@ -8,6 +8,12 @@ import Buses from "./Buses/index.jsx";
 import Drivers from "./Drivers/index.jsx";
 import Settings from "./Settings/index.jsx";
 import UsersRoles from "./UsersRoles/index.jsx";
+import Students from "./Students/index.jsx";
+import LiveFleet from "./LiveFleet/index.jsx";
+import Subscriptions from "./Subscriptions/index.jsx";
+import Reports from "./Reports/index.jsx";
+import Alerts from "./Alerts/index.jsx";
+import AuditLogs from "./AuditLogs/index.jsx";
 
 const menuItems = [
   {
@@ -82,6 +88,12 @@ function App() {
       drivers: <Drivers />,
       "users-roles": <UsersRoles />,
       settings: <Settings />,
+      students: <Students />,
+      "live-fleet": <LiveFleet />,
+      subscriptions: <Subscriptions />,
+      reports: <Reports />,
+      alerts: <Alerts />,
+      "audit-logs": <AuditLogs />,
     };
     return pages[activePage] || <Dashboard />;
   };

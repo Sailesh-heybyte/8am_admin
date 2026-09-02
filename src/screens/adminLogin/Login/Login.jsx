@@ -20,7 +20,6 @@ export default function Login({ onLoginSuccess }) {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [otpValue, setOtpValue] = useState("");
   const [lastSentPhone, setLastSentPhone] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +50,6 @@ export default function Login({ onLoginSuccess }) {
 
     if (otpSent) {
       setOtpSent(false);
-      setOtpValue("");
       setLastSentPhone("");
       setResendTimer(RESEND_SECONDS);
       setStatusText("Enter your mobile number to receive a one-time password.");
@@ -110,7 +108,6 @@ export default function Login({ onLoginSuccess }) {
 
     const generatedOtp = generateOtp();
 
-    setOtpValue(generatedOtp);
     setOtpSent(true);
     setOtp("");
     setErrors({});

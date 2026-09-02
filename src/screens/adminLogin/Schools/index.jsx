@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
+import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 
 export default function Schools({ onAddSchool }) {
   const schools = [
@@ -61,6 +62,7 @@ export default function Schools({ onAddSchool }) {
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState("All States");
   const [statusFilter, setStatusFilter] = useState("All Status");
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const filtered = useMemo(
     () =>
@@ -140,10 +142,33 @@ export default function Schools({ onAddSchool }) {
           s[3],
           s[4],
           <StatusBadge status={s[5]} />,
-          <i class="bi bi-three-dots-vertical"></i>,
+          <div className="action-buttons">
+            <button className="action-icon" title="Edit" onClick={onAddSchool}>
+              <i className="bi bi-pencil"></i>
+            </button>
+
+            <button
+              className="action-icon"
+              title="Delete"
+              onClick={() => setIsDeleteOpen(true)}
+            >
+              <i className="bi bi-trash3"></i>
+            </button>
+          </div>,
         ])}
         withoutFilter={false}
         footer={`Showing 1–${filtered.length} of 248 schools`}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setSelectedStudent(null);
+        }}
+        // onConfirm={handleDelete}
+        title="Are you sure?"
+        message="Are you sure you want to delete this student? This action cannot be undone."
       />
     </>
   );

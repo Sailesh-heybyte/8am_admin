@@ -4,6 +4,7 @@ import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import StatCard from "../../../components/StatCard.jsx";
 import CreateSubscriptionModal from "../popups/CreateSubscriptionModal.jsx";
+import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 
 export default function Subscriptions() {
   const subscriptions = [
@@ -65,6 +66,8 @@ export default function Subscriptions() {
 
   const [isCreateSubscriptionOpen, setIsCreateSubscriptionOpen] =
     useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
   return (
     <>
       <PageTitle
@@ -123,7 +126,7 @@ export default function Subscriptions() {
             <button
               className="action-icon"
               title="edit"
-              onClick={() => setIsAddBusOpen(true)}
+              onClick={() => setIsCreateSubscriptionOpen(true)}
             >
               <i class="bi bi-pencil"></i>
             </button>
@@ -151,6 +154,16 @@ export default function Subscriptions() {
         onSave={(subscription) => {
           console.log("New Subscription:", subscription);
         }}
+      />
+      <DeleteConfirmationModal
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setSelectedStudent(null);
+        }}
+        // onConfirm={handleDelete}
+        title="Are you sure?"
+        message="Are you sure you want to delete this student? This action cannot be undone."
       />
     </>
   );
