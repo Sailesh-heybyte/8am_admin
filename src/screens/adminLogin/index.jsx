@@ -29,7 +29,7 @@ const menuItems = [
 const initialUsers = [
   {
     id: 1,
-    name: "Super Admin",
+    name: "Naveen",
     email: "superadmin@busguard.in",
     department: "Platform Operations",
     role: "Super Admin",
@@ -39,7 +39,7 @@ const initialUsers = [
   },
   {
     id: 2,
-    name: "Sales Manager",
+    name: "Ravi",
     email: "sales@busguard.in",
     department: "Revenue",
     role: "Sales Manager",
@@ -49,7 +49,7 @@ const initialUsers = [
   },
   {
     id: 3,
-    name: "Support Executive",
+    name: "Pavan",
     email: "support@busguard.in",
     department: "Customer Success",
     role: "Support",
@@ -59,7 +59,7 @@ const initialUsers = [
   },
   {
     id: 4,
-    name: "Finance Manager",
+    name: "Sai",
     email: "finance@busguard.in",
     department: "Finance",
     role: "Finance",
@@ -69,7 +69,7 @@ const initialUsers = [
   },
   {
     id: 5,
-    name: "School Viewer",
+    name: "Krishna",
     email: "viewer@greenwood.edu.in",
     department: "School Partnerships",
     role: "Viewer",
@@ -78,8 +78,8 @@ const initialUsers = [
     status: "Active",
   },
   {
-    id: 5,
-    name: "School Viewer",
+    id: 6,
+    name: "dev",
     email: "viewer@greenwood.edu.in",
     department: "School Partnerships",
     role: "Viewer",
@@ -88,8 +88,8 @@ const initialUsers = [
     status: "Active",
   },
   {
-    id: 5,
-    name: "School Viewer",
+    id: 7,
+    name: "Rakesh",
     email: "viewer@greenwood.edu.in",
     department: "School Partnerships",
     role: "Viewer",
