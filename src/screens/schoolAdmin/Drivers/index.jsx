@@ -3,8 +3,8 @@ import { useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
-import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
-import AddDriverModal from "../popups/AddDriverModal.jsx";
+import DeleteConfirmationModal from "../../adminLogin/popups/DeleteConfirmationModal.jsx";
+import AddDriverModal from "../../adminLogin/popups/AddDriverModal.jsx";
 
 export default function Drivers() {
   const drivers = [

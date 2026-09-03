@@ -238,41 +238,6 @@
           font-size: 0.72rem;
         }
       }
-
-      .topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-
-        .notification-button {
-          position: relative;
-          width: 2.3rem;
-          aspect-ratio: 1 / 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0;
-          border: 0.05rem solid $border;
-          border-radius: $radius-medium;
-          background: $white;
-          cursor: pointer;
-
-          span {
-            position: absolute;
-            top: -0.25rem;
-            right: -0.25rem;
-            min-width: 0.95rem;
-            height: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: $red;
-            color: white;
-            font-size: 0.5rem;
-          }
-        }
-      }
     }
 
     .page-content {

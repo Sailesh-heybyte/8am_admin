@@ -2,9 +2,8 @@ import { useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
-import StatCard from "../../../components/StatCard.jsx";
-import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
-import AddBusModal from "../popups/AddBusModal.jsx";
+import DeleteConfirmationModal from "../../adminLogin/popups/DeleteConfirmationModal.jsx";
+import AddBusModal from "../../adminLogin/popups/AddBusModal.jsx";
 
 export default function Buses() {
   const buses = [
@@ -81,8 +80,21 @@ export default function Buses() {
       "25 min ago",
     ],
   ];
+  const [searchTerm, setSearchTerm] = useState("");
+  const [schoolFilter, setSchoolFilter] = useState("All Schools");
+  const [statusFilter, setStatusFilter] = useState("All Status");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isAddBusOpen, setIsAddBusOpen] = useState(false);
+
+  const schools = [...new Set(buses.map((bus) => bus[1]))];
+  const statuses = [...new Set(buses.map((bus) => bus[4]))];
+  const search = searchTerm.toLowerCase();
+  const filteredBuses = buses.filter(
+    (bus) =>
+      (schoolFilter === "All Schools" || bus[1] === schoolFilter) &&
+      (statusFilter === "All Status" || bus[4] === statusFilter) &&
+      bus.join(" ").toLowerCase().includes(search),
+  );
 
   return (
     <>
@@ -92,7 +104,47 @@ export default function Buses() {
         button="+ Add Bus"
         onButtonClick={() => setIsAddBusOpen(true)}
       />
-      <div className="stats-grid four">
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <div className="filter-group">
+            <label>Filter by School:</label>
+            <select
+              value={schoolFilter}
+              onChange={(event) => setSchoolFilter(event.target.value)}
+            >
+              <option>All Schools</option>
+              {schools.map((school) => (
+                <option key={school} value={school}>
+                  {school}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Filter by Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option>All Status</option>
+              {statuses.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <input
+          type="text"
+          placeholder="Search buses..."
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+        />
+      </div>
+      {/* <div className="stats-grid four">
         <StatCard
           title="Total Buses"
           value="1,426"
@@ -117,7 +169,7 @@ export default function Buses() {
           icon={<i className="bi bi-exclamation-triangle"></i>}
           type="red"
         />
-      </div>
+      </div> */}
       <DataTable
         headers={[
           "Bus Number",
@@ -128,7 +180,7 @@ export default function Buses() {
           "Last Update",
           "Actions",
         ]}
-        rows={buses.map((b) => [
+        rows={filteredBuses.map((b) => [
           <strong>{b[0]}</strong>,
           b[1],
           b[2],
@@ -152,7 +204,8 @@ export default function Buses() {
             </button>
           </div>,
         ])}
-        footer="Showing 1–6 of 1,426 buses"
+        withoutFilter={false}
+        footer={`Showing ${filteredBuses.length} of ${buses.length} buses`}
       />
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}

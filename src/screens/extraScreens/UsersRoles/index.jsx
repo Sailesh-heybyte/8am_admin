@@ -4,8 +4,8 @@ import PageTitle from "../../../components/PageTitle.jsx";
 import RoleCard from "../../../components/RoleCard.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
-import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
-import AddUserModal from "../popups/AddUserModal.jsx";
+import DeleteConfirmationModal from "../../adminLogin/popups/DeleteConfirmationModal.jsx";
+import AddUserModal from "../../adminLogin/popups/AddUserModal.jsx";
 export default function UsersRoles() {
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);

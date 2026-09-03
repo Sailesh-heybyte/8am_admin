@@ -3,8 +3,8 @@ import { useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
-import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
-import AddStudentModal from "../popups/AddStudentModal.jsx";
+import DeleteConfirmationModal from "../../adminLogin/popups/DeleteConfirmationModal.jsx";
+import AddStudentModal from "../../adminLogin/popups/AddStudentModal.jsx";
 
 export default function Students() {
   const [students, setStudents] = useState([

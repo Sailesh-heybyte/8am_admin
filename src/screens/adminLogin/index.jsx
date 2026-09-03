@@ -2,18 +2,11 @@ import { useState } from "react";
 import "../../App.scss";
 import AddSchoolModal from "./popups/AddSchoolModal.jsx";
 import Dashboard from "./Dashboard/index.jsx";
+import Roles from "./Roles/index.jsx";
+import Users from "./Users/index.jsx";
 import Schools from "./Schools/index.jsx";
-import SchoolGroups from "./SchoolGroups/index.jsx";
-import Buses from "./Buses/index.jsx";
-import Drivers from "./Drivers/index.jsx";
-import Settings from "./Settings/index.jsx";
-import UsersRoles from "./UsersRoles/index.jsx";
-import Students from "./Students/index.jsx";
-import LiveFleet from "./LiveFleet/index.jsx";
-import Subscriptions from "./Subscriptions/index.jsx";
-import Reports from "./Reports/index.jsx";
-import Alerts from "./Alerts/index.jsx";
-import AuditLogs from "./AuditLogs/index.jsx";
+import Branches from "./Branches/index.jsx";
+import Devices from "./Devices/index.jsx";
 
 const menuItems = [
   {
@@ -21,57 +14,73 @@ const menuItems = [
     icon: <i className="bi bi-house"></i>,
     label: "Dashboard",
   },
+  { id: "roles", icon: <i className="bi bi-person-gear"></i>, label: "Roles" },
+  { id: "users", icon: <i className="bi bi-people"></i>, label: "Users" },
   { id: "schools", icon: <i className="bi bi-building"></i>, label: "Schools" },
   {
-    id: "school-groups",
-    icon: <i className="bi bi-diagram-3"></i>,
-    label: "School Groups",
-  },
-  { id: "buses", icon: <i className="bi bi-bus-front"></i>, label: "Buses" },
-  {
-    id: "drivers",
-    icon: <i className="bi bi-person-badge"></i>,
-    label: "Drivers",
-  },
-  { id: "students", icon: <i className="bi bi-people"></i>, label: "Students" },
-  {
-    id: "live-fleet",
+    id: "branches",
     icon: <i className="bi bi-geo-alt"></i>,
-    label: "Live Fleet",
+    label: "Branches",
   },
-  {
-    id: "subscriptions",
-    icon: <i className="bi bi-credit-card"></i>,
-    label: "Subscriptions",
-  },
-  {
-    id: "reports",
-    icon: <i className="bi bi-file-earmark-bar-graph"></i>,
-    label: "Reports",
-  },
-  {
-    id: "alerts",
-    icon: <i className="bi bi-exclamation-triangle"></i>,
-    label: "Alerts",
-    badge: 86,
-  },
-  {
-    id: "users-roles",
-    icon: <i className="bi bi-person-gear"></i>,
-    label: "Users & Roles",
-  },
-  {
-    id: "audit-logs",
-    icon: <i className="bi bi-clock-history"></i>,
-    label: "Audit Logs",
-  },
-  { id: "settings", icon: <i className="bi bi-gear"></i>, label: "Settings" },
+  { id: "devices", icon: <i className="bi bi-tablet"></i>, label: "Devices" },
 ];
+
+const initialUsers = [
+  {
+    id: 1,
+    name: "Super Admin",
+    email: "superadmin@busguard.in",
+    role: "Super Admin",
+    access: "All",
+    status: "Active",
+  },
+  {
+    id: 2,
+    name: "Sales Manager",
+    email: "sales@busguard.in",
+    role: "Sales Manager",
+    access: "Limited",
+    status: "Active",
+  },
+  {
+    id: 3,
+    name: "Support Executive",
+    email: "support@busguard.in",
+    role: "Support",
+    access: "Limited",
+    status: "Active",
+  },
+  {
+    id: 4,
+    name: "Finance Manager",
+    email: "finance@busguard.in",
+    role: "Finance",
+    access: "Reports",
+    status: "Active",
+  },
+  {
+    id: 5,
+    name: "School Viewer",
+    email: "viewer@greenwood.edu.in",
+    role: "Viewer",
+    access: "Read Only",
+    status: "Active",
+  },
+];
+
+const roleAccess = {
+  "Super Admin": "All",
+  "Sales Manager": "Limited",
+  Support: "Limited",
+  Finance: "Reports",
+  Viewer: "Read Only",
+};
 
 function App() {
   const [activePage, setActivePage] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showAddSchool, setShowAddSchool] = useState(false);
+  const [users, setUsers] = useState(initialUsers);
   const activeMenu = menuItems.find((item) => item.id === activePage);
 
   const renderPage = () => {
@@ -82,18 +91,39 @@ function App() {
           onViewSchools={() => setActivePage("schools")}
         />
       ),
+
+      roles: (
+        <Roles
+          users={users}
+          onAssignRole={(userId, role) =>
+            setUsers((currentUsers) =>
+              currentUsers.map((user) =>
+                user.id === userId
+                  ? { ...user, role, access: roleAccess[role] }
+                  : user,
+              ),
+            )
+          }
+        />
+      ),
+
+      users: (
+        <Users
+          users={users}
+          onAddUser={(user) =>
+            setUsers((currentUsers) => [...currentUsers, user])
+          }
+          onDeleteUser={(userId) =>
+            setUsers((currentUsers) =>
+              currentUsers.filter((user) => user.id !== userId),
+            )
+          }
+        />
+      ),
+
       schools: <Schools onAddSchool={() => setShowAddSchool(true)} />,
-      "school-groups": <SchoolGroups />,
-      buses: <Buses />,
-      drivers: <Drivers />,
-      "users-roles": <UsersRoles />,
-      settings: <Settings />,
-      students: <Students />,
-      "live-fleet": <LiveFleet />,
-      subscriptions: <Subscriptions />,
-      reports: <Reports />,
-      alerts: <Alerts />,
-      "audit-logs": <AuditLogs />,
+      branches: <Branches />,
+      devices: <Devices />,
     };
     return pages[activePage] || <Dashboard />;
   };
@@ -157,16 +187,6 @@ function App() {
             <div>
               <h1>{activeMenu?.label}</h1>
               <p>BusGuard multi-school transport platform</p>
-            </div>
-          </div>
-
-          <div className="topbar-right">
-            <div
-              className="notification-button"
-              onClick={() => setActivePage("alerts")}
-            >
-              <i className="bi bi-bell"></i>
-              <span>12</span>
             </div>
           </div>
         </header>

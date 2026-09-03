@@ -3,8 +3,8 @@ import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import StatCard from "../../../components/StatCard.jsx";
-import CreateSubscriptionModal from "../popups/CreateSubscriptionModal.jsx";
-import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
+import CreateSubscriptionModal from "../../adminLogin/popups/CreateSubscriptionModal.jsx";
+import DeleteConfirmationModal from "../../adminLogin/popups/DeleteConfirmationModal.jsx";
 
 export default function Subscriptions() {
   const subscriptions = [
