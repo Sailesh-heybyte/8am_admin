@@ -1,79 +1,93 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
+import AddSchoolModal from "../popups/AddSchoolModal.jsx";
+import SchoolDetails from "./SchoolDetails.jsx";
 
-export default function Schools({ onAddSchool }) {
-  const schools = [
-    [
-      "Greenwood International School",
-      "Hyderabad",
-      "Telangana",
-      "1,240",
-      "35",
-      "Active",
-    ],
-    ["Delhi Public School", "New Delhi", "Delhi", "2,180", "48", "Active"],
-    ["St. Mary's School", "Bengaluru", "Karnataka", "1,560", "32", "Active"],
-    [
-      "Ryan International School",
-      "Mumbai",
-      "Maharashtra",
-      "2,320",
-      "51",
-      "Active",
-    ],
-    [
-      "Narayana School",
-      "Vijayawada",
-      "Andhra Pradesh",
-      "1,110",
-      "25",
-      "Active",
-    ],
-    [
-      "Oakridge International School",
-      "Chennai",
-      "Tamil Nadu",
-      "1,340",
-      "28",
-      "Active",
-    ],
-    [
-      "Doon International School",
-      "Dehradun",
-      "Uttarakhand",
-      "1,020",
-      "22",
-      "Inactive",
-    ],
-    [
-      "Doon International School",
-      "Dehradun",
-      "Uttarakhand",
-      "1,020",
-      "22",
-      "Inactive",
-    ],
-  ];
-
+export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState("All States");
   const [statusFilter, setStatusFilter] = useState("All Status");
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [selectedSchool, setSelectedSchool] = useState(null);
+  const [schoolToChange, setSchoolToChange] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [schoolToEdit, setSchoolToEdit] = useState(null);
 
   const filtered = useMemo(
     () =>
       schools.filter(
         (school) =>
-          school.join(" ").toLowerCase().includes(query.toLowerCase()) &&
-          (stateFilter === "All States" || school[2] === stateFilter) &&
-          (statusFilter === "All Status" || school[5] === statusFilter),
+          Object.values(school)
+            .join(" ")
+            .toLowerCase()
+            .includes(query.toLowerCase()) &&
+          (stateFilter === "All States" || school.state === stateFilter) &&
+          (statusFilter === "All Status" || school.status === statusFilter),
       ),
-    [query, stateFilter, statusFilter],
+    [query, stateFilter, statusFilter, schools],
   );
+
+  if (selectedSchool) {
+    return (
+      <>
+        <SchoolDetails
+          school={selectedSchool}
+          onBack={() => setSelectedSchool(null)}
+          onEdit={() => {
+            setSchoolToEdit(selectedSchool);
+            setIsFormOpen(true);
+          }}
+          onStatusChange={() => setSchoolToChange(selectedSchool)}
+        />
+        <DeleteConfirmationModal
+          isOpen={Boolean(schoolToChange)}
+          onClose={() => setSchoolToChange(null)}
+          onConfirm={() => {
+            onUpdateStatus(
+              schoolToChange.id,
+              schoolToChange.status === "Active" ? "Suspended" : "Active",
+            );
+            setSelectedSchool({
+              ...schoolToChange,
+              status:
+                schoolToChange.status === "Active" ? "Suspended" : "Active",
+            });
+            setSchoolToChange(null);
+          }}
+          title={
+            schoolToChange?.status === "Active"
+              ? "Suspend school?"
+              : "Reactivate school?"
+          }
+          message={
+            schoolToChange?.status === "Active"
+              ? "This will prevent the school from using the platform until reactivated."
+              : "This will restore the school's platform access."
+          }
+          confirmLabel={
+            schoolToChange?.status === "Active"
+              ? "Suspend School"
+              : "Reactivate School"
+          }
+        />
+        <AddSchoolModal
+          key={schoolToEdit?.id || "new-school"}
+          isOpen={isFormOpen}
+          onClose={() => setIsFormOpen(false)}
+          initialData={schoolToEdit}
+          title="Update School"
+          onSave={(school) => {
+            onSaveSchool(school, schoolToEdit?.id);
+            setSelectedSchool({ ...selectedSchool, ...school });
+            setIsFormOpen(false);
+          }}
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -81,7 +95,10 @@ export default function Schools({ onAddSchool }) {
         title="Schools"
         description="Manage all schools connected to the BusGuard platform."
         button="+ Add School"
-        onButtonClick={onAddSchool}
+        onButtonClick={() => {
+          setSchoolToEdit(null);
+          setIsFormOpen(true);
+        }}
       />
       <div className="filter-card ">
         <div style={{ display: "flex", gap: "1rem" }}>
@@ -98,6 +115,7 @@ export default function Schools({ onAddSchool }) {
               <option>Maharashtra</option>
               <option>Tamil Nadu</option>
               <option>Uttarakhand</option>
+              <option>Andhra Pradesh</option>
             </select>
           </div>
 
@@ -132,27 +150,53 @@ export default function Schools({ onAddSchool }) {
           "Status",
           "Actions",
         ]}
-        rows={filtered.map((s) => [
-          <div className="school-mini">
-            <div className="school-logo">{s[0].charAt(0)}</div>
-            <strong>{s[0]}</strong>
-          </div>,
-          s[1],
-          s[2],
-          s[3],
-          s[4],
-          <StatusBadge status={s[5]} />,
+        className="schools-table-card"
+        onRowClick={(index) => setSelectedSchool(filtered[index])}
+        rows={filtered.map((school) => [
+          <button
+            className="table-link school-name-link"
+            onClick={() => setSelectedSchool(school)}
+          >
+            <div className="school-mini">
+              <div className="school-logo">{school.schoolName.charAt(0)}</div>
+              <strong>{school.schoolName}</strong>
+            </div>
+          </button>,
+          school.city,
+          school.state,
+          school.studentCount,
+          school.busCount,
+          <StatusBadge status={school.status} />,
           <div className="action-buttons">
-            <button className="action-icon" title="Edit" onClick={onAddSchool}>
-              <i className="bi bi-pencil"></i>
-            </button>
-
             <button
               className="action-icon"
-              title="Delete"
-              onClick={() => setIsDeleteOpen(true)}
+              title="View details"
+              onClick={() => setSelectedSchool(school)}
             >
-              <i className="bi bi-trash3"></i>
+              <i className="bi bi-eye"></i>
+            </button>
+            <button
+              className="action-icon"
+              title="Edit"
+              onClick={() => {
+                setSchoolToEdit(school);
+                setIsFormOpen(true);
+              }}
+            >
+              <i className="bi bi-pencil"></i>
+            </button>
+            <button
+              className="action-icon"
+              title={school.status === "Active" ? "Suspend" : "Reactivate"}
+              onClick={() => setSchoolToChange(school)}
+            >
+              <i
+                className={
+                  school.status === "Active"
+                    ? "bi bi-pause-circle"
+                    : "bi bi-play-circle"
+                }
+              ></i>
             </button>
           </div>,
         ])}
@@ -161,14 +205,41 @@ export default function Schools({ onAddSchool }) {
       />
 
       <DeleteConfirmationModal
-        isOpen={isDeleteOpen}
-        onClose={() => {
-          setIsDeleteOpen(false);
-          setSelectedStudent(null);
+        isOpen={Boolean(schoolToChange)}
+        onClose={() => setSchoolToChange(null)}
+        onConfirm={() => {
+          onUpdateStatus(
+            schoolToChange.id,
+            schoolToChange.status === "Active" ? "Suspended" : "Active",
+          );
+          setSchoolToChange(null);
         }}
-        // onConfirm={handleDelete}
-        title="Are you sure?"
-        message="Are you sure you want to delete this student? This action cannot be undone."
+        title={
+          schoolToChange?.status === "Active"
+            ? "Suspend school?"
+            : "Reactivate school?"
+        }
+        message={
+          schoolToChange?.status === "Active"
+            ? "This will prevent the school from using the platform until reactivated."
+            : "This will restore the school's platform access."
+        }
+        confirmLabel={
+          schoolToChange?.status === "Active"
+            ? "Suspend School"
+            : "Reactivate School"
+        }
+      />
+      <AddSchoolModal
+        key={schoolToEdit?.id || "new-school"}
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        initialData={schoolToEdit}
+        title={schoolToEdit ? "Update School" : "Create School"}
+        onSave={(school) => {
+          onSaveSchool(school, schoolToEdit?.id);
+          setIsFormOpen(false);
+        }}
       />
     </>
   );

@@ -45,6 +45,15 @@
   font-size: 0.75rem;
   cursor: pointer;
 
+  .filter-card.admin-filter {
+    .filter-group + .filter-group {
+      margin-left: 0.2rem;
+    }
+
+    input {
+      min-width: 15rem;
+    }
+  }
   &:hover {
     background: $surface-hover;
   }
@@ -232,7 +241,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 10rem;
   }
 
   span {
@@ -539,7 +547,7 @@
 
 .filter-card {
   display: flex;
-  gap: 0.7rem;
+  height: 69%;
   padding: 1.5% 0.8rem;
   background: $white;
   border-top-left-radius: $radius;
@@ -585,7 +593,7 @@
 
 .table-card {
   height: auto;
-  max-height: 69%;
+  max-height: none;
   border: 0.05rem solid $border;
   border-bottom-left-radius: $radius;
   border-bottom-right-radius: $radius;
@@ -639,9 +647,58 @@
   }
 
   .table-empty {
-    height: 6rem;
+    height: 18rem;
+    min-height: 18rem;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     color: $text-muted;
+    font-size: 1rem;
+
+    img {
+      width: 7rem;
+      aspect-ratio: 1/1;
+      object-fit: contain;
+    }
+  }
+
+  .table-empty-cell {
+    height: 18rem;
+    min-height: 18rem;
+    padding: 0;
     text-align: center;
+    vertical-align: middle;
+  }
+}
+
+.table-card.schools-table-card {
+  height: 69%;
+  max-height: 69%;
+}
+
+.table-card.roles-table-card {
+  height: 67%;
+}
+
+.table-card.users-table-card {
+  height: 69%;
+  max-height: 69%;
+}
+
+.table-card.branches-table-card,
+.table-card.devices-table-card {
+  height: 69%;
+  max-height: 69%;
+
+  .table-wrapper {
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 auto;
+    overflow-y: auto;
   }
 }
 
@@ -672,6 +729,49 @@ td {
 
 tbody tr:hover {
   background: $surface-hover;
+}
+
+.table-row-clickable {
+  cursor: pointer;
+
+  &:hover td {
+    background: rgba(71, 118, 230, 0.035);
+  }
+}
+
+.table-link {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $primary;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.school-name-link {
+  color: inherit;
+  font-weight: inherit;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.school-name-link .school-mini {
+  max-width: 100%;
+}
+
+.school-name-link .school-mini strong {
+  color: $text;
 }
 
 .pagination {
@@ -768,8 +868,10 @@ tbody tr:hover {
 ========================= */
 
 .status {
-  display: inline-flex;
+  display: flex !important;
+  flex-direction: row !important;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
   padding: 0.28rem 0.55rem;
   border-radius: 2rem;
@@ -1166,4 +1268,310 @@ tbody tr:hover {
   color: $primary;
   font-size: 0.6rem;
   cursor: pointer;
+}
+
+.platform-dashboard-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  height: 67%;
+  justify-content: space-between;
+}
+
+.platform-panel {
+  min-width: 0;
+  overflow: hidden;
+  height: 100%;
+  flex: 1 1 auto;
+}
+
+.platform-panel-large {
+  grid-row: span 2;
+}
+
+.platform-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 15%;
+  padding: 0.8rem 1rem;
+  border-bottom: 0.05rem solid $border;
+  border: 0.05rem solid $border;
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+  h3 {
+    margin: 0;
+    color: $text;
+    font-size: 0.8rem;
+  }
+  p {
+    margin: 0.25rem 0 0;
+    color: $text-muted;
+    font-size: 0.58rem;
+  }
+}
+
+.platform-school-list {
+  padding: 0.35rem 0;
+  max-height: 85%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  border: 0.05rem solid $border;
+  border-top: 0;
+  border-bottom-left-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+
+.platform-school-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 2% 1rem;
+  border: 0;
+  border-bottom: 0.05rem solid $border;
+  background: $white;
+  text-align: left;
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+  &:hover {
+    background: $surface-hover;
+  }
+  .school-logo {
+    width: 2rem;
+  }
+}
+
+.platform-school-name,
+.platform-school-metric {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.platform-school-name strong {
+  overflow: hidden;
+  color: $text;
+  font-size: 0.65rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.platform-school-name small,
+.platform-school-metric small {
+  color: $text-muted;
+  font-size: 0.56rem;
+}
+.platform-school-metric {
+  align-items: flex-end;
+}
+.platform-school-metric strong {
+  color: $text;
+  font-size: 0.65rem;
+}
+
+.health-list,
+.activity-list {
+  padding: 0.55rem 1rem;
+  max-height: 85%;
+  border: 0.05rem solid $border;
+  border-top: 0;
+  border-bottom-left-radius: $radius;
+  border-bottom-right-radius: $radius;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.health-list > div,
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0;
+  border-bottom: 0.05rem solid $border;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+  > i,
+  .activity-icon {
+    color: $primary;
+    font-size: 0.95rem;
+  }
+  > span {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  strong {
+    color: $text;
+    font-size: 0.62rem;
+  }
+  small {
+    color: $text-muted;
+    font-size: 0.55rem;
+  }
+  b {
+    color: $primary;
+    font-size: 0.75rem;
+  }
+}
+
+.activity-row .activity-icon {
+  width: 1.5rem;
+  text-align: center;
+}
+
+.school-detail-page {
+  min-height: 100%;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2% 0rem;
+  border: 0;
+  background: transparent;
+  color: $primary;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.school-detail-hero,
+.school-detail-section {
+  border: 0.05rem solid $border;
+  border-radius: $radius;
+  background: $white;
+  box-shadow: $shadow;
+}
+
+.school-detail-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem;
+}
+
+.school-detail-identity,
+.school-detail-actions,
+.school-detail-metrics > div,
+.detail-section-heading {
+  display: flex;
+  align-items: center;
+}
+
+.school-detail-identity {
+  gap: 0.8rem;
+}
+.school-detail-identity span {
+  color: $text-muted;
+  font-size: 0.58rem;
+}
+.school-detail-identity h2 {
+  margin: 0.2rem 0;
+  font-size: 1.1rem;
+}
+.school-detail-identity p {
+  margin: 0;
+  color: $text-light;
+  font-size: 0.65rem;
+}
+.school-detail-logo {
+  width: 3.2rem;
+  height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  background: $blue-light;
+  color: $primary;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.school-detail-actions {
+  gap: 0.6rem;
+}
+.school-detail-actions .secondary-button,
+.school-detail-actions .primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.65rem;
+}
+.school-detail-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.school-detail-section {
+  padding: 1rem;
+}
+.detail-section-heading {
+  justify-content: space-between;
+  padding-bottom: 0.8rem;
+  border-bottom: 0.05rem solid $border;
+}
+.detail-section-heading h3,
+.school-detail-metrics h3 {
+  margin: 0;
+  font-size: 0.78rem;
+}
+.detail-section-heading span {
+  color: $primary;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.school-detail-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding-top: 1rem;
+}
+.school-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.school-detail-field span,
+.school-detail-metrics span {
+  color: $text-muted;
+  font-size: 0.58rem;
+}
+.school-detail-field strong {
+  color: $text;
+  font-size: 0.67rem;
+  word-break: break-word;
+}
+.school-detail-metrics > div {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+.school-detail-metrics > div > div {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  align-items: center;
+  gap: 0.15rem 0.5rem;
+  padding: 0.7rem;
+  border-radius: $radius-small;
+  background: $surface;
+}
+.school-detail-metrics i {
+  grid-row: span 2;
+  color: $primary;
+  font-size: 1rem;
+}
+.school-detail-metrics strong {
+  font-size: 0.72rem;
 }

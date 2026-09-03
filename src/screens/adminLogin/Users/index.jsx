@@ -5,17 +5,23 @@ import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddUserModal from "../popups/AddUserModal.jsx";
 
-export default function Users({ users, onAddUser, onDeleteUser }) {
+export default function Users({ users, roles, onAddUser, onDeleteUser }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
   const filteredUsers = users.filter((user) => {
-    const search = searchTerm.toLowerCase();
-    const matchesSearch = [user.name, user.email, user.role, user.access]
+    const search = searchTerm.trim().toLowerCase();
+    const matchesSearch = [
+      user.name,
+      user.email,
+      user.role,
+      user.access,
+      user.department,
+      user.lastLogin,
+    ]
       .join(" ")
-      .toLowerCase()
       .includes(search);
 
     return (
@@ -25,16 +31,16 @@ export default function Users({ users, onAddUser, onDeleteUser }) {
   });
 
   const handleSave = (user) => {
-    onAddUser({ ...user, id: Date.now() });
+    onAddUser({ ...user, id: Date.now(), lastLogin: "Never" });
     setIsAddUserOpen(false);
   };
 
   return (
     <>
       <PageTitle
-        title="Users"
-        description="Create users and manage their platform access."
-        button="+ Add User"
+        title="Platform Staff"
+        description="Manage 8AM platform-level administrators and staff access."
+        button="+ Create Platform User"
         onButtonClick={() => setIsAddUserOpen(true)}
       />
 
@@ -62,12 +68,22 @@ export default function Users({ users, onAddUser, onDeleteUser }) {
       </div>
 
       <DataTable
-        headers={["User Name", "Email", "Role", "Access", "Status", "Actions"]}
+        headers={[
+          "Staff Member",
+          "Email",
+          "Department",
+          "Role",
+          "Last Login",
+          "Status",
+          "Actions",
+        ]}
+        className="users-table-card"
         rows={filteredUsers.map((user) => [
           <strong key={`${user.id}-name`}>{user.name}</strong>,
           user.email,
+          user.department,
           user.role,
-          user.access,
+          user.lastLogin,
           <StatusBadge status={user.status} />,
           <div className="action-buttons">
             <button
@@ -80,7 +96,7 @@ export default function Users({ users, onAddUser, onDeleteUser }) {
           </div>,
         ])}
         withoutFilter={false}
-        footer={`Showing ${filteredUsers.length} of ${users.length} users`}
+        footer={`Showing ${filteredUsers.length} matching of ${users.length} users`}
       />
 
       <DeleteConfirmationModal
@@ -97,6 +113,8 @@ export default function Users({ users, onAddUser, onDeleteUser }) {
       <AddUserModal
         isOpen={isAddUserOpen}
         onClose={() => setIsAddUserOpen(false)}
+        roles={roles}
+        title="Create Platform User"
         onSave={handleSave}
       />
     </>

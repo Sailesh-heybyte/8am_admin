@@ -6,6 +6,7 @@ const DeleteConfirmationModal = ({
   onConfirm,
   title = "Are you sure?",
   message = "Are you sure you want to delete this item? This action cannot be undone.",
+  confirmLabel = "Delete",
 }) => {
   if (!isOpen) return null;
 
@@ -43,7 +44,7 @@ const DeleteConfirmationModal = ({
               className="delete-modal-confirm"
               onClick={onConfirm}
             >
-              Delete
+              {confirmLabel}
             </button>
           </div>
         </div>

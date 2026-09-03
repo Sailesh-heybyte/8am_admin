@@ -56,6 +56,20 @@ export default function UsersRoles() {
       "Read Only",
       "Active",
     ],
+    [
+      "School Viewer",
+      "viewer@greenwood.edu.in",
+      "Viewer",
+      "Read Only",
+      "Active",
+    ],
+    [
+      "School Viewer",
+      "viewer@greenwood.edu.in",
+      "Viewer",
+      "Read Only",
+      "Active",
+    ],
   ];
   return (
     <>

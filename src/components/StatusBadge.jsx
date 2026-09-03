@@ -6,7 +6,7 @@ export default function StatusBadge({ status }) {
   return (
     <span className={`status ${normalized}`}>
       <span className="status-dot" />
-      {status}
+      <p>{status}</p>
     </span>
   );
 }

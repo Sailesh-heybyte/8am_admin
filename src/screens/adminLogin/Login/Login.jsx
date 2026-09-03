@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Login.scss";
 
 const OTP_LENGTH = 6;
@@ -27,6 +27,7 @@ export default function Login({ onLoginSuccess }) {
   const [statusText, setStatusText] = useState(
     "Enter your mobile number to receive a one-time password.",
   );
+  const otpInputRef = useRef(null);
 
   useEffect(() => {
     if (!otpSent || resendTimer <= 0) return undefined;
@@ -37,6 +38,12 @@ export default function Login({ onLoginSuccess }) {
 
     return () => clearInterval(timer);
   }, [otpSent, resendTimer]);
+
+  useEffect(() => {
+    if (otpSent) {
+      otpInputRef.current?.focus();
+    }
+  }, [otpSent]);
 
   const handlePhoneChange = (event) => {
     const rawValue = event.target.value;
@@ -206,7 +213,19 @@ export default function Login({ onLoginSuccess }) {
             <p>Sign in with your mobile number and OTP.</p>
           </div>
 
-          <form className="login-form" onSubmit={handleLogin} noValidate>
+          <form
+            className="login-form"
+            onSubmit={(event) => {
+              if (!otpSent) {
+                event.preventDefault();
+                handleSendOtp();
+                return;
+              }
+
+              handleLogin(event);
+            }}
+            noValidate
+          >
             <div className="field-group">
               <label htmlFor="phone">Mobile Number</label>
               <div className="input-shell">
@@ -234,6 +253,7 @@ export default function Login({ onLoginSuccess }) {
                   id="otp"
                   type="text"
                   inputMode="numeric"
+                  ref={otpInputRef}
                   value={otp}
                   onChange={handleOtpChange}
                   placeholder="6-digit OTP"

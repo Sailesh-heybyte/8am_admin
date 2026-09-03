@@ -1,0 +1,101 @@
+@use "../../../styles/colors" as *;
+
+.device-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(10, 20, 40, 0.45);
+  backdrop-filter: blur(0.25rem);
+}
+.device-modal {
+  width: 46rem;
+  max-width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 0.05rem solid $border;
+  border-radius: 0.9rem;
+  background: $white;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.18);
+}
+.device-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+}
+.device-header h2 {
+  margin: 0;
+  color: $text;
+  font-size: 1.05rem;
+}
+.device-header p {
+  margin: 0.3rem 0 0;
+  color: $text-muted;
+  font-size: 0.65rem;
+}
+.device-close {
+  border: 0;
+  background: transparent;
+  color: $text-light;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+.device-body {
+  overflow-y: auto;
+  padding: 0 1.25rem 1rem;
+}
+.device-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+}
+.device-fields label,
+.device-select-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: $text-light;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+.device-fields input,
+.device-fields select,
+.device-select-label select {
+  height: 2.2rem;
+  padding: 0 0.7rem;
+  border: 0.05rem solid $border;
+  border-radius: 0.45rem;
+  background: $white;
+  color: $text;
+  font: inherit;
+  font-size: 0.68rem;
+  outline: none;
+}
+.device-fields input:focus,
+.device-fields select:focus,
+.device-select-label select:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 0.15rem rgba(71, 118, 230, 0.1);
+}
+.device-select-label {
+  max-width: 24rem;
+  padding: 1rem 0;
+}
+.device-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding: 0.8rem 1.25rem;
+  border-top: 0.05rem solid $border;
+}
+@media (max-width: 48rem) {
+  .device-fields {
+    grid-template-columns: 1fr;
+  }
+}

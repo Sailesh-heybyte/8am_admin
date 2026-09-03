@@ -1,22 +1,33 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./AddSchoolModal.scss";
 
-const AddSchoolModal = ({ isOpen, onClose, onSave }) => {
+const emptyFormData = {
+  schoolName: "",
+  schoolCode: "",
+  schoolGroup: "",
+  email: "",
+  phone: "",
+  address: "",
+  city: "",
+  state: "",
+  pincode: "",
+  studentCount: "",
+  busCount: "",
+  adminName: "",
+  adminEmail: "",
+  adminPhone: "",
+};
+
+const AddSchoolModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  initialData,
+  title = "Add School",
+}) => {
   const [formData, setFormData] = useState({
-    schoolName: "",
-    schoolCode: "",
-    schoolGroup: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-    studentCount: "",
-    busCount: "",
-    adminName: "",
-    adminEmail: "",
-    adminPhone: "",
+    ...emptyFormData,
+    ...initialData,
   });
 
   const handleChange = (e) => {
@@ -81,22 +92,7 @@ const AddSchoolModal = ({ isOpen, onClose, onSave }) => {
     onSave?.(formData);
     onClose();
 
-    setFormData({
-      schoolName: "",
-      schoolCode: "",
-      schoolGroup: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      pincode: "",
-      studentCount: "",
-      busCount: "",
-      adminName: "",
-      adminEmail: "",
-      adminPhone: "",
-    });
+    setFormData(emptyFormData);
   };
 
   if (!isOpen) {
@@ -112,7 +108,7 @@ const AddSchoolModal = ({ isOpen, onClose, onSave }) => {
         {/* Header */}
         <div className="add-school-header">
           <div>
-            <h2>Add School</h2>
+            <h2>{title}</h2>
             <p>Add a new school to the BusGuard platform.</p>
           </div>
 
@@ -370,7 +366,7 @@ const AddSchoolModal = ({ isOpen, onClose, onSave }) => {
             </button>
 
             <button type="submit" className="modal-save">
-              Add School
+              {title}
             </button>
           </div>
         </form>

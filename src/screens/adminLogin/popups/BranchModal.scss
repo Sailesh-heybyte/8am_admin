@@ -1,0 +1,154 @@
+@use "../../../styles/colors" as *;
+
+.branch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(10, 20, 40, 0.45);
+  backdrop-filter: blur(0.25rem);
+}
+.branch-modal {
+  width: 52rem;
+  max-width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 0.05rem solid $border;
+  border-radius: 0.9rem;
+  background: $white;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.18);
+}
+.branch-header {
+  min-height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+}
+.branch-header h2 {
+  margin: 0;
+  color: $text;
+  font-size: 1.05rem;
+}
+.branch-header p {
+  margin: 0.3rem 0 0;
+  color: $text-muted;
+  font-size: 0.65rem;
+}
+.branch-close {
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: $text-light;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+.branch-close:hover {
+  background: $surface-hover;
+}
+.branch-body {
+  overflow-y: auto;
+  padding: 0 1.25rem;
+}
+.branch-section {
+  padding-bottom: 1rem;
+}
+.branch-section h3 {
+  margin: 0 0 0.8rem;
+  color: $text;
+  font-size: 0.78rem;
+}
+.branch-fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+.branch-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: $text-light;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+.branch-fields input,
+.branch-fields select {
+  width: 100%;
+  height: 2.2rem;
+  padding: 0 0.7rem;
+  border: 0.05rem solid $border;
+  border-radius: 0.45rem;
+  background: $white;
+  color: $text;
+  font: inherit;
+  font-size: 0.68rem;
+  outline: none;
+}
+.branch-fields input:focus,
+.branch-fields select:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 0.15rem rgba(71, 118, 230, 0.1);
+}
+.branch-wide {
+  grid-column: span 2;
+}
+.branch-footer {
+  min-height: 4.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding: 0.8rem 1.25rem;
+  border-top: 0.05rem solid $border;
+}
+.branch-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem;
+  overflow-y: auto;
+  padding: 0 1.25rem 1.1rem;
+}
+.branch-status,
+.branch-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: 0.05rem solid $border;
+  border-radius: 0.45rem;
+  background: $surface;
+}
+.branch-status {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+}
+.branch-status span:last-child {
+  margin-left: auto;
+  color: $text-muted;
+  font-size: 0.58rem;
+}
+.branch-detail-item span {
+  color: $text-light;
+  font-size: 0.58rem;
+}
+.branch-detail-item strong {
+  color: $text;
+  font-size: 0.65rem;
+}
+.status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: $green;
+}
+.status-dot.inactive {
+  background: $red;
+}

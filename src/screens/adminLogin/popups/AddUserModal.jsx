@@ -1,11 +1,18 @@
 import { useState } from "react";
 import "./AddUserModal.scss";
 
-const AddUserModal = ({ isOpen, onClose, onSave }) => {
+const AddUserModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  roles = [],
+  title = "Add User",
+}) => {
   const initialFormData = {
     name: "",
     email: "",
     phone: "",
+    department: "",
     role: "",
     access: "",
     status: "Active",
@@ -19,6 +26,12 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "role"
+        ? {
+            access:
+              roles.find((role) => role.name === value)?.access || "Custom",
+          }
+        : {}),
     }));
   };
 
@@ -52,8 +65,8 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
       <div className="add-user-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="add-user-header">
           <div>
-            <h2>Add User</h2>
-            <p>Create a new user and assign their role and access.</p>
+            <h2>{title}</h2>
+            <p>Create an 8AM platform staff account and assign its role.</p>
           </div>
 
           <button type="button" className="add-user-close" onClick={onClose}>
@@ -106,6 +119,20 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
                   />
                 </div>
               </div>
+              <div className="form-row" style={{ marginTop: "3%" }}>
+                <div className="form-field">
+                  <label>Department</label>
+
+                  <input
+                    type="text"
+                    name="department"
+                    value={formData.department}
+                    onChange={handleChange}
+                    placeholder="e.g. Platform Operations"
+                    required
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="form-section">
@@ -122,11 +149,11 @@ const AddUserModal = ({ isOpen, onClose, onSave }) => {
                     required
                   >
                     <option value="">Select role</option>
-                    <option value="Super Admin">Super Admin</option>
-                    <option value="Sales Manager">Sales Manager</option>
-                    <option value="Support">Support</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Viewer">Viewer</option>
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.name}>
+                        {role.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
