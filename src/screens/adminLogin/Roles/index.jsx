@@ -1,27 +1,75 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
-import RoleCard from "../../../components/RoleCard.jsx";
-import AssignRoleModal from "../popups/AssignRoleModal.jsx";
-import RoleDetailsModal from "../popups/RoleDetailsModal.jsx";
 import RoleModal from "../popups/RoleModal.jsx";
-import { permissions } from "../../../utils/roleData.js";
+import {
+  getRoles,
+  getRole,
+  getPermissions,
+  createRole,
+  assignPermissions,
+} from "../../../api/roles.js";
 
-export default function Roles({ users, roles, onAssignRole, onSaveRole }) {
+export default function Roles() {
+  const [roles, setRoles] = useState([]);
+  const [permissions, setPermissions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState(null);
-  const [roleToEdit, setRoleToEdit] = useState(false);
-  const [editorVersion, setEditorVersion] = useState(0);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [roleToEdit, setRoleToEdit] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const loadRoles = async () => {
+    const data = await getRoles();
+    setRoles(data);
+  };
+
+  useEffect(() => {
+    getRoles()
+      .then(setRoles)
+      .catch((err) => console.error("Could not load roles", err));
+  }, []);
+
+  const loadPermissions = async () => {
+    if (permissions.length > 0) return;
+    const data = await getPermissions();
+    setPermissions(data);
+  };
+
   const filteredRoles = roles.filter((role) =>
-    `${role.name} ${role.description}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase()),
+    role.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-  const openRoleEditor = (role = null) => {
-    setSelectedRole(null);
-    setEditorVersion((version) => version + 1);
-    setRoleToEdit(role || {});
+
+  const openCreate = async () => {
+    try {
+      await loadPermissions();
+      setRoleToEdit(null);
+      setIsModalOpen(true);
+    } catch (err) {
+      alert("Could not load permissions");
+    }
+  };
+
+  const openEdit = async (role) => {
+    try {
+      await loadPermissions();
+      setRoleToEdit(role);
+      setIsModalOpen(true);
+    } catch (err) {
+      alert("Could not load permissions");
+    }
+  };
+
+  const handleSave = async (formData) => {
+    try {
+      if (roleToEdit?.id) {
+        await assignPermissions(roleToEdit.id, formData.permissions);
+      } else {
+        await createRole(formData);
+      }
+      await loadRoles();
+      setIsModalOpen(false);
+    } catch (err) {
+      alert("Could not save role");
+    }
   };
 
   return (
@@ -30,89 +78,49 @@ export default function Roles({ users, roles, onAssignRole, onSaveRole }) {
         title="Roles & Permissions"
         description="Create roles and control exactly what each team member can access."
         button="+ Create Role"
-        onButtonClick={() => openRoleEditor()}
+        onButtonClick={openCreate}
       />
-      <div className="role-cards">
-        {roles.slice(0, 4).map((role) => (
-          <button
-            className="role-card-button"
-            key={role.id}
-            onClick={() => setSelectedRole(role)}
-          >
-            <RoleCard
-              title={role.name}
-              count={users.filter((user) => user.role === role.name).length}
-              text={role.description}
-              type={role.type}
-            />
-          </button>
-        ))}
+
+      <div className="filter-card search-only">
+        <input
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search roles..."
+        />
       </div>
 
       <DataTable
-        headers={["Role", "Description", "Permissions", "Users", "Actions"]}
+        headers={["Role", "Type", "Actions"]}
         className="roles-table-card"
         rows={filteredRoles.map((role) => [
-          <button
-            className="table-link"
-            key={`${role.id}-name`}
-            onClick={() => setSelectedRole(role)}
-          >
+          <button className="table-link" onClick={() => openEdit(role)}>
             {role.name}
           </button>,
-          role.description,
-          `${role.permissions.length} permissions`,
-          users.filter((user) => user.role === role.name).length,
+          role.is_platform_role ? "Platform" : "School",
           <div className="action-buttons">
             <button
               className="action-icon"
-              title="View role"
-              onClick={() => setSelectedRole(role)}
-            >
-              <i className="bi bi-eye"></i>
-            </button>
-            <button
-              className="action-icon"
               title="Edit permissions"
-              onClick={() => openRoleEditor(role)}
+              onClick={() => openEdit(role)}
             >
               <i className="bi bi-pencil"></i>
             </button>
           </div>,
         ])}
-        withoutFilter={true}
+        withoutFilter={false}
         footer={`Showing ${filteredRoles.length} of ${roles.length} roles`}
       />
 
-      <RoleModal
-        key={`${roleToEdit.id || "new-role"}-${editorVersion}`}
-        isOpen={Boolean(roleToEdit)}
-        role={roleToEdit.id ? roleToEdit : null}
-        permissions={permissions}
-        onClose={() => setRoleToEdit(false)}
-        onSave={(role) => {
-          onSaveRole(role, roleToEdit.id);
-          setRoleToEdit(false);
-        }}
-      />
-      <RoleDetailsModal
-        isOpen={Boolean(selectedRole)}
-        role={selectedRole}
-        permissions={permissions}
-        onClose={() => setSelectedRole(null)}
-        onEdit={() => openRoleEditor(selectedRole)}
-      />
-      <AssignRoleModal
-        key={selectedUser?.id || "assign-user-role"}
-        isOpen={Boolean(selectedUser)}
-        user={selectedUser}
-        roles={roles}
-        onClose={() => setSelectedUser(null)}
-        onSave={(role) => {
-          onAssignRole(selectedUser.id, role);
-          setSelectedUser(null);
-        }}
-      />
+      {isModalOpen && (
+        <RoleModal
+          key={roleToEdit?.id || "new-role"}
+          isOpen={isModalOpen}
+          role={roleToEdit}
+          permissions={permissions}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSave}
+        />
+      )}
     </>
   );
 }

@@ -1,38 +1,78 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddUserModal from "../popups/AddUserModal.jsx";
+import { createUser, getUsers } from "../../../api/users.js";
+import { getRoles } from "../../../api/roles.js";
 
-export default function Users({ users, roles, onAddUser, onDeleteUser }) {
+export default function Users(props) {
+  const context = useOutletContext() || {};
+  const { onDeleteUser } = { ...context, ...props };
+
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [usersError, setUsersError] = useState("");
+
+  const [roles, setRoles] = useState([]);
+  const [rolesLoading, setRolesLoading] = useState(true);
+  const [rolesError, setRolesError] = useState("");
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All Status");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  const loadUsers = async () => {
+    try {
+      const data = await getUsers();
+      setUsers(data);
+      setUsersError("");
+    } catch (err) {
+      setUsersError(err.message || "Failed to load users.");
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUsers();
+    getRoles()
+      .then((data) => {
+        setRoles(data);
+      })
+      .catch((err) => {
+        setRolesError(err.message || "Failed to load roles.");
+      })
+      .finally(() => {
+        setRolesLoading(false);
+      });
+  }, []);
+
+  const getRoleNames = (user) => {
+    if (!user?.roleIds || user.roleIds.length === 0) {
+      return "-";
+    }
+    const names = user.roleIds.map((id) => {
+      const foundRole = roles.find((r) => r.id === id);
+      return foundRole ? foundRole.name : id;
+    });
+    return names.join(", ");
+  };
+
   const filteredUsers = users.filter((user) => {
     const search = searchTerm.trim().toLowerCase();
-    const matchesSearch = [
-      user.name,
-      user.email,
-      user.role,
-      user.access,
-      user.department,
-      user.lastLogin,
-    ]
+    return [user.fullName, user.email, getRoleNames(user)]
+      .filter(Boolean)
       .join(" ")
+      .toLowerCase()
       .includes(search);
-
-    return (
-      matchesSearch &&
-      (statusFilter === "All Status" || user.status === statusFilter)
-    );
   });
 
-  const handleSave = (user) => {
-    onAddUser({ ...user, id: Date.now(), lastLogin: "Never" });
-    setIsAddUserOpen(false);
+  const handleSave = async (user) => {
+    await createUser(user);
+    await loadUsers();
   };
 
   return (
@@ -45,20 +85,6 @@ export default function Users({ users, roles, onAddUser, onDeleteUser }) {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <div className="filter-group">
-            <label>Filter by Status:</label>
-            <select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
-          </div>
-        </div>
-
         <input
           type="text"
           placeholder="Search users..."
@@ -67,43 +93,56 @@ export default function Users({ users, roles, onAddUser, onDeleteUser }) {
         />
       </div>
 
-      <DataTable
-        headers={[
-          "Staff Member",
-          "Email",
-          "Department",
-          "Role",
-          "Last Login",
-          "Status",
-          "Actions",
-        ]}
-        className="users-table-card"
-        rows={filteredUsers.map((user) => [
-          <strong key={`${user.id}-name`}>{user.name}</strong>,
-          user.email,
-          user.department,
-          user.role,
-          user.lastLogin,
-          <StatusBadge status={user.status} />,
-          <div className="action-buttons">
-            <button
-              className="action-icon"
-              title="Delete"
-              onClick={() => setUserToDelete(user)}
-            >
-              <i className="bi bi-trash3"></i>
-            </button>
-          </div>,
-        ])}
-        withoutFilter={false}
-        footer={`Showing ${filteredUsers.length} matching of ${users.length} users`}
-      />
+      {usersLoading ? (
+        <div style={{ padding: "1.5rem", color: "#666", fontSize: "0.85rem" }}>
+          Loading users...
+        </div>
+      ) : usersError ? (
+        <div
+          style={{ padding: "1.5rem", color: "#d9534f", fontSize: "0.85rem" }}
+        >
+          {usersError}
+        </div>
+      ) : (
+        <DataTable
+          headers={[
+            "Staff Member",
+            "Email",
+            "Role",
+            "Status",
+            "Created",
+            "Actions",
+          ]}
+          className="users-table-card"
+          rows={filteredUsers.map((user) => [
+            <strong key={`${user.id}-name`}>{user.fullName}</strong>,
+            user.email,
+            getRoleNames(user),
+            <StatusBadge
+              key={`${user.id}-status`}
+              status={user.isActive ? "Active" : "Inactive"}
+            />,
+            user.createdAt,
+            <div className="action-buttons" key={`${user.id}-actions`}>
+              <button
+                className="action-icon"
+                title="Delete"
+                onClick={() => setUserToDelete(user)}
+              >
+                <i className="bi bi-trash3"></i>
+              </button>
+            </div>,
+          ])}
+          withoutFilter={false}
+          footer={`Showing ${filteredUsers.length} matching of ${users.length} users`}
+        />
+      )}
 
       <DeleteConfirmationModal
         isOpen={Boolean(userToDelete)}
         onClose={() => setUserToDelete(null)}
         onConfirm={() => {
-          onDeleteUser(userToDelete.id);
+          onDeleteUser?.(userToDelete.id);
           setUserToDelete(null);
         }}
         title="Delete user?"
@@ -114,6 +153,8 @@ export default function Users({ users, roles, onAddUser, onDeleteUser }) {
         isOpen={isAddUserOpen}
         onClose={() => setIsAddUserOpen(false)}
         roles={roles}
+        rolesLoading={rolesLoading}
+        rolesError={rolesError}
         title="Create Platform User"
         onSave={handleSave}
       />

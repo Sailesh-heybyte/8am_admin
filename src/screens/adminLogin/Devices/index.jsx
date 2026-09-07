@@ -1,36 +1,93 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
-import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import DeviceModal from "../popups/DeviceModal.jsx";
-import DeviceMapModal from "../popups/DeviceMapModal.jsx";
+import { getDevices, createDevice } from "../../../api/devices.js";
 
-export default function Devices({
-  devices,
-  buses,
-  schools,
-  onSaveDevice,
-  onMapDevice,
-  onUnmapDevice,
-  onRemoveDevice,
-}) {
+export default function Devices() {
+  const [devices, setDevices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All Status");
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
-  const [deviceToEdit, setDeviceToEdit] = useState(null);
-  const [deviceToMap, setDeviceToMap] = useState(null);
-  const [deviceToUnmap, setDeviceToUnmap] = useState(null);
-  const [deviceToRemove, setDeviceToRemove] = useState(null);
-  const filteredDevices = devices.filter(
-    (device) =>
-      `${device.name} ${device.serialNumber} ${device.model} ${device.manufacturer}`
-        .toLowerCase()
-        .includes(query.toLowerCase()) &&
-      (statusFilter === "All Status" || device.status === statusFilter),
+
+  // GET /devices
+  const loadDevices = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const data = await getDevices();
+      setDevices(data);
+    } catch (err) {
+      setError(err.message || "Failed to load devices.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDevices();
+  }, []);
+
+  const handleSaveDevice = async (device) => {
+    await createDevice(device);
+    await loadDevices();
+  };
+
+  const filteredDevices = useMemo(
+    () =>
+      devices.filter((device) =>
+        (device.serialNumber || "").toLowerCase().includes(query.toLowerCase()),
+      ),
+    [devices, query],
   );
-  const busFor = (device) =>
-    buses.find((bus) => String(bus.id) === String(device.busId));
+
+  const renderTable = () => {
+    if (loading) {
+      return (
+        <div className="branch-empty-card">
+          <p>Loading devices...</p>
+        </div>
+      );
+    }
+
+    if (devices.length === 0) {
+      return (
+        <div className="branch-empty-card">
+          <i className="bi bi-cpu"></i>
+          <h3>No devices yet</h3>
+          <p>Register a tracking device to add it to the platform inventory.</p>
+          <button
+            className="branch-empty-action"
+            onClick={() => setIsDeviceModalOpen(true)}
+          >
+            + Register the first device
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <DataTable
+        className="devices-table-card"
+        headers={["Serial Number", "Status", "Created"]}
+        rows={filteredDevices.map((device) => [
+          <code key={`${device.id}-serial`} className="device-serial-cell">
+            {device.serialNumber}
+          </code>,
+          <StatusBadge
+            key={`${device.id}-status`}
+            status={device.isActive ? "Active" : "Inactive"}
+          />,
+          device.createdAt || "-",
+        ])}
+        withoutFilter={false}
+        footer={`Showing ${filteredDevices.length} of ${devices.length} devices`}
+      />
+    );
+  };
 
   return (
     <>
@@ -38,133 +95,29 @@ export default function Devices({
         title="Devices"
         description="Register tracking devices and manage their bus assignments."
         button="+ Register Device"
-        onButtonClick={() => {
-          setDeviceToEdit(null);
-          setIsDeviceModalOpen(true);
-        }}
+        onButtonClick={() => setIsDeviceModalOpen(true)}
       />
+
       <div className="filter-card admin-filter">
-        <div className="filter-group">
-          <label>Filter by Status:</label>
-          <select
-            value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value)}
-          >
-            <option>All Status</option>
-            <option>Active</option>
-            <option>Inactive</option>
-            <option>Maintenance</option>
-          </select>
-        </div>
         <input
           type="search"
-          placeholder="Search devices..."
+          placeholder="Search by serial number..."
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
       </div>
-      <DataTable
-        className="devices-table-card"
-        headers={[
-          "Device",
-          "Serial Number",
-          "Model",
-          "Mapped Bus",
-          "Status",
-          "Actions",
-        ]}
-        rows={filteredDevices.map((device) => {
-          const bus = busFor(device);
-          return [
-            <strong key={`${device.id}-name`}>{device.name}</strong>,
-            device.serialNumber,
-            `${device.manufacturer} ${device.model}`,
-            bus ? bus.busNumber : "Unmapped",
-            <StatusBadge status={device.status} />,
-            <div className="action-buttons">
-              <button
-                className="action-icon"
-                title="Edit device"
-                onClick={() => {
-                  setDeviceToEdit(device);
-                  setIsDeviceModalOpen(true);
-                }}
-              >
-                <i className="bi bi-pencil"></i>
-              </button>
-              <button
-                className="action-icon"
-                title="Remove device"
-                onClick={() => setDeviceToRemove(device)}
-              >
-                <i className="bi bi-trash3"></i>
-              </button>
-              {bus ? (
-                <button
-                  className="action-icon"
-                  title="Unmap device"
-                  onClick={() => setDeviceToUnmap(device)}
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </button>
-              ) : (
-                <button
-                  className="action-icon"
-                  title="Map to bus"
-                  onClick={() => setDeviceToMap(device)}
-                >
-                  <i className="bi bi-diagram-3"></i>
-                </button>
-              )}
-            </div>,
-          ];
-        })}
-        withoutFilter={false}
-        footer={`Showing ${filteredDevices.length} of ${devices.length} devices`}
-      />
+
+      {error && <p className="branch-error">{error}</p>}
+
+      {renderTable()}
+
       <DeviceModal
-        key={deviceToEdit?.id || "new-device"}
         isOpen={isDeviceModalOpen}
-        device={deviceToEdit}
         onClose={() => setIsDeviceModalOpen(false)}
-        onSave={(device) => {
-          onSaveDevice(device, deviceToEdit?.id);
+        onSave={async (device) => {
+          await handleSaveDevice(device);
           setIsDeviceModalOpen(false);
         }}
-      />
-      <DeviceMapModal
-        key={deviceToMap?.id || "map-device"}
-        isOpen={Boolean(deviceToMap)}
-        device={deviceToMap}
-        buses={buses}
-        schools={schools}
-        onClose={() => setDeviceToMap(null)}
-        onSave={(busId) => {
-          onMapDevice(deviceToMap.id, busId);
-          setDeviceToMap(null);
-        }}
-      />
-      <DeleteConfirmationModal
-        isOpen={Boolean(deviceToUnmap)}
-        onClose={() => setDeviceToUnmap(null)}
-        onConfirm={() => {
-          onUnmapDevice(deviceToUnmap.id);
-          setDeviceToUnmap(null);
-        }}
-        title="Unmap device?"
-        message="Are you sure you want to remove this device from its bus?"
-        confirmLabel="Unmap Device"
-      />
-      <DeleteConfirmationModal
-        isOpen={Boolean(deviceToRemove)}
-        onClose={() => setDeviceToRemove(null)}
-        onConfirm={() => {
-          onRemoveDevice(deviceToRemove.id);
-          setDeviceToRemove(null);
-        }}
-        title="Remove device?"
-        message="Are you sure you want to permanently remove this device from the platform?"
-        confirmLabel="Remove Device"
       />
     </>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./CreateSubscriptionModal.scss";
 
-const CreateSubscriptionModal = ({ isOpen, onClose, onSave }) => {
+const CreateSubscriptionModal = ({ isOpen, onClose, onSave, schools = [] }) => {
   const initialFormData = {
     school: "",
     plan: "",
@@ -89,20 +89,11 @@ const CreateSubscriptionModal = ({ isOpen, onClose, onSave }) => {
                     required
                   >
                     <option value="">Select school</option>
-                    <option value="Greenwood International School">
-                      Greenwood International School
-                    </option>
-                    <option value="Delhi Public School">
-                      Delhi Public School
-                    </option>
-                    <option value="St. Mary's School">St. Mary's School</option>
-                    <option value="Ryan International School">
-                      Ryan International School
-                    </option>
-                    <option value="Narayana School">Narayana School</option>
-                    <option value="Global World School">
-                      Global World School
-                    </option>
+                    {schools.map((s) => (
+                      <option key={s.id || s.schoolName} value={s.schoolName}>
+                        {s.schoolName}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

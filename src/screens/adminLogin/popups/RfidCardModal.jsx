@@ -1,15 +1,15 @@
 import { useState } from "react";
 import "./DeviceModal.scss";
 
-export default function DeviceModal({ isOpen, onClose, onSave }) {
-  const [serialNumber, setSerialNumber] = useState("");
+export default function RfidCardModal({ isOpen, onClose, onSave }) {
+  const [cardNumber, setCardNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   if (!isOpen) return null;
 
   const handleClose = () => {
-    setSerialNumber("");
+    setCardNumber("");
     setError("");
     onClose();
   };
@@ -20,10 +20,10 @@ export default function DeviceModal({ isOpen, onClose, onSave }) {
     setIsSubmitting(true);
 
     try {
-      await onSave({ serialNumber: serialNumber.trim() });
-      setSerialNumber("");
+      await onSave({ cardNumber: cardNumber.trim() });
+      setCardNumber("");
     } catch (err) {
-      setError(err.message || "Failed to register device.");
+      setError(err.message || "Failed to register card.");
     } finally {
       setIsSubmitting(false);
     }
@@ -37,8 +37,8 @@ export default function DeviceModal({ isOpen, onClose, onSave }) {
       >
         <div className="device-header">
           <div>
-            <h2>Register Device</h2>
-            <p>Add a tracking device to the 8AM inventory.</p>
+            <h2>Register RFID Card</h2>
+            <p>Add an RFID card to the 8AM inventory.</p>
           </div>
           <button className="device-close" type="button" onClick={handleClose}>
             <i className="bi bi-x"></i>
@@ -49,12 +49,12 @@ export default function DeviceModal({ isOpen, onClose, onSave }) {
           <div className="device-body">
             <div className="device-fields">
               <label>
-                Serial Number
+                Card Number
                 <input
-                  name="serialNumber"
-                  value={serialNumber}
-                  onChange={(event) => setSerialNumber(event.target.value)}
-                  placeholder="DEVICE-001"
+                  name="cardNumber"
+                  value={cardNumber}
+                  onChange={(event) => setCardNumber(event.target.value)}
+                  placeholder="RFID-005"
                   required
                   autoFocus
                 />
@@ -78,7 +78,7 @@ export default function DeviceModal({ isOpen, onClose, onSave }) {
               className="modal-save"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Registering..." : "Register Device"}
+              {isSubmitting ? "Registering..." : "Register Card"}
             </button>
           </div>
         </form>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./AddDriverModal.scss";
 
-const AddDriverModal = ({ isOpen, onClose, onSave }) => {
+const AddDriverModal = ({ isOpen, onClose, onSave, schools = [], buses = [] }) => {
   const initialFormData = {
     driverName: "",
     driverId: "",
@@ -82,7 +82,7 @@ const AddDriverModal = ({ isOpen, onClose, onSave }) => {
         <div className="add-driver-header">
           <div>
             <h2>Add Driver</h2>
-            <p>Add a new driver to the BusGuard platform.</p>
+            <p>Add a new driver to the 8AM platform.</p>
           </div>
 
           <button type="button" className="add-driver-close" onClick={onClose}>
@@ -223,17 +223,11 @@ const AddDriverModal = ({ isOpen, onClose, onSave }) => {
                     onChange={handleChange}
                   >
                     <option value="">Select school</option>
-                    <option value="Greenwood International">
-                      Greenwood International
-                    </option>
-                    <option value="Delhi Public School">
-                      Delhi Public School
-                    </option>
-                    <option value="St. Mary's School">St. Mary's School</option>
-                    <option value="Ryan International">
-                      Ryan International
-                    </option>
-                    <option value="Narayana School">Narayana School</option>
+                    {schools.map((s) => (
+                      <option key={s.id || s.schoolName} value={s.schoolName}>
+                        {s.schoolName}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -241,16 +235,16 @@ const AddDriverModal = ({ isOpen, onClose, onSave }) => {
                   <label>Assigned Bus</label>
 
                   <select
-                    name="bus"
-                    value={formData.bus}
+                    name="assignedBus"
+                    value={formData.assignedBus}
                     onChange={handleChange}
                   >
                     <option value="">Select bus</option>
-                    <option value="TS 09 AB 1234">TS 09 AB 1234</option>
-                    <option value="DL 01 CD 5678">DL 01 CD 5678</option>
-                    <option value="MH 14 GH 3456">MH 14 GH 3456</option>
-                    <option value="KA 01 EF 9012">KA 01 EF 9012</option>
-                    <option value="AP 16 TU 7890">AP 16 TU 7890</option>
+                    {buses.map((b) => (
+                      <option key={b.id || b.busNumber} value={b.busNumber}>
+                        {b.busNumber}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

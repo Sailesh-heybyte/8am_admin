@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./AddBusModal.scss";
 
-const AddBusModal = ({ isOpen, onClose, onSave }) => {
+const AddBusModal = ({ isOpen, onClose, onSave, schools = [] }) => {
   const [formData, setFormData] = useState({
     busNumber: "",
     school: "",
@@ -82,7 +82,7 @@ const AddBusModal = ({ isOpen, onClose, onSave }) => {
         <div className="add-school-header">
           <div>
             <h2>Add Bus</h2>
-            <p>Add a new bus to the BusGuard fleet.</p>
+            <p>Add a new bus to the 8AM fleet.</p>
           </div>
 
           <button type="button" className="add-school-close" onClick={onClose}>
@@ -119,17 +119,11 @@ const AddBusModal = ({ isOpen, onClose, onSave }) => {
                     required
                   >
                     <option value="">Select school</option>
-                    <option value="Greenwood International">
-                      Greenwood International
-                    </option>
-                    <option value="Delhi Public School">
-                      Delhi Public School
-                    </option>
-                    <option value="St. Mary's School">St. Mary's School</option>
-                    <option value="Ryan International">
-                      Ryan International
-                    </option>
-                    <option value="Narayana School">Narayana School</option>
+                    {schools.map((s) => (
+                      <option key={s.id || s.schoolName} value={s.schoolName}>
+                        {s.schoolName}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

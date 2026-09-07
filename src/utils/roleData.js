@@ -15,55 +15,5 @@ export const permissions = [
   },
 ];
 
-export const initialRoles = [
-  {
-    id: "super-admin",
-    name: "Super Admin",
-    description: "Full platform access",
-    access: "All",
-    type: "purple",
-    permissions: permissions.map((permission) => permission.id),
-  },
-  {
-    id: "sales-manager",
-    name: "Sales Manager",
-    description: "Schools and subscriptions",
-    access: "Limited",
-    type: "blue",
-    permissions: [
-      "dashboard.view",
-      "schools.view",
-      "schools.manage",
-      "reports.view",
-    ],
-  },
-  {
-    id: "support",
-    name: "Support",
-    description: "Tickets and alerts",
-    access: "Limited",
-    type: "green",
-    permissions: ["dashboard.view", "schools.view", "users.view", "buses.view"],
-  },
-  {
-    id: "finance",
-    name: "Finance",
-    description: "Reports and billing",
-    access: "Reports",
-    type: "orange",
-    permissions: ["dashboard.view", "reports.view"],
-  },
-  {
-    id: "viewer",
-    name: "Viewer",
-    description: "Read-only access",
-    access: "Read Only",
-    type: "blue",
-    permissions: [
-      "dashboard.view",
-      "schools.view",
-      "buses.view",
-      "reports.view",
-    ],
-  },
-];
+export const initialRoles = [];
+

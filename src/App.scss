@@ -678,10 +678,46 @@
 .table-card.schools-table-card {
   height: 69%;
   max-height: 69%;
+
+  th:nth-child(1),
+  td:nth-child(1) {
+    width: 40%;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 30%;
+  }
+
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 15%;
+  }
+
+  th:nth-child(4),
+  td:nth-child(4) {
+    width: 15%;
+  }
 }
 
 .table-card.roles-table-card {
-  height: 67%;
+  height: auto;
+  max-height: 67%;
+
+  th:nth-child(1),
+  td:nth-child(1) {
+    width: 45%;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 35%;
+  }
+
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 20%;
+  }
 }
 
 .table-card.users-table-card {
@@ -868,7 +904,7 @@ tbody tr:hover {
 ========================= */
 
 .status {
-  display: flex !important;
+  display: inline-flex !important;
   flex-direction: row !important;
   align-items: center;
   justify-content: center;
@@ -908,6 +944,7 @@ tbody tr:hover {
 
   &.offline,
   &.inactive,
+  &.suspended,
   &.critical,
   &.high,
   &.expired {
@@ -1574,4 +1611,52 @@ tbody tr:hover {
 }
 .school-detail-metrics strong {
   font-size: 0.72rem;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1280px) {
+  .stats-grid {
+    height: auto;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .platform-dashboard-grid {
+    height: auto;
+    flex-wrap: wrap;
+
+    .platform-panel {
+      height: auto;
+      flex: 1 1 20rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-dashboard-grid {
+    flex-direction: column;
+
+    .platform-panel {
+      width: 100%;
+    }
+  }
+
+  .fleet-layout {
+    height: auto;
+    grid-template-columns: 1fr;
+  }
+}
+
+.filter-card.search-only {
+  height: auto;
+  min-height: 0;
+  padding: 0.75rem 0.8rem;
+  align-items: center;
+  justify-content: flex-end;
 }

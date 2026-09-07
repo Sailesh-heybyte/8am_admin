@@ -11,8 +11,9 @@
   background: rgba(10, 20, 40, 0.45);
   backdrop-filter: blur(0.25rem);
 }
+
 .device-modal {
-  width: 46rem;
+  width: 32rem;
   max-width: 100%;
   max-height: 90vh;
   display: flex;
@@ -22,80 +23,186 @@
   border-radius: 0.9rem;
   background: $white;
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.18);
+
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
 }
+
 .device-header {
+  min-height: 4.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
+  border-bottom: 0.05rem solid $border;
+
+  h2 {
+    margin: 0;
+    color: $text;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0.25rem 0 0;
+    color: $text-muted;
+    font-size: 0.65rem;
+  }
 }
-.device-header h2 {
-  margin: 0;
-  color: $text;
-  font-size: 1.05rem;
-}
-.device-header p {
-  margin: 0.3rem 0 0;
-  color: $text-muted;
-  font-size: 0.65rem;
-}
+
 .device-close {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
+  border-radius: 50%;
   background: transparent;
   color: $text-light;
   font-size: 1.3rem;
   cursor: pointer;
+
+  &:hover {
+    background: $surface-hover;
+    color: $text;
+  }
 }
+
 .device-body {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: 0 1.25rem 1rem;
+  padding: 1.25rem;
 }
+
 .device-fields {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.8rem;
-}
-.device-fields label,
-.device-select-label {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  color: $text-light;
+  gap: 0.85rem;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: $text-light;
+    font-size: 0.62rem;
+    font-weight: 600;
+
+    input {
+      width: 100%;
+      height: 2.2rem;
+      padding: 0 0.7rem;
+      border: 0.05rem solid $border;
+      border-radius: 0.45rem;
+      background: $white;
+      color: $text;
+      font: inherit;
+      font-size: 0.68rem;
+      outline: none;
+
+      &:focus {
+        border-color: $primary;
+        box-shadow: 0 0 0 0.15rem rgba(71, 118, 230, 0.1);
+      }
+
+      &::placeholder {
+        color: #a7adba;
+      }
+    }
+  }
+}
+
+.device-hint {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.45rem;
+  background: $surface;
+  border: 0.05rem solid $border;
+  color: $text-muted;
+  font-size: 0.65rem;
+  line-height: 1.45;
+}
+
+.device-error-box {
+  flex-shrink: 0;
+  padding: 0.6rem 1.25rem;
+  border-top: 0.05rem solid #f5c6cb;
+  background: #fdf2f2;
+  color: #d9534f;
   font-size: 0.62rem;
   font-weight: 600;
 }
-.device-fields input,
-.device-fields select,
-.device-select-label select {
-  height: 2.2rem;
-  padding: 0 0.7rem;
-  border: 0.05rem solid $border;
-  border-radius: 0.45rem;
-  background: $white;
-  color: $text;
-  font: inherit;
-  font-size: 0.68rem;
-  outline: none;
-}
-.device-fields input:focus,
-.device-fields select:focus,
-.device-select-label select:focus {
-  border-color: $primary;
-  box-shadow: 0 0 0 0.15rem rgba(71, 118, 230, 0.1);
-}
-.device-select-label {
-  max-width: 24rem;
-  padding: 1rem 0;
-}
+
 .device-footer {
+  flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 0.65rem;
   padding: 0.8rem 1.25rem;
   border-top: 0.05rem solid $border;
-}
-@media (max-width: 48rem) {
-  .device-fields {
-    grid-template-columns: 1fr;
+
+  .modal-cancel,
+  .modal-save {
+    height: 2.2rem;
+    padding: 0 1rem;
+    border-radius: 0.45rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
   }
+
+  .modal-cancel {
+    border: 0.05rem solid $border;
+    background: $white;
+    color: $text-light;
+
+    &:hover {
+      background: $surface-hover;
+    }
+  }
+
+  .modal-save {
+    border: 0.05rem solid $primary;
+    background: $primary;
+    color: $text-white;
+
+    &:hover {
+      background: $primary-dark;
+    }
+  }
+
+  .modal-cancel:disabled,
+  .modal-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.device-unassigned {
+  color: $text-muted;
+  font-size: 0.65rem;
+}
+
+.device-bus-id {
+  color: $text-light;
+  font-family: monospace;
+  font-size: 0.6rem;
+}
+
+.device-serial-cell {
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: $text;
+  word-break: break-all;
+}
+
+.device-no-action {
+  color: $text-muted;
+  font-size: 0.75rem;
 }

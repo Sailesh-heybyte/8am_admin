@@ -1,111 +1,155 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import BranchModal from "../popups/BranchModal.jsx";
-import BranchDetailsModal from "../popups/BranchDetailsModal.jsx";
+import { getSchools } from "../../../api/schools.js";
+import {
+  getBranches,
+  createBranch,
+  updateBranch,
+} from "../../../api/branches.js";
 
-const schoolNameFor = (schools, schoolId) =>
-  schools.find((school) => school.id === Number(schoolId))?.schoolName ||
-  "Unknown school";
+export default function Branches() {
+  const [schools, setSchools] = useState([]);
+  const [schoolsLoading, setSchoolsLoading] = useState(true);
 
-export default function Branches({ branches, schools, onSaveBranch }) {
+  // Branches are nested under a school, so nothing loads until one
+  // is picked from the dropdown.
+  const [selectedSchoolId, setSelectedSchoolId] = useState("");
+  const [branches, setBranches] = useState([]);
+  const [branchesLoading, setBranchesLoading] = useState(false);
+
+  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
-  const [schoolFilter, setSchoolFilter] = useState("All Schools");
-  const [statusFilter, setStatusFilter] = useState("All Status");
-  const [selectedBranch, setSelectedBranch] = useState(null);
   const [branchToEdit, setBranchToEdit] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  // Load the school list once, to fill the dropdown.
+  useEffect(() => {
+    getSchools()
+      .then((data) => setSchools(data))
+      .catch((err) => setError(err.message || "Failed to load schools."))
+      .finally(() => setSchoolsLoading(false));
+  }, []);
+
+  // GET /tenancy/schools/{schoolId}/branches
+  const loadBranches = async (schoolId) => {
+    if (!schoolId) {
+      setBranches([]);
+      return;
+    }
+
+    setBranchesLoading(true);
+    setError("");
+
+    try {
+      const data = await getBranches(schoolId);
+      setBranches(data);
+    } catch (err) {
+      setError(err.message || "Failed to load branches.");
+      setBranches([]);
+    } finally {
+      setBranchesLoading(false);
+    }
+  };
+
+  const handleSchoolChange = (event) => {
+    const schoolId = event.target.value;
+    setSelectedSchoolId(schoolId);
+    setQuery("");
+    loadBranches(schoolId);
+  };
+
+  // Create is nested under the school, update is not. The backend
+  // paths differ, so the two calls take different ids.
+  const handleSaveBranch = async (branch, branchId) => {
+    if (branchId) {
+      await updateBranch(branchId, branch);
+    } else {
+      await createBranch(selectedSchoolId, branch);
+    }
+    await loadBranches(selectedSchoolId);
+  };
+
+  const openCreateForm = () => {
+    setBranchToEdit(null);
+    setIsFormOpen(true);
+  };
+
+  const selectedSchoolName =
+    schools.find((school) => school.id === selectedSchoolId)?.schoolName ||
+    "This school";
+
   const filteredBranches = useMemo(
     () =>
-      branches.filter(
-        (branch) =>
-          `${branch.branchName} ${branch.branchCode} ${schoolNameFor(schools, branch.schoolId)} ${branch.city}`
-            .toLowerCase()
-            .includes(query.toLowerCase()) &&
-          (schoolFilter === "All Schools" ||
-            schoolNameFor(schools, branch.schoolId) === schoolFilter) &&
-          (statusFilter === "All Status" || branch.status === statusFilter),
+      branches.filter((branch) =>
+        `${branch.branchName} ${branch.address}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
       ),
-    [branches, query, schoolFilter, statusFilter, schools],
+    [branches, query],
   );
 
-  return (
-    <>
-      <PageTitle
-        title="Branches"
-        description="Manage school branches and their operational details."
-        button="+ Create Branch"
-        onButtonClick={() => {
-          setBranchToEdit(null);
-          setIsFormOpen(true);
-        }}
-      />
-      <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <div className="filter-group">
-            <label>Filter by School:</label>
-            <select
-              value={schoolFilter}
-              onChange={(event) => setSchoolFilter(event.target.value)}
-            >
-              <option>All Schools</option>
-              {schools.map((school) => (
-                <option key={school.id}>{school.schoolName}</option>
-              ))}
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Filter by Status:</label>
-            <select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
-          </div>
+  const renderTable = () => {
+    // No school picked yet.
+    if (!selectedSchoolId) {
+      return (
+        <div className="branch-empty-card">
+          <i className="bi bi-geo-alt"></i>
+          <h3>Choose a school first</h3>
+          <p>
+            Branches belong to a school. Pick one from the dropdown above to see
+            and manage its branches.
+          </p>
         </div>
-        <input
-          type="search"
-          placeholder="Search branches..."
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-      </div>
+      );
+    }
+
+    if (branchesLoading) {
+      return (
+        <div className="branch-empty-card">
+          <p>Loading branches...</p>
+        </div>
+      );
+    }
+
+    // School picked, but it has no branches.
+    if (branches.length === 0) {
+      return (
+        <div className="branch-empty-card">
+          <i className="bi bi-geo-alt"></i>
+          <h3>No branches yet</h3>
+          <p>{selectedSchoolName} does not have any branches.</p>
+          <button className="branch-empty-action" onClick={openCreateForm}>
+            + Create the first branch
+          </button>
+        </div>
+      );
+    }
+
+    return (
       <DataTable
         className="branches-table-card"
         headers={[
           "Branch",
-          "School",
-          "Location",
-          "Students",
-          "Buses",
+          "Address",
+          "Main Branch",
           "Status",
+          "Created",
           "Actions",
         ]}
         rows={filteredBranches.map((branch) => [
-          <button
-            className="table-link"
-            onClick={() => setSelectedBranch(branch)}
-          >
-            {branch.branchName}
-          </button>,
-          schoolNameFor(schools, branch.schoolId),
-          `${branch.city}, ${branch.state}`,
-          branch.studentCount,
-          branch.busCount,
-          <StatusBadge status={branch.status} />,
+          <strong key={`${branch.id}-name`}>{branch.branchName}</strong>,
+          branch.address || "-",
+          branch.isMainBranch ? (
+            <span className="main-branch-tag">Main</span>
+          ) : (
+            "-"
+          ),
+          <StatusBadge status={branch.isActive ? "Active" : "Inactive"} />,
+          branch.createdAt,
           <div className="action-buttons">
-            <button
-              className="action-icon"
-              title="View details"
-              onClick={() => setSelectedBranch(branch)}
-            >
-              <i className="bi bi-eye"></i>
-            </button>
             <button
               className="action-icon"
               title="Edit branch"
@@ -121,26 +165,57 @@ export default function Branches({ branches, schools, onSaveBranch }) {
         withoutFilter={false}
         footer={`Showing ${filteredBranches.length} of ${branches.length} branches`}
       />
-      <BranchDetailsModal
-        branch={selectedBranch}
-        schoolName={
-          selectedBranch ? schoolNameFor(schools, selectedBranch.schoolId) : ""
-        }
-        onClose={() => setSelectedBranch(null)}
-        onEdit={() => {
-          setBranchToEdit(selectedBranch);
-          setSelectedBranch(null);
-          setIsFormOpen(true);
-        }}
+    );
+  };
+
+  return (
+    <>
+      <PageTitle
+        title="Branches"
+        description="Manage school branches and their operational details."
+        button="+ Create Branch"
+        onButtonClick={openCreateForm}
+        buttonDisabled={!selectedSchoolId}
       />
+
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <div className="filter-group">
+            <label>School:</label>
+            <select value={selectedSchoolId} onChange={handleSchoolChange}>
+              <option value="">
+                {schoolsLoading ? "Loading schools..." : "Select a school"}
+              </option>
+              {schools.map((school) => (
+                <option key={school.id} value={school.id}>
+                  {school.schoolName}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <input
+          type="search"
+          placeholder="Search branches..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          disabled={!selectedSchoolId}
+        />
+      </div>
+
+      {error && <p className="branch-error">{error}</p>}
+
+      {renderTable()}
+
       <BranchModal
         key={branchToEdit?.id || "new-branch"}
         isOpen={isFormOpen}
         branch={branchToEdit}
-        schools={schools}
+        schoolName={selectedSchoolName}
         onClose={() => setIsFormOpen(false)}
-        onSave={(branch) => {
-          onSaveBranch(branch, branchToEdit?.id);
+        onSave={async (branch) => {
+          await handleSaveBranch(branch, branchToEdit?.id);
           setIsFormOpen(false);
         }}
       />

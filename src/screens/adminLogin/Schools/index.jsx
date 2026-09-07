@@ -1,20 +1,63 @@
-import { useMemo, useState } from "react";
-
+import { useMemo, useState, useEffect } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddSchoolModal from "../popups/AddSchoolModal.jsx";
 import SchoolDetails from "./SchoolDetails.jsx";
+import {
+  getSchools,
+  createSchool,
+  updateSchool,
+  suspendSchool,
+  reactivateSchool,
+} from "../../../api/schools.js";
 
-export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
+export default function Schools() {
+  const [schools, setSchools] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const [query, setQuery] = useState("");
-  const [stateFilter, setStateFilter] = useState("All States");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [schoolToChange, setSchoolToChange] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [schoolToEdit, setSchoolToEdit] = useState(null);
+
+  const loadSchools = async () => {
+    try {
+      const data = await getSchools();
+      setSchools(data);
+      setError("");
+    } catch (err) {
+      setError(err.message || "Failed to load schools.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSchools();
+  }, []);
+
+  const handleSaveSchool = async (schoolData, schoolId) => {
+    if (schoolId) {
+      await updateSchool(schoolId, schoolData);
+    } else {
+      await createSchool(schoolData);
+    }
+    await loadSchools();
+  };
+
+  const handleUpdateStatus = async (schoolId, currentStatus) => {
+    if (currentStatus === "Active") {
+      await suspendSchool(schoolId);
+    } else {
+      await reactivateSchool(schoolId);
+    }
+    await loadSchools();
+  };
 
   const filtered = useMemo(
     () =>
@@ -24,10 +67,9 @@ export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
             .join(" ")
             .toLowerCase()
             .includes(query.toLowerCase()) &&
-          (stateFilter === "All States" || school.state === stateFilter) &&
           (statusFilter === "All Status" || school.status === statusFilter),
       ),
-    [query, stateFilter, statusFilter, schools],
+    [query, statusFilter, schools],
   );
 
   if (selectedSchool) {
@@ -45,17 +87,28 @@ export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
         <DeleteConfirmationModal
           isOpen={Boolean(schoolToChange)}
           onClose={() => setSchoolToChange(null)}
-          onConfirm={() => {
-            onUpdateStatus(
-              schoolToChange.id,
-              schoolToChange.status === "Active" ? "Suspended" : "Active",
-            );
-            setSelectedSchool({
-              ...schoolToChange,
-              status:
-                schoolToChange.status === "Active" ? "Suspended" : "Active",
-            });
-            setSchoolToChange(null);
+          onConfirm={async () => {
+            try {
+              await handleUpdateStatus(
+                schoolToChange.id,
+                schoolToChange.status,
+              );
+              setSelectedSchool((prev) =>
+                prev && prev.id === schoolToChange.id
+                  ? {
+                      ...prev,
+                      status:
+                        schoolToChange.status === "Active"
+                          ? "Suspended"
+                          : "Active",
+                    }
+                  : prev,
+              );
+            } catch (err) {
+              alert(err.message || "Could not update status");
+            } finally {
+              setSchoolToChange(null);
+            }
           }}
           title={
             schoolToChange?.status === "Active"
@@ -79,10 +132,16 @@ export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
           onClose={() => setIsFormOpen(false)}
           initialData={schoolToEdit}
           title="Update School"
-          onSave={(school) => {
-            onSaveSchool(school, schoolToEdit?.id);
-            setSelectedSchool({ ...selectedSchool, ...school });
-            setIsFormOpen(false);
+          onSave={async (schoolData) => {
+            try {
+              await handleSaveSchool(schoolData, schoolToEdit?.id);
+              setSelectedSchool((prev) =>
+                prev ? { ...prev, ...schoolData } : prev,
+              );
+              setIsFormOpen(false);
+            } catch (err) {
+              alert(err.message || "Could not save school");
+            }
           }}
         />
       </>
@@ -103,23 +162,6 @@ export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
       <div className="filter-card ">
         <div style={{ display: "flex", gap: "1rem" }}>
           <div className="filter-group">
-            <label>Filter by State:</label>
-            <select
-              value={stateFilter}
-              onChange={(e) => setStateFilter(e.target.value)}
-            >
-              <option>All States</option>
-              <option>Telangana</option>
-              <option>Delhi</option>
-              <option>Karnataka</option>
-              <option>Maharashtra</option>
-              <option>Tamil Nadu</option>
-              <option>Uttarakhand</option>
-              <option>Andhra Pradesh</option>
-            </select>
-          </div>
-
-          <div className="filter-group">
             <label>Filter by Status:</label>
             <select
               value={statusFilter}
@@ -127,7 +169,7 @@ export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
             >
               <option>All Status</option>
               <option>Active</option>
-              <option>Inactive</option>
+              <option>Suspended</option>
             </select>
           </div>
         </div>
@@ -140,79 +182,84 @@ export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
         </div>
       </div>
 
-      <DataTable
-        headers={[
-          "School Name",
-          "City",
-          "State",
-          "Students",
-          "Buses",
-          "Status",
-          "Actions",
-        ]}
-        className="schools-table-card"
-        onRowClick={(index) => setSelectedSchool(filtered[index])}
-        rows={filtered.map((school) => [
-          <button
-            className="table-link school-name-link"
-            onClick={() => setSelectedSchool(school)}
-          >
-            <div className="school-mini">
-              <div className="school-logo">{school.schoolName.charAt(0)}</div>
-              <strong>{school.schoolName}</strong>
-            </div>
-          </button>,
-          school.city,
-          school.state,
-          school.studentCount,
-          school.busCount,
-          <StatusBadge status={school.status} />,
-          <div className="action-buttons">
+      {loading ? (
+        <div style={{ padding: "1.5rem", color: "#666", fontSize: "0.85rem" }}>
+          Loading schools...
+        </div>
+      ) : error ? (
+        <div
+          style={{ padding: "1.5rem", color: "#d9534f", fontSize: "0.85rem" }}
+        >
+          {error}
+        </div>
+      ) : (
+        <DataTable
+          headers={["School Name", "School Slug", "Status", "Actions"]}
+          className="schools-table-card"
+          onRowClick={(index) => setSelectedSchool(filtered[index])}
+          rows={filtered.map((school) => [
             <button
-              className="action-icon"
-              title="View details"
+              className="table-link school-name-link"
               onClick={() => setSelectedSchool(school)}
             >
-              <i className="bi bi-eye"></i>
-            </button>
-            <button
-              className="action-icon"
-              title="Edit"
-              onClick={() => {
-                setSchoolToEdit(school);
-                setIsFormOpen(true);
-              }}
-            >
-              <i className="bi bi-pencil"></i>
-            </button>
-            <button
-              className="action-icon"
-              title={school.status === "Active" ? "Suspend" : "Reactivate"}
-              onClick={() => setSchoolToChange(school)}
-            >
-              <i
-                className={
-                  school.status === "Active"
-                    ? "bi bi-pause-circle"
-                    : "bi bi-play-circle"
-                }
-              ></i>
-            </button>
-          </div>,
-        ])}
-        withoutFilter={false}
-        footer={`Showing 1–${filtered.length} of 248 schools`}
-      />
+              <div className="school-mini">
+                <div className="school-logo">
+                  {school.schoolName?.charAt(0)}
+                </div>
+                <strong>{school.schoolName}</strong>
+              </div>
+            </button>,
+            school.schoolCode,
+            <StatusBadge status={school.status} />,
+            <div className="action-buttons">
+              <button
+                className="action-icon"
+                title="View details"
+                onClick={() => setSelectedSchool(school)}
+              >
+                <i className="bi bi-eye"></i>
+              </button>
+              <button
+                className="action-icon"
+                title="Edit"
+                onClick={() => {
+                  setSchoolToEdit(school);
+                  setIsFormOpen(true);
+                }}
+              >
+                <i className="bi bi-pencil"></i>
+              </button>
+              <button
+                className="action-icon"
+                title={school.status === "Active" ? "Suspend" : "Reactivate"}
+                onClick={() => setSchoolToChange(school)}
+              >
+                <i
+                  className={
+                    school.status === "Active"
+                      ? "bi bi-pause-circle"
+                      : "bi bi-play-circle"
+                  }
+                ></i>
+              </button>
+            </div>,
+          ])}
+          withoutFilter={false}
+          footer={`Showing ${filtered.length} of ${schools.length} schools`}
+        />
+      )}
 
       <DeleteConfirmationModal
         isOpen={Boolean(schoolToChange)}
         onClose={() => setSchoolToChange(null)}
-        onConfirm={() => {
-          onUpdateStatus(
-            schoolToChange.id,
-            schoolToChange.status === "Active" ? "Suspended" : "Active",
-          );
-          setSchoolToChange(null);
+        onConfirm={async () => {
+          try {
+            await handleUpdateStatus(schoolToChange.id, schoolToChange.status);
+          } catch (err) {
+            alert(err.message || "Could not update status");
+          } finally {
+            setSchoolToChange(null);
+          }
         }}
         title={
           schoolToChange?.status === "Active"
@@ -236,9 +283,13 @@ export default function Schools({ schools, onSaveSchool, onUpdateStatus }) {
         onClose={() => setIsFormOpen(false)}
         initialData={schoolToEdit}
         title={schoolToEdit ? "Update School" : "Create School"}
-        onSave={(school) => {
-          onSaveSchool(school, schoolToEdit?.id);
-          setIsFormOpen(false);
+        onSave={async (schoolData) => {
+          try {
+            await handleSaveSchool(schoolData, schoolToEdit?.id);
+            setIsFormOpen(false);
+          } catch (err) {
+            alert(err.message || "Could not save school");
+          }
         }}
       />
     </>
