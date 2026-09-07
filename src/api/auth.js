@@ -55,4 +55,3 @@ export async function logout() {
 export async function getMe() {
   return apiCall("/iam/me");
 }
-

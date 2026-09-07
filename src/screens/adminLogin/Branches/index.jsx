@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
+import SearchableSelect from "../../../components/SearchableSelect.jsx";
 import BranchModal from "../popups/BranchModal.jsx";
 import { getSchools } from "../../../api/schools.js";
 import {
@@ -182,16 +183,21 @@ export default function Branches() {
         <div style={{ display: "flex", gap: "1rem" }}>
           <div className="filter-group">
             <label>School:</label>
-            <select value={selectedSchoolId} onChange={handleSchoolChange}>
-              <option value="">
-                {schoolsLoading ? "Loading schools..." : "Select a school"}
-              </option>
-              {schools.map((school) => (
-                <option key={school.id} value={school.id}>
-                  {school.schoolName}
-                </option>
-              ))}
-            </select>
+            <SearchableSelect
+              options={schools.map((school) => ({
+                value: school.id,
+                label: school.schoolName,
+              }))}
+              value={selectedSchoolId}
+              onChange={(schoolId) => {
+                setSelectedSchoolId(schoolId);
+                setQuery("");
+                loadBranches(schoolId);
+              }}
+              placeholder="Select a school"
+              searchPlaceholder="Search schools..."
+              loading={schoolsLoading}
+            />
           </div>
         </div>
 
