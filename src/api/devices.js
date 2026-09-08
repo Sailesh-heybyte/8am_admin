@@ -22,18 +22,13 @@ function toApiDevice(device = {}) {
   };
 }
 
-// GET /api/v1/devices
-// Note: Devices are top-level, not nested under a school.
 export const getDevices = async () => {
   const data = await apiCall("/devices");
   return Array.isArray(data) ? data.map(toUiDevice) : [];
 };
 
-// POST /api/v1/devices
-// Note: Devices are top-level, not nested under a school.
 export const createDevice = (data) =>
   apiCall("/devices", {
     method: "POST",
     body: toApiDevice(data),
   });
-

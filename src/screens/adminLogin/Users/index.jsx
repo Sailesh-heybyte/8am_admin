@@ -6,20 +6,13 @@ import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddUserModal from "../popups/AddUserModal.jsx";
 import { createUser, getUsers } from "../../../api/users.js";
-import { getRoles } from "../../../api/roles.js";
 
 export default function Users(props) {
   const context = useOutletContext() || {};
   const { onDeleteUser } = { ...context, ...props };
-
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
   const [usersError, setUsersError] = useState("");
-
-  const [roles, setRoles] = useState([]);
-  const [rolesLoading, setRolesLoading] = useState(true);
-  const [rolesError, setRolesError] = useState("");
-
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -38,32 +31,18 @@ export default function Users(props) {
 
   useEffect(() => {
     loadUsers();
-    getRoles()
-      .then((data) => {
-        setRoles(data);
-      })
-      .catch((err) => {
-        setRolesError(err.message || "Failed to load roles.");
-      })
-      .finally(() => {
-        setRolesLoading(false);
-      });
   }, []);
 
-  const getRoleNames = (user) => {
+  const getRoleDisplay = (user) => {
     if (!user?.roleIds || user.roleIds.length === 0) {
       return "-";
     }
-    const names = user.roleIds.map((id) => {
-      const foundRole = roles.find((r) => r.id === id);
-      return foundRole ? foundRole.name : id;
-    });
-    return names.join(", ");
+    return user.roleIds.join(", ");
   };
 
   const filteredUsers = users.filter((user) => {
     const search = searchTerm.trim().toLowerCase();
-    return [user.fullName, user.email, getRoleNames(user)]
+    return [user.fullName, user.email, getRoleDisplay(user)]
       .filter(Boolean)
       .join(" ")
       .toLowerCase()
@@ -117,7 +96,17 @@ export default function Users(props) {
           rows={filteredUsers.map((user) => [
             <strong key={`${user.id}-name`}>{user.fullName}</strong>,
             user.email,
-            getRoleNames(user),
+            user.roleIds && user.roleIds.length > 0 ? (
+              <code
+                key={`${user.id}-role`}
+                className="device-serial-cell"
+                title={getRoleDisplay(user)}
+              >
+                {getRoleDisplay(user)}
+              </code>
+            ) : (
+              "-"
+            ),
             <StatusBadge
               key={`${user.id}-status`}
               status={user.isActive ? "Active" : "Inactive"}
@@ -152,9 +141,6 @@ export default function Users(props) {
       <AddUserModal
         isOpen={isAddUserOpen}
         onClose={() => setIsAddUserOpen(false)}
-        roles={roles}
-        rolesLoading={rolesLoading}
-        rolesError={rolesError}
         title="Create Platform User"
         onSave={handleSave}
       />

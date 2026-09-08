@@ -29,8 +29,26 @@ function buildCleanObject(fields) {
   return Object.keys(cleanObj).length > 0 ? cleanObj : undefined;
 }
 
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
+}
+
+function toUiUser(apiUser = {}) {
+  return {
+    id: apiUser.id || "",
+    username: apiUser.username || "",
+    fullName: apiUser.full_name || "",
+    email: apiUser.email || "",
+    phoneNumber: apiUser.phone_number || "",
+    isActive: Boolean(apiUser.is_active),
+    roleIds: apiUser.role_ids || [],
+    createdAt: formatDate(apiUser.created_at),
+  };
+}
+
 function toApiUser(uiUser = {}) {
-  // Always send required fields (and skills array)
   const body = {
     full_name: uiUser.fullName?.trim() || "",
     email: uiUser.email?.trim() || "",
@@ -39,15 +57,17 @@ function toApiUser(uiUser = {}) {
     skills: parseSkills(uiUser.skills),
   };
 
-  // Optional top-level fields: omit if empty
-  if (hasValue(uiUser.dateOfBirth)) body.date_of_birth = uiUser.dateOfBirth.trim();
+  if (hasValue(uiUser.dateOfBirth))
+    body.date_of_birth = uiUser.dateOfBirth.trim();
   if (hasValue(uiUser.gender)) body.gender = uiUser.gender.trim();
-  if (hasValue(uiUser.maritalStatus)) body.marital_status = uiUser.maritalStatus.trim();
-  if (hasValue(uiUser.nationality)) body.nationality = uiUser.nationality.trim();
-  if (hasValue(uiUser.joiningDate)) body.joining_date = uiUser.joiningDate.trim();
+  if (hasValue(uiUser.maritalStatus))
+    body.marital_status = uiUser.maritalStatus.trim();
+  if (hasValue(uiUser.nationality))
+    body.nationality = uiUser.nationality.trim();
+  if (hasValue(uiUser.joiningDate))
+    body.joining_date = uiUser.joiningDate.trim();
   if (hasValue(uiUser.notes)) body.notes = uiUser.notes.trim();
 
-  // Nested objects: omit individual empty fields and omit whole object if empty
   const address = buildCleanObject({
     address_line_1: uiUser.addressLine1,
     address_line_2: uiUser.addressLine2,
@@ -81,36 +101,15 @@ function toApiUser(uiUser = {}) {
   return body;
 }
 
-// POST /api/v1/iam/platform-users
-export async function createUser(uiUser) {
-  return apiCall("/iam/platform-users", {
-    method: "POST",
-    body: toApiUser(uiUser),
-  });
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-}
-
-function toUiUser(apiUser = {}) {
-  return {
-    id: apiUser.id || "",
-    username: apiUser.username || "",
-    fullName: apiUser.full_name || "",
-    email: apiUser.email || "",
-    phoneNumber: apiUser.phone_number || "",
-    isActive: Boolean(apiUser.is_active),
-    roleIds: apiUser.role_ids || [],
-    createdAt: formatDate(apiUser.created_at),
-  };
-}
-
 // GET /api/v1/iam/platform-users
-export async function getUsers() {
-  const res = await apiCall("/iam/platform-users");
-  return Array.isArray(res) ? res.map(toUiUser) : [];
-}
+export const getUsers = async () => {
+  const data = await apiCall("/iam/platform-users");
+  return Array.isArray(data) ? data.map(toUiUser) : [];
+};
 
+// POST /api/v1/iam/platform-users
+export const createUser = (data) =>
+  apiCall("/iam/platform-users", {
+    method: "POST",
+    body: toApiUser(data),
+  });

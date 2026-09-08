@@ -34,24 +34,19 @@ function toApiBranchUpdate(branch = {}) {
   };
 }
 
-// GET /api/v1/tenancy/schools/{schoolId}/branches
 export const getBranches = async (schoolId) => {
   const data = await apiCall(`/tenancy/schools/${schoolId}/branches`);
   return Array.isArray(data) ? data.map(toUiBranch) : [];
 };
 
-// POST /api/v1/tenancy/schools/{schoolId}/branches
 export const createBranch = (schoolId, data) =>
   apiCall(`/tenancy/schools/${schoolId}/branches`, {
     method: "POST",
     body: toApiBranch(data),
   });
 
-// PATCH /api/v1/tenancy/branches/{branchId}
-// Note: This endpoint takes branchId directly and is NOT nested under /tenancy/schools/{schoolId}/branches like getBranches and createBranch.
 export const updateBranch = (branchId, data) =>
   apiCall(`/tenancy/branches/${branchId}`, {
     method: "PATCH",
     body: toApiBranchUpdate(data),
   });
-

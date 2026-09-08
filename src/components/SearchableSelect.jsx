@@ -1,10 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 
-/**
- * Reusable classic & professional Searchable Select / Dropdown component.
- * Supports searching options, custom scrollable dropdown list, click outside handling,
- * and keyboard navigation.
- */
 export default function SearchableSelect({
   options = [],
   value = "",
@@ -21,7 +16,6 @@ export default function SearchableSelect({
   const containerRef = useRef(null);
   const searchInputRef = useRef(null);
 
-  // Normalize options to { value, label } format
   const normalizedOptions = useMemo(() => {
     return options.map((opt) => {
       if (typeof opt === "object" && opt !== null) {
@@ -35,12 +29,9 @@ export default function SearchableSelect({
     });
   }, [options]);
 
-  // Selected option
   const selectedOption = useMemo(() => {
     return normalizedOptions.find((opt) => String(opt.value) === String(value));
   }, [normalizedOptions, value]);
-
-  // Filtered options based on search query
   const filteredOptions = useMemo(() => {
     if (!searchQuery.trim()) return normalizedOptions;
     const query = searchQuery.toLowerCase().trim();
@@ -49,7 +40,6 @@ export default function SearchableSelect({
     );
   }, [normalizedOptions, searchQuery]);
 
-  // Close on click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -60,7 +50,6 @@ export default function SearchableSelect({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Focus search input when dropdown opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
@@ -71,7 +60,6 @@ export default function SearchableSelect({
     }
   }, [isOpen]);
 
-  // Handle keyboard events (Escape to close)
   const handleKeyDown = (e) => {
     if (e.key === "Escape") {
       setIsOpen(false);

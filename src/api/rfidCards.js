@@ -22,15 +22,11 @@ function toApiCard(card = {}) {
   };
 }
 
-// GET /api/v1/rfid-cards
-// Note: RFID cards are top-level, not nested under a school.
 export const getRfidCards = async () => {
   const data = await apiCall("/rfid-cards");
   return Array.isArray(data) ? data.map(toUiCard) : [];
 };
 
-// POST /api/v1/rfid-cards
-// Note: RFID cards are top-level, not nested under a school.
 export const createRfidCard = (data) =>
   apiCall("/rfid-cards", {
     method: "POST",

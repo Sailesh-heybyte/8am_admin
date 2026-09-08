@@ -1,15 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./AddUserModal.scss";
+import { getRoles } from "../../../api/roles.js";
 
 const AddUserModal = ({
   isOpen,
   onClose,
   onSave,
-  roles = [],
-  rolesLoading = false,
-  rolesError = "",
+  roles: propRoles,
+  rolesLoading: propRolesLoading,
+  rolesError: propRolesError,
   title = "Add User",
 }) => {
+  const [internalRoles, setInternalRoles] = useState([]);
+  const [internalRolesLoading, setInternalRolesLoading] = useState(false);
+  const [internalRolesError, setInternalRolesError] = useState("");
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (propRoles && propRoles.length > 0) {
+      return;
+    }
+
+    let isMounted = true;
+    setInternalRolesLoading(true);
+    setInternalRolesError("");
+
+    getRoles()
+      .then((data) => {
+        if (isMounted) {
+          setInternalRoles(Array.isArray(data) ? data : []);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setInternalRolesError(err.message || "Failed to load roles.");
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setInternalRolesLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, propRoles]);
+
+  const roles = propRoles && propRoles.length > 0 ? propRoles : internalRoles;
+  const rolesLoading =
+    propRolesLoading !== undefined ? propRolesLoading : internalRolesLoading;
+  const rolesError = propRolesError || internalRolesError;
   const initialFormData = {
     // Required
     fullName: "",
