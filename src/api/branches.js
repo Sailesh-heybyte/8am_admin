@@ -30,6 +30,7 @@ function toApiBranchUpdate(branch = {}) {
   return {
     name: branch.branchName,
     address: branch.address,
+    is_main_branch: Boolean(branch.isMainBranch),
     is_active: Boolean(branch.isActive),
   };
 }

@@ -94,23 +94,7 @@ export default function BranchModal({
             </div>
 
             <div className="branch-section">
-              {isEditing ? (
-                <label className="branch-toggle">
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    checked={formData.isActive}
-                    onChange={handleChange}
-                  />
-                  <span>
-                    <strong>Active</strong>
-                    <em>
-                      Uncheck to deactivate this branch. It stays in the system
-                      but is marked inactive.
-                    </em>
-                  </span>
-                </label>
-              ) : (
+              <div className="branch-toggles">
                 <label className="branch-toggle">
                   <input
                     type="checkbox"
@@ -121,12 +105,31 @@ export default function BranchModal({
                   <span>
                     <strong>Main branch</strong>
                     <em>
-                      Mark this as the school's primary branch. This cannot be
-                      changed later.
+                      {isEditing
+                        ? "Mark this as the school's primary branch. Uncheck to remove it as the main branch."
+                        : "Mark this as the school's primary branch."}
                     </em>
                   </span>
                 </label>
-              )}
+
+                {isEditing && (
+                  <label className="branch-toggle">
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      checked={formData.isActive}
+                      onChange={handleChange}
+                    />
+                    <span>
+                      <strong>Active</strong>
+                      <em>
+                        Uncheck to deactivate this branch. It stays in the system
+                        but is marked inactive.
+                      </em>
+                    </span>
+                  </label>
+                )}
+              </div>
             </div>
           </div>
 

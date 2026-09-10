@@ -121,6 +121,12 @@
   grid-column: 1 / -1;
 }
 
+.branch-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 // The main-branch checkbox on create, the active checkbox on edit.
 .branch-toggle {
   display: flex;
