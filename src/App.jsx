@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./screens/adminLogin/Login/Login.jsx";
+import ChangePassword from "./screens/adminLogin/ChangePassword/index.jsx";
 import AdminLogin from "./screens/adminLogin/index.jsx";
 import Dashboard from "./screens/adminLogin/Dashboard/index.jsx";
 import Schools from "./screens/adminLogin/Schools/index.jsx";
@@ -19,36 +20,58 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {isAuthenticated ? (
-          <Route
-            element={<AdminLogin onLogout={() => setIsAuthenticated(false)} />}
-          >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/schools" element={<Schools />} />
-            <Route path="/roles" element={<Roles />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/branches" element={<Branches />} />
-            <Route path="/devices" element={<Devices />} />
-            <Route path="/rfid-cards" element={<RfidCards />} />
-            <Route
-              path="/login"
-              element={<Navigate to="/dashboard" replace />}
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Login onLoginSuccess={() => setIsAuthenticated(true)} />
+            )
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ChangePassword
+              onPasswordChanged={() => setIsAuthenticated(true)}
             />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Route>
-        ) : (
-          <>
-            <Route
-              path="/login"
-              element={
-                <Login onLoginSuccess={() => setIsAuthenticated(true)} />
+          }
+        />
+        <Route
+          element={
+            isAuthenticated || !!localStorage.getItem("access_token") ? (
+              <AdminLogin onLogout={() => setIsAuthenticated(false)} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/schools" element={<Schools />} />
+          <Route path="/roles" element={<Roles />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/branches" element={<Branches />} />
+          <Route path="/devices" element={<Devices />} />
+          <Route path="/rfid-cards" element={<RfidCards />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={
+                isAuthenticated || !!localStorage.getItem("access_token")
+                  ? "/dashboard"
+                  : "/login"
               }
+              replace
             />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </>
-        )}
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
 }
+

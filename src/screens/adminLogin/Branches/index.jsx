@@ -4,6 +4,9 @@ import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import SearchableSelect from "../../../components/SearchableSelect.jsx";
 import BranchModal from "../popups/BranchModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+} from "../../../components/AccessRestricted.jsx";
 import { getSchools } from "../../../api/schools.js";
 import {
   getBranches,
@@ -91,6 +94,32 @@ export default function Branches() {
       ),
     [branches, query],
   );
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Branches"
+          description="Manage school branches and campus locations."
+        />
+        <AccessRestricted
+          resource="branches"
+          onRetry={() => {
+            setError("");
+            if (selectedSchoolId) {
+              loadBranches(selectedSchoolId);
+            } else {
+              setSchoolsLoading(true);
+              getSchools()
+                .then(setSchools)
+                .catch((err) => setError(err.message || "Failed to load schools."))
+                .finally(() => setSchoolsLoading(false));
+            }
+          }}
+        />
+      </>
+    );
+  }
 
   const renderTable = () => {
     // No school picked yet.

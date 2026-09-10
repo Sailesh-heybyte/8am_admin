@@ -5,6 +5,9 @@ import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddUserModal from "../popups/AddUserModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+} from "../../../components/AccessRestricted.jsx";
 import { createUser, getUsers } from "../../../api/users.js";
 
 export default function Users(props) {
@@ -53,6 +56,18 @@ export default function Users(props) {
     await createUser(user);
     await loadUsers();
   };
+
+  if (isPermissionDenied(usersError)) {
+    return (
+      <>
+        <PageTitle
+          title="Platform Staff"
+          description="Manage 8AM platform-level administrators and staff access."
+        />
+        <AccessRestricted resource="platform staff" onRetry={loadUsers} />
+      </>
+    );
+  }
 
   return (
     <>

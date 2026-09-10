@@ -55,3 +55,13 @@ export async function logout() {
 export async function getMe() {
   return apiCall("/iam/me");
 }
+
+export async function changePassword(currentPassword, newPassword) {
+  return apiCall("/iam/change-password", {
+    method: "POST",
+    body: {
+      current_password: currentPassword,
+      new_password: newPassword,
+    },
+  });
+}

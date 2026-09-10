@@ -1,5 +1,8 @@
 import { useOutletContext } from "react-router-dom";
 import StatCard from "../../../components/StatCard.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+} from "../../../components/AccessRestricted.jsx";
 
 export default function Dashboard(props) {
   const context = useOutletContext() || {};
@@ -8,8 +11,25 @@ export default function Dashboard(props) {
     schools = [],
     branches = [],
     devices = [],
+    error,
+    onRetry,
     onAddSchool,
   } = { ...context, ...props };
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <div className="page-title">
+          <div>
+            <h2>Platform Overview</h2>
+            <p>Manage your 8AM platform operations from one place.</p>
+          </div>
+        </div>
+        <AccessRestricted resource="dashboard overview" onRetry={onRetry} />
+      </>
+    );
+  }
+
   const activeSchools = schools.filter(
     (school) => school.status === "Active",
   ).length;

@@ -5,6 +5,9 @@ import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddSchoolModal from "../popups/AddSchoolModal.jsx";
 import SchoolDetails from "./SchoolDetails.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+} from "../../../components/AccessRestricted.jsx";
 import {
   getSchools,
   createSchool,
@@ -71,6 +74,18 @@ export default function Schools() {
       ),
     [query, statusFilter, schools],
   );
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Schools"
+          description="Manage all schools connected to the 8AM platform."
+        />
+        <AccessRestricted resource="schools" onRetry={loadSchools} />
+      </>
+    );
+  }
 
   if (selectedSchool) {
     return (

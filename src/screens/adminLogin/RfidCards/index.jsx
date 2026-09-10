@@ -3,6 +3,9 @@ import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import RfidCardModal from "../popups/RfidCardModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+} from "../../../components/AccessRestricted.jsx";
 import { getRfidCards, createRfidCard } from "../../../api/rfidCards.js";
 
 export default function RfidCards() {
@@ -91,6 +94,18 @@ export default function RfidCards() {
       />
     );
   };
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="RFID Cards"
+          description="Register RFID cards in the platform inventory."
+        />
+        <AccessRestricted resource="RFID cards" onRetry={loadCards} />
+      </>
+    );
+  }
 
   return (
     <>

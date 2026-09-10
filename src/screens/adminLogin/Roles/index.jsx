@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import RoleModal from "../popups/RoleModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+} from "../../../components/AccessRestricted.jsx";
 import {
   getRoles,
-  getRole,
   getPermissions,
   createRole,
   assignPermissions,
@@ -13,19 +15,27 @@ import {
 export default function Roles() {
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [roleToEdit, setRoleToEdit] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const loadRoles = async () => {
-    const data = await getRoles();
-    setRoles(data);
+    setLoading(true);
+    setError("");
+    try {
+      const data = await getRoles();
+      setRoles(data);
+    } catch (err) {
+      setError(err.message || "Could not load roles");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getRoles()
-      .then(setRoles)
-      .catch((err) => console.error("Could not load roles", err));
+    loadRoles();
   }, []);
 
   const loadPermissions = async () => {
@@ -43,7 +53,7 @@ export default function Roles() {
       await loadPermissions();
       setRoleToEdit(null);
       setIsModalOpen(true);
-    } catch (err) {
+    } catch {
       alert("Could not load permissions");
     }
   };
@@ -53,7 +63,7 @@ export default function Roles() {
       await loadPermissions();
       setRoleToEdit(role);
       setIsModalOpen(true);
-    } catch (err) {
+    } catch {
       alert("Could not load permissions");
     }
   };
@@ -67,10 +77,22 @@ export default function Roles() {
       }
       await loadRoles();
       setIsModalOpen(false);
-    } catch (err) {
+    } catch {
       alert("Could not save role");
     }
   };
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Roles & Permissions"
+          description="Create roles and control exactly what each team member can access."
+        />
+        <AccessRestricted resource="roles" onRetry={loadRoles} />
+      </>
+    );
+  }
 
   return (
     <>
@@ -89,27 +111,39 @@ export default function Roles() {
         />
       </div>
 
-      <DataTable
-        headers={["Role", "Type", "Actions"]}
-        className="roles-table-card"
-        rows={filteredRoles.map((role) => [
-          <button className="table-link" onClick={() => openEdit(role)}>
-            {role.name}
-          </button>,
-          role.is_platform_role ? "Platform" : "School",
-          <div className="action-buttons">
-            <button
-              className="action-icon"
-              title="Edit permissions"
-              onClick={() => openEdit(role)}
-            >
-              <i className="bi bi-pencil"></i>
-            </button>
-          </div>,
-        ])}
-        withoutFilter={false}
-        footer={`Showing ${filteredRoles.length} of ${roles.length} roles`}
-      />
+      {loading ? (
+        <div style={{ padding: "1.5rem", color: "#666", fontSize: "0.85rem" }}>
+          Loading roles...
+        </div>
+      ) : error ? (
+        <div
+          style={{ padding: "1.5rem", color: "#d9534f", fontSize: "0.85rem" }}
+        >
+          {error}
+        </div>
+      ) : (
+        <DataTable
+          headers={["Role", "Type", "Actions"]}
+          className="roles-table-card"
+          rows={filteredRoles.map((role) => [
+            <button className="table-link" onClick={() => openEdit(role)}>
+              {role.name}
+            </button>,
+            role.is_platform_role ? "Platform" : "School",
+            <div className="action-buttons">
+              <button
+                className="action-icon"
+                title="Edit permissions"
+                onClick={() => openEdit(role)}
+              >
+                <i className="bi bi-pencil"></i>
+              </button>
+            </div>,
+          ])}
+          withoutFilter={false}
+          footer={`Showing ${filteredRoles.length} of ${roles.length} roles`}
+        />
+      )}
 
       {isModalOpen && (
         <RoleModal

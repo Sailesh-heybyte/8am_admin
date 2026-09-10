@@ -3,6 +3,9 @@ import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeviceModal from "../popups/DeviceModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+} from "../../../components/AccessRestricted.jsx";
 import { getDevices, createDevice } from "../../../api/devices.js";
 
 export default function Devices() {
@@ -88,6 +91,18 @@ export default function Devices() {
       />
     );
   };
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Devices"
+          description="Register tracking devices and manage their bus assignments."
+        />
+        <AccessRestricted resource="devices" onRetry={loadDevices} />
+      </>
+    );
+  }
 
   return (
     <>

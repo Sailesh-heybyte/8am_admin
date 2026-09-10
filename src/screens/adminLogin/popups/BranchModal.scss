@@ -115,8 +115,6 @@
   box-shadow: 0 0 0 0.15rem rgba(71, 118, 230, 0.1);
 }
 
-// Kept as a no-op so the class in the JSX stays harmless in a
-// single-column layout.
 .branch-wide {
   grid-column: 1 / -1;
 }

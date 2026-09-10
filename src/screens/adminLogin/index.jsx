@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../../App.scss";
 
-import { logout } from "../../api/auth.js";
+import { logout, getMe } from "../../api/auth.js";
 import ProfileModal from "./popups/ProfileModal.jsx";
 
 const menuItems = [
@@ -52,11 +52,31 @@ const menuItems = [
 
 function App({ onLogout }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
 
   const activeMenu = menuItems.find((item) => item.path === location.pathname);
+
+  // Runs once per app load. A user still holding a temporary password
+  // cannot reach any screen until they have changed it.
+  useEffect(() => {
+    getMe()
+      .then((data) => {
+        if (data?.must_change_password) {
+          navigate("/change-password", { replace: true });
+        }
+      })
+      .catch(() => {
+        navigate("/login", { replace: true });
+      })
+      .finally(() => {
+        setCheckingAccess(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Close the profile menu when clicking anywhere else on the page.
   useEffect(() => {
@@ -78,6 +98,10 @@ function App({ onLogout }) {
     await logout();
     onLogout?.();
   };
+
+  if (checkingAccess) {
+    return null;
+  }
 
   return (
     <div className="admin-app">

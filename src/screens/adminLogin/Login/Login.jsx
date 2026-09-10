@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.scss";
-import { login } from "../../../api/auth.js";
+import { login, getMe } from "../../../api/auth.js";
 
 export default function Login({ onLoginSuccess }) {
+  const navigate = useNavigate();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,10 +24,16 @@ export default function Login({ onLoginSuccess }) {
 
     try {
       await login(identifier, password);
-      onLoginSuccess?.();
+      const me = await getMe();
+      if (me?.must_change_password) {
+        sessionStorage.setItem("admin_login_identifier", identifier);
+        navigate("/change-password", { state: { identifier } });
+      } else {
+        onLoginSuccess?.();
+      }
     } catch (err) {
       console.error(err);
-      setError("Login failed. Check your details and try again.");
+      setError(err.message || "Login failed. Check your details and try again.");
     } finally {
       setIsSubmitting(false);
     }
