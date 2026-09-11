@@ -103,27 +103,22 @@ export default function Schools() {
           isOpen={Boolean(schoolToChange)}
           onClose={() => setSchoolToChange(null)}
           onConfirm={async () => {
-            try {
-              await handleUpdateStatus(
-                schoolToChange.id,
-                schoolToChange.status,
-              );
-              setSelectedSchool((prev) =>
-                prev && prev.id === schoolToChange.id
-                  ? {
-                      ...prev,
-                      status:
-                        schoolToChange.status === "Active"
-                          ? "Suspended"
-                          : "Active",
-                    }
-                  : prev,
-              );
-            } catch (err) {
-              alert(err.message || "Could not update status");
-            } finally {
-              setSchoolToChange(null);
-            }
+            await handleUpdateStatus(
+              schoolToChange.id,
+              schoolToChange.status,
+            );
+            setSelectedSchool((prev) =>
+              prev && prev.id === schoolToChange.id
+                ? {
+                    ...prev,
+                    status:
+                      schoolToChange.status === "Active"
+                        ? "Suspended"
+                        : "Active",
+                  }
+                : prev,
+            );
+            setSchoolToChange(null);
           }}
           title={
             schoolToChange?.status === "Active"
@@ -148,15 +143,11 @@ export default function Schools() {
           initialData={schoolToEdit}
           title="Update School"
           onSave={async (schoolData) => {
-            try {
-              await handleSaveSchool(schoolData, schoolToEdit?.id);
-              setSelectedSchool((prev) =>
-                prev ? { ...prev, ...schoolData } : prev,
-              );
-              setIsFormOpen(false);
-            } catch (err) {
-              alert(err.message || "Could not save school");
-            }
+            await handleSaveSchool(schoolData, schoolToEdit?.id);
+            setSelectedSchool((prev) =>
+              prev ? { ...prev, ...schoolData } : prev,
+            );
+            setIsFormOpen(false);
           }}
         />
       </>
@@ -268,13 +259,8 @@ export default function Schools() {
         isOpen={Boolean(schoolToChange)}
         onClose={() => setSchoolToChange(null)}
         onConfirm={async () => {
-          try {
-            await handleUpdateStatus(schoolToChange.id, schoolToChange.status);
-          } catch (err) {
-            alert(err.message || "Could not update status");
-          } finally {
-            setSchoolToChange(null);
-          }
+          await handleUpdateStatus(schoolToChange.id, schoolToChange.status);
+          setSchoolToChange(null);
         }}
         title={
           schoolToChange?.status === "Active"
@@ -299,12 +285,8 @@ export default function Schools() {
         initialData={schoolToEdit}
         title={schoolToEdit ? "Update School" : "Create School"}
         onSave={async (schoolData) => {
-          try {
-            await handleSaveSchool(schoolData, schoolToEdit?.id);
-            setIsFormOpen(false);
-          } catch (err) {
-            alert(err.message || "Could not save school");
-          }
+          await handleSaveSchool(schoolData, schoolToEdit?.id);
+          setIsFormOpen(false);
         }}
       />
     </>

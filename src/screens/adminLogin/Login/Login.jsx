@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Login.scss";
-import { login, getMe } from "../../../api/auth.js";
+import { login } from "../../../api/auth.js";
 
 export default function Login({ onLoginSuccess }) {
-  const navigate = useNavigate();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -24,13 +22,8 @@ export default function Login({ onLoginSuccess }) {
 
     try {
       await login(identifier, password);
-      const me = await getMe();
-      if (me?.must_change_password) {
-        sessionStorage.setItem("admin_login_identifier", identifier);
-        navigate("/change-password", { state: { identifier } });
-      } else {
-        onLoginSuccess?.();
-      }
+      sessionStorage.setItem("admin_login_identifier", identifier);
+      onLoginSuccess?.();
     } catch (err) {
       console.error(err);
       setError(err.message || "Login failed. Check your details and try again.");

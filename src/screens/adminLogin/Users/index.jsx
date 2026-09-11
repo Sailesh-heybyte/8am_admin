@@ -1,24 +1,19 @@
 import { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
-import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddUserModal from "../popups/AddUserModal.jsx";
 import AccessRestricted, {
   isPermissionDenied,
 } from "../../../components/AccessRestricted.jsx";
 import { createUser, getUsers } from "../../../api/users.js";
 
-export default function Users(props) {
-  const context = useOutletContext() || {};
-  const { onDeleteUser } = { ...context, ...props };
+export default function Users() {
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
   const [usersError, setUsersError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
 
   const loadUsers = async () => {
     try {
@@ -99,14 +94,7 @@ export default function Users(props) {
         </div>
       ) : (
         <DataTable
-          headers={[
-            "Staff Member",
-            "Email",
-            "Role",
-            "Status",
-            "Created",
-            "Actions",
-          ]}
+          headers={["Staff Member", "Email", "Role", "Status", "Created"]}
           className="users-table-card"
           rows={filteredUsers.map((user) => [
             <strong key={`${user.id}-name`}>{user.fullName}</strong>,
@@ -127,31 +115,11 @@ export default function Users(props) {
               status={user.isActive ? "Active" : "Inactive"}
             />,
             user.createdAt,
-            <div className="action-buttons" key={`${user.id}-actions`}>
-              <button
-                className="action-icon"
-                title="Delete"
-                onClick={() => setUserToDelete(user)}
-              >
-                <i className="bi bi-trash3"></i>
-              </button>
-            </div>,
           ])}
           withoutFilter={false}
           footer={`Showing ${filteredUsers.length} matching of ${users.length} users`}
         />
       )}
-
-      <DeleteConfirmationModal
-        isOpen={Boolean(userToDelete)}
-        onClose={() => setUserToDelete(null)}
-        onConfirm={() => {
-          onDeleteUser?.(userToDelete.id);
-          setUserToDelete(null);
-        }}
-        title="Delete user?"
-        message="Are you sure you want to delete this user? This action cannot be undone."
-      />
 
       <AddUserModal
         isOpen={isAddUserOpen}

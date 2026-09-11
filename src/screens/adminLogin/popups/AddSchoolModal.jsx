@@ -21,6 +21,8 @@ const AddSchoolModal = ({
     ...emptyFormData,
     ...initialData,
   });
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +43,13 @@ const AddSchoolModal = ({
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleClose = () => {
+    if (isSaving) return;
+    setError("");
+    onClose?.();
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isEditing && formData.adminPhone.length !== 10) {
@@ -49,10 +57,18 @@ const AddSchoolModal = ({
       return;
     }
 
-    onSave?.(formData);
-    onClose();
+    setError("");
+    setIsSaving(true);
 
-    setFormData(emptyFormData);
+    try {
+      await onSave?.(formData);
+      onClose();
+      setFormData(emptyFormData);
+    } catch (err) {
+      setError(err.message || "Failed to save school");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!isOpen) {
@@ -60,7 +76,7 @@ const AddSchoolModal = ({
   }
 
   return (
-    <div className="add-school-overlay" onMouseDown={onClose}>
+    <div className="add-school-overlay" onMouseDown={handleClose}>
       <div
         className="add-school-modal"
         onMouseDown={(e) => e.stopPropagation()}
@@ -76,7 +92,12 @@ const AddSchoolModal = ({
             </p>
           </div>
 
-          <button type="button" className="add-school-close" onClick={onClose}>
+          <button
+            type="button"
+            className="add-school-close"
+            onClick={handleClose}
+            disabled={isSaving}
+          >
             ×
           </button>
         </div>
@@ -160,14 +181,30 @@ const AddSchoolModal = ({
             )}
           </div>
 
+          {error && (
+            <div className="add-user-error" role="alert">
+              <i className="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+              <span>{error}</span>
+            </div>
+          )}
+
           {/* Footer */}
           <div className="add-school-footer">
-            <button type="button" className="modal-cancel" onClick={onClose}>
+            <button
+              type="button"
+              className="modal-cancel"
+              onClick={handleClose}
+              disabled={isSaving}
+            >
               Cancel
             </button>
 
-            <button type="submit" className="modal-save">
-              {title}
+            <button
+              type="submit"
+              className="modal-save"
+              disabled={isSaving}
+            >
+              {isSaving ? "Saving..." : title}
             </button>
           </div>
         </form>
