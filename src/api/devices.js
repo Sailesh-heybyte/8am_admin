@@ -32,3 +32,14 @@ export const createDevice = (data) =>
     method: "POST",
     body: toApiDevice(data),
   });
+
+export const mapDeviceToBus = (deviceId, busId) =>
+  apiCall(`/devices/${deviceId}/map-to-bus`, {
+    method: "POST",
+    body: { bus_id: busId },
+  });
+
+export const unmapDevice = (deviceId) =>
+  apiCall(`/devices/${deviceId}/unmap`, {
+    method: "POST",
+  });

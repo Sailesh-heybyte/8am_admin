@@ -3,10 +3,17 @@ import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeviceModal from "../popups/DeviceModal.jsx";
+import DeviceMapModal from "../popups/DeviceMapModal.jsx";
+import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AccessRestricted, {
   isPermissionDenied,
 } from "../../../components/AccessRestricted.jsx";
-import { getDevices, createDevice } from "../../../api/devices.js";
+import {
+  getDevices,
+  createDevice,
+  mapDeviceToBus,
+  unmapDevice,
+} from "../../../api/devices.js";
 
 export default function Devices() {
   const [devices, setDevices] = useState([]);
@@ -14,6 +21,8 @@ export default function Devices() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
+  const [deviceToMap, setDeviceToMap] = useState(null);
+  const [deviceToUnmap, setDeviceToUnmap] = useState(null);
 
   // GET /devices
   const loadDevices = async () => {
@@ -37,6 +46,18 @@ export default function Devices() {
   const handleSaveDevice = async (device) => {
     await createDevice(device);
     await loadDevices();
+  };
+
+  const handleMapDevice = async (busId) => {
+    await mapDeviceToBus(deviceToMap.id, busId);
+    await loadDevices();
+    setDeviceToMap(null);
+  };
+
+  const handleUnmapDevice = async () => {
+    await unmapDevice(deviceToUnmap.id);
+    await loadDevices();
+    setDeviceToUnmap(null);
   };
 
   const filteredDevices = useMemo(
@@ -75,16 +96,44 @@ export default function Devices() {
     return (
       <DataTable
         className="devices-table-card"
-        headers={["Serial Number", "Status", "Created"]}
+        headers={["Serial Number", "Bus", "Status", "Created", "Actions"]}
         rows={filteredDevices.map((device) => [
           <code key={`${device.id}-serial`} className="device-serial-cell">
             {device.serialNumber}
           </code>,
+          device.busId ? (
+            <code key={`${device.id}-bus`} className="device-bus-id">
+              {device.busId}
+            </code>
+          ) : (
+            <span key={`${device.id}-bus`} className="device-unassigned">
+              Not mapped
+            </span>
+          ),
           <StatusBadge
             key={`${device.id}-status`}
             status={device.isActive ? "Active" : "Inactive"}
           />,
           device.createdAt || "-",
+          device.busId ? (
+            <button
+              key={`${device.id}-action`}
+              type="button"
+              className="table-action"
+              onClick={() => setDeviceToUnmap(device)}
+            >
+              Unmap
+            </button>
+          ) : (
+            <button
+              key={`${device.id}-action`}
+              type="button"
+              className="table-action"
+              onClick={() => setDeviceToMap(device)}
+            >
+              Map to Bus
+            </button>
+          ),
         ])}
         withoutFilter={false}
         footer={`Showing ${filteredDevices.length} of ${devices.length} devices`}
@@ -133,6 +182,23 @@ export default function Devices() {
           await handleSaveDevice(device);
           setIsDeviceModalOpen(false);
         }}
+      />
+
+      <DeviceMapModal
+        key={deviceToMap?.id || "none"}
+        isOpen={Boolean(deviceToMap)}
+        device={deviceToMap}
+        onClose={() => setDeviceToMap(null)}
+        onMap={handleMapDevice}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={Boolean(deviceToUnmap)}
+        onClose={() => setDeviceToUnmap(null)}
+        onConfirm={handleUnmapDevice}
+        title="Unmap device?"
+        message={`Are you sure you want to unmap ${deviceToUnmap?.serialNumber}? It will be disconnected from its bus.`}
+        confirmLabel="Unmap"
       />
     </>
   );
