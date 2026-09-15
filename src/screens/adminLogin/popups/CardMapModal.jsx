@@ -5,7 +5,7 @@ import TypeAhead from "../../../components/TypeAhead.jsx";
 import "./AddSchoolModal.scss";
 import "./DeviceModal.scss";
 
-export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
+export default function CardMapModal({ isOpen, card, onClose, onMap }) {
   const [schools, setSchools] = useState([]);
   const [schoolsLoading, setSchoolsLoading] = useState(true);
 
@@ -14,7 +14,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
   const [branchesLoading, setBranchesLoading] = useState(false);
 
   const [selectedBranchId, setSelectedBranchId] = useState("");
-  const [selectedBusId, setSelectedBusId] = useState("");
+  const [selectedStudentId, setSelectedStudentId] = useState("");
 
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -52,7 +52,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     if (isSaving) return;
     setSelectedSchoolId("");
     setSelectedBranchId("");
-    setSelectedBusId("");
+    setSelectedStudentId("");
     setBranches([]);
     setError("");
     setSchoolsLoading(true);
@@ -66,7 +66,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
         : valueOrEvent || "";
     setSelectedSchoolId(schoolId);
     setSelectedBranchId("");
-    setSelectedBusId("");
+    setSelectedStudentId("");
     setError("");
 
     if (!schoolId) {
@@ -92,7 +92,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
         ? valueOrEvent.target.value
         : valueOrEvent || "";
     setSelectedBranchId(branchId);
-    setSelectedBusId("");
+    setSelectedStudentId("");
   };
 
   const handleMap = async (event) => {
@@ -100,9 +100,9 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     setError("");
     setIsSaving(true);
     try {
-      await onMap?.(selectedBusId);
+      await onMap?.(selectedStudentId);
     } catch (err) {
-      setError(err.message || "Failed to map device.");
+      setError(err.message || "Failed to map card.");
     } finally {
       setIsSaving(false);
     }
@@ -116,7 +116,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
       >
         <div className="add-school-header">
           <div>
-            <h2>Map Device to Bus</h2>
+            <h2>Map Card to Student</h2>
           </div>
           <button
             type="button"
@@ -133,9 +133,9 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
             <div className="form-section">
               <div className="form-row">
                 <div className="form-field full">
-                  <label>Serial Number</label>
+                  <label>Card Number</label>
                   <span className="device-serial-cell">
-                    {device?.serialNumber}
+                    {card?.cardNumber}
                   </span>
                 </div>
 
@@ -172,15 +172,18 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
                 </div>
 
                 <div className="form-field full">
-                  <label>Bus</label>
+                  <label>Student</label>
                   <TypeAhead
                     options={[]}
-                    value={selectedBusId}
-                    onChange={(busId) => setSelectedBusId(busId)}
-                    placeholder="Select a bus"
+                    value={selectedStudentId}
+                    onChange={(studentId) => {
+                      setSelectedStudentId(studentId);
+                      setError("");
+                    }}
+                    placeholder="Select a student"
                     disabled={!selectedBranchId || isSaving}
-                    emptyMessage="No buses available"
-                    noMatchMessage="No buses found"
+                    emptyMessage="No students available"
+                    noMatchMessage="No students found"
                   />
                 </div>
               </div>
@@ -206,9 +209,9 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
             <button
               type="submit"
               className="modal-save"
-              disabled={!selectedBusId || isSaving}
+              disabled={!selectedStudentId || isSaving}
             >
-              {isSaving ? "Mapping..." : "Map Device"}
+              {isSaving ? "Mapping..." : "Map Card"}
             </button>
           </div>
         </form>

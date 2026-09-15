@@ -3,10 +3,17 @@ import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import RfidCardModal from "../popups/RfidCardModal.jsx";
+import CardMapModal from "../popups/CardMapModal.jsx";
+import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AccessRestricted, {
   isPermissionDenied,
 } from "../../../components/AccessRestricted.jsx";
-import { getRfidCards, createRfidCard } from "../../../api/rfidCards.js";
+import {
+  getRfidCards,
+  createRfidCard,
+  mapCardToStudent,
+  unmapCard,
+} from "../../../api/rfidCards.js";
 
 export default function RfidCards() {
   const [cards, setCards] = useState([]);
@@ -14,6 +21,8 @@ export default function RfidCards() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cardToMap, setCardToMap] = useState(null);
+  const [cardToUnmap, setCardToUnmap] = useState(null);
 
   // GET /rfid-cards
   const loadCards = async () => {
@@ -37,6 +46,18 @@ export default function RfidCards() {
   const handleSaveCard = async (card) => {
     await createRfidCard(card);
     await loadCards();
+  };
+
+  const handleMapCard = async (studentId) => {
+    await mapCardToStudent(cardToMap.id, studentId);
+    await loadCards();
+    setCardToMap(null);
+  };
+
+  const handleUnmapCard = async () => {
+    await unmapCard(cardToUnmap.id);
+    await loadCards();
+    setCardToUnmap(null);
   };
 
   const filteredCards = useMemo(
@@ -78,16 +99,44 @@ export default function RfidCards() {
     return (
       <DataTable
         className="rfid-table-card"
-        headers={["Card Number", "Status", "Created"]}
+        headers={["Card Number", "Student", "Status", "Created", "Actions"]}
         rows={filteredCards.map((card) => [
           <code key={`${card.id}-number`} className="device-serial-cell">
             {card.cardNumber}
           </code>,
+          card.studentId ? (
+            <code key={`${card.id}-student`} className="device-bus-id">
+              {card.studentId}
+            </code>
+          ) : (
+            <span key={`${card.id}-student`} className="device-unassigned">
+              Not mapped
+            </span>
+          ),
           <StatusBadge
             key={`${card.id}-status`}
             status={card.isActive ? "Active" : "Inactive"}
           />,
           card.createdAt || "-",
+          card.studentId ? (
+            <button
+              key={`${card.id}-action`}
+              type="button"
+              className="table-action"
+              onClick={() => setCardToUnmap(card)}
+            >
+              Unmap
+            </button>
+          ) : (
+            <button
+              key={`${card.id}-action`}
+              type="button"
+              className="table-action"
+              onClick={() => setCardToMap(card)}
+            >
+              Map to Student
+            </button>
+          ),
         ])}
         withoutFilter={false}
         footer={`Showing ${filteredCards.length} of ${cards.length} cards`}
@@ -136,6 +185,23 @@ export default function RfidCards() {
           await handleSaveCard(card);
           setIsModalOpen(false);
         }}
+      />
+
+      <CardMapModal
+        key={cardToMap?.id || "none"}
+        isOpen={Boolean(cardToMap)}
+        card={cardToMap}
+        onClose={() => setCardToMap(null)}
+        onMap={handleMapCard}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={Boolean(cardToUnmap)}
+        onClose={() => setCardToUnmap(null)}
+        onConfirm={handleUnmapCard}
+        title="Unmap card?"
+        message={`Are you sure you want to unmap ${cardToUnmap?.cardNumber}? It will be disconnected from its student.`}
+        confirmLabel="Unmap"
       />
     </>
   );

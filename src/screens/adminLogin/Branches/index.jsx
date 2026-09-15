@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
-import SearchableSelect from "../../../components/SearchableSelect.jsx";
+import TypeAhead from "../../../components/TypeAhead.jsx";
 import BranchModal from "../popups/BranchModal.jsx";
 import AccessRestricted, {
   isPermissionDenied,
@@ -212,7 +212,7 @@ export default function Branches() {
         <div style={{ display: "flex", gap: "1rem" }}>
           <div className="filter-group">
             <label>School:</label>
-            <SearchableSelect
+            <TypeAhead
               options={schools.map((school) => ({
                 value: school.id,
                 label: school.schoolName,
@@ -224,8 +224,9 @@ export default function Branches() {
                 loadBranches(schoolId);
               }}
               placeholder="Select a school"
-              searchPlaceholder="Search schools..."
               loading={schoolsLoading}
+              emptyMessage="No schools available"
+              noMatchMessage="No schools found"
             />
           </div>
         </div>

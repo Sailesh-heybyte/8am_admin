@@ -32,3 +32,15 @@ export const createRfidCard = (data) =>
     method: "POST",
     body: toApiCard(data),
   });
+
+export const mapCardToStudent = (cardId, studentId) =>
+  apiCall(`/rfid-cards/${cardId}/map-to-student`, {
+    method: "POST",
+    body: { student_id: studentId },
+  });
+
+export const unmapCard = (cardId) =>
+  apiCall(`/rfid-cards/${cardId}/unmap`, {
+    method: "POST",
+  });
+
