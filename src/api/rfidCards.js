@@ -1,10 +1,5 @@
 import { apiCall } from "./client.js";
-
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-}
+import { formatDate } from "../utils/formatDate.js";
 
 function toUiCard(card = {}) {
   return {

@@ -1,4 +1,5 @@
 import { apiCall } from "./client.js";
+import { formatDate } from "../utils/formatDate.js";
 
 function parseSkills(skills) {
   if (typeof skills === "string") {
@@ -27,12 +28,6 @@ function buildCleanObject(fields) {
     }
   }
   return Object.keys(cleanObj).length > 0 ? cleanObj : undefined;
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
 }
 
 function toUiUser(apiUser = {}) {
