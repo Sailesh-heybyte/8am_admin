@@ -16,7 +16,6 @@ export default function TypeAhead({
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 

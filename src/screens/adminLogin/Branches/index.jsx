@@ -23,7 +23,6 @@ export default function Branches() {
   const [selectedSchoolId, setSelectedSchoolId] = useState("");
   const [branches, setBranches] = useState([]);
   const [branchesLoading, setBranchesLoading] = useState(false);
-
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [branchToEdit, setBranchToEdit] = useState(null);

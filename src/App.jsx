@@ -11,6 +11,7 @@ import Users from "./screens/adminLogin/Users/index.jsx";
 import Branches from "./screens/adminLogin/Branches/index.jsx";
 import Devices from "./screens/adminLogin/Devices/index.jsx";
 import RfidCards from "./screens/adminLogin/RfidCards/index.jsx";
+import NotFound from "./components/NotFound.jsx";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -23,7 +24,7 @@ export default function App() {
         <Route
           path="/login"
           element={
-            isAuthenticated ? (
+            isAuthenticated && !!localStorage.getItem("access_token") ? (
               <Navigate to="/dashboard" replace />
             ) : (
               <Login onLoginSuccess={() => setIsAuthenticated(true)} />
@@ -40,7 +41,7 @@ export default function App() {
         />
         <Route
           element={
-            isAuthenticated || !!localStorage.getItem("access_token") ? (
+            isAuthenticated && !!localStorage.getItem("access_token") ? (
               <AdminLogin onLogout={() => setIsAuthenticated(false)} />
             ) : (
               <Navigate to="/login" replace />
@@ -55,14 +56,14 @@ export default function App() {
           <Route path="/devices" element={<Devices />} />
           <Route path="/rfid-cards" element={<RfidCards />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
         <Route
           path="*"
           element={
             <Navigate
               to={
-                isAuthenticated || !!localStorage.getItem("access_token")
+                isAuthenticated && !!localStorage.getItem("access_token")
                   ? "/dashboard"
                   : "/login"
               }

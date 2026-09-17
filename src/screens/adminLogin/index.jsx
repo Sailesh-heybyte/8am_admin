@@ -60,6 +60,11 @@ function App({ onLogout }) {
 
   const activeMenu = menuItems.find((item) => item.path === location.pathname);
 
+  const handleLogout = async () => {
+    await logout();
+    onLogout?.();
+  };
+
   // Runs once per app load. A user still holding a temporary password
   // cannot reach any screen until they have changed it.
   useEffect(() => {
@@ -69,7 +74,8 @@ function App({ onLogout }) {
           navigate("/change-password", { replace: true });
         }
       })
-      .catch(() => {
+      .catch(async () => {
+        await handleLogout();
         navigate("/login", { replace: true });
       })
       .finally(() => {
@@ -93,11 +99,6 @@ function App({ onLogout }) {
       document.removeEventListener("click", handleClickOutside);
     };
   }, [isProfileMenuOpen]);
-
-  const handleLogout = async () => {
-    await logout();
-    onLogout?.();
-  };
 
   if (checkingAccess) {
     return null;
