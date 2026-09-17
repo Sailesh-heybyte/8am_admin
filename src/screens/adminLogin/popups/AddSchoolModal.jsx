@@ -53,7 +53,7 @@ const AddSchoolModal = ({
     e.preventDefault();
 
     if (!isEditing && formData.adminPhone.length !== 10) {
-      alert("Phone number must be exactly 10 digits.");
+      setError("Phone number must be exactly 10 digits.");
       return;
     }
 

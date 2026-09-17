@@ -17,6 +17,7 @@ export default function Roles() {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [roleToEdit, setRoleToEdit] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,37 +50,35 @@ export default function Roles() {
   );
 
   const openCreate = async () => {
+    setActionError("");
     try {
       await loadPermissions();
       setRoleToEdit(null);
       setIsModalOpen(true);
     } catch {
-      alert("Could not load permissions");
+      setActionError("Could not open the role form. Please try again.");
     }
   };
 
   const openEdit = async (role) => {
+    setActionError("");
     try {
       await loadPermissions();
       setRoleToEdit(role);
       setIsModalOpen(true);
     } catch {
-      alert("Could not load permissions");
+      setActionError("Could not open the role form. Please try again.");
     }
   };
 
   const handleSave = async (formData) => {
-    try {
-      if (roleToEdit?.id) {
-        await assignPermissions(roleToEdit.id, formData.permissions);
-      } else {
-        await createRole(formData);
-      }
-      await loadRoles();
-      setIsModalOpen(false);
-    } catch {
-      alert("Could not save role");
+    if (roleToEdit?.id) {
+      await assignPermissions(roleToEdit.id, formData.permissions);
+    } else {
+      await createRole(formData);
     }
+    await loadRoles();
+    setIsModalOpen(false);
   };
 
   if (isPermissionDenied(error)) {
@@ -110,6 +109,13 @@ export default function Roles() {
           placeholder="Search roles..."
         />
       </div>
+
+      {actionError && (
+        <div className="add-user-error" role="alert">
+          <i className="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+          <span>{actionError}</span>
+        </div>
+      )}
 
       {loading ? (
         <div style={{ padding: "1.5rem", color: "#666", fontSize: "0.85rem" }}>

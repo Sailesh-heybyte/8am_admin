@@ -21,6 +21,7 @@ export default function RoleModal({
   const [isLoadingRole, setIsLoadingRole] = useState(isEditMode);
   const [isSaving, setIsSaving] = useState(false);
   const [confirmEmptyWarning, setConfirmEmptyWarning] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!isEditMode || !role?.id) {
@@ -91,9 +92,12 @@ export default function RoleModal({
       return;
     }
 
+    setError("");
     setIsSaving(true);
     try {
       await onSave(formData);
+    } catch (err) {
+      setError(err.message || "Could not save role");
     } finally {
       setIsSaving(false);
     }
@@ -188,6 +192,13 @@ export default function RoleModal({
               )}
             </div>
           </div>
+
+          {error && (
+            <div className="add-user-error" role="alert">
+              <i className="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+              <span>{error}</span>
+            </div>
+          )}
 
           {confirmEmptyWarning && (
             <div className="add-user-error">
