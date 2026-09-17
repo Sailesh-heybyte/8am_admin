@@ -18,13 +18,18 @@ export default function App() {
     () => !!localStorage.getItem("access_token"),
   );
 
+  // A session is only valid when memory and storage agree. If they
+  // disagree the app can bounce between /login and /dashboard forever.
+  const hasSession =
+    isAuthenticated && Boolean(localStorage.getItem("access_token"));
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/login"
           element={
-            isAuthenticated && !!localStorage.getItem("access_token") ? (
+            hasSession ? (
               <Navigate to="/dashboard" replace />
             ) : (
               <Login onLoginSuccess={() => setIsAuthenticated(true)} />
@@ -41,7 +46,7 @@ export default function App() {
         />
         <Route
           element={
-            isAuthenticated && !!localStorage.getItem("access_token") ? (
+            hasSession ? (
               <AdminLogin onLogout={() => setIsAuthenticated(false)} />
             ) : (
               <Navigate to="/login" replace />
@@ -60,19 +65,9 @@ export default function App() {
         </Route>
         <Route
           path="*"
-          element={
-            <Navigate
-              to={
-                isAuthenticated && !!localStorage.getItem("access_token")
-                  ? "/dashboard"
-                  : "/login"
-              }
-              replace
-            />
-          }
+          element={<Navigate to={hasSession ? "/dashboard" : "/login"} replace />}
         />
       </Routes>
     </BrowserRouter>
   );
 }
-
