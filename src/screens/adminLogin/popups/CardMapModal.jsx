@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getSchools } from "../../../api/schools.js";
-import { getBranches } from "../../../api/branches.js";
+import { getStudentsBySchool } from "../../../api/students.js";
 import TypeAhead from "../../../components/TypeAhead.jsx";
 import "./AddSchoolModal.scss";
 import "./DeviceModal.scss";
@@ -10,10 +10,10 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
   const [schoolsLoading, setSchoolsLoading] = useState(true);
 
   const [selectedSchoolId, setSelectedSchoolId] = useState("");
-  const [branches, setBranches] = useState([]);
-  const [branchesLoading, setBranchesLoading] = useState(false);
-
   const [selectedBranchId, setSelectedBranchId] = useState("");
+
+  const [students, setStudents] = useState([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState("");
 
   const [error, setError] = useState("");
@@ -46,6 +46,26 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
     };
   }, [isOpen]);
 
+  const branchOptions = useMemo(() => {
+    const branchMap = new Map();
+    for (const student of students) {
+      if (student.branchId && !branchMap.has(student.branchId)) {
+        branchMap.set(student.branchId, student.branchName);
+      }
+    }
+    return Array.from(branchMap.entries())
+      .map(([branchId, branchName]) => ({
+        value: branchId,
+        label: branchName,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [students]);
+
+  const visibleStudents = useMemo(() => {
+    if (!selectedBranchId) return [];
+    return students.filter((student) => student.branchId === selectedBranchId);
+  }, [students, selectedBranchId]);
+
   if (!isOpen) return null;
 
   const handleClose = () => {
@@ -53,7 +73,7 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
     setSelectedSchoolId("");
     setSelectedBranchId("");
     setSelectedStudentId("");
-    setBranches([]);
+    setStudents([]);
     setError("");
     setSchoolsLoading(true);
     onClose?.();
@@ -67,22 +87,22 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
     setSelectedSchoolId(schoolId);
     setSelectedBranchId("");
     setSelectedStudentId("");
+    setStudents([]);
     setError("");
 
     if (!schoolId) {
-      setBranches([]);
       return;
     }
 
-    setBranchesLoading(true);
+    setStudentsLoading(true);
     try {
-      const data = await getBranches(schoolId);
-      setBranches(data);
+      const data = await getStudentsBySchool(schoolId);
+      setStudents(data);
     } catch (err) {
-      setError(err.message || "Failed to load branches.");
-      setBranches([]);
+      setError(err.message || "Failed to load students.");
+      setStudents([]);
     } finally {
-      setBranchesLoading(false);
+      setStudentsLoading(false);
     }
   };
 
@@ -158,14 +178,12 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
                 <div className="form-field full">
                   <label>Branch</label>
                   <TypeAhead
-                    options={branches.map((branch) => ({
-                      value: branch.id,
-                      label: branch.branchName,
-                    }))}
+                    options={branchOptions}
                     value={selectedBranchId}
                     onChange={handleBranchChange}
                     placeholder="Select a branch"
-                    disabled={!selectedSchoolId || branchesLoading || isSaving}
+                    disabled={!selectedSchoolId || studentsLoading || isSaving}
+                    loading={studentsLoading}
                     emptyMessage="No branches available"
                     noMatchMessage="No branches found"
                   />
@@ -174,12 +192,12 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
                 <div className="form-field full">
                   <label>Student</label>
                   <TypeAhead
-                    options={[]}
+                    options={visibleStudents.map((student) => ({
+                      value: student.id,
+                      label: `${student.fullName} · ${student.admissionNumber}`,
+                    }))}
                     value={selectedStudentId}
-                    onChange={(studentId) => {
-                      setSelectedStudentId(studentId);
-                      setError("");
-                    }}
+                    onChange={(studentId) => setSelectedStudentId(studentId)}
                     placeholder="Select a student"
                     disabled={!selectedBranchId || isSaving}
                     emptyMessage="No students available"
