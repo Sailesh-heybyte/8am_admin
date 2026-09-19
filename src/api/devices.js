@@ -6,6 +6,7 @@ function toUiDevice(device = {}) {
     id: device.id,
     serialNumber: device.serial_number || "",
     busId: device.bus_id,
+    registrationNumber: device.registration_number,
     isActive: Boolean(device.is_active),
     createdAt: formatDate(device.created_at),
     createdAtIso: device.created_at,
@@ -38,4 +39,4 @@ export const mapDeviceToBus = (deviceId, busId) =>
 export const unmapDevice = (deviceId) =>
   apiCall(`/devices/${deviceId}/unmap`, {
     method: "POST",
-  });
+  });

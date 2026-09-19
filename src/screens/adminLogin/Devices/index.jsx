@@ -123,7 +123,7 @@ export default function Devices() {
         className="devices-table-card"
         headers={[
           { label: "Serial Number", sortKey: "serialNumber" },
-          "Bus",
+          { label: "Bus", sortKey: "registrationNumber" },
           { label: "Status", sortKey: "isActive" },
           { label: "Created", sortKey: "createdAtIso" },
           "Actions",
@@ -133,9 +133,7 @@ export default function Devices() {
             {device.serialNumber}
           </code>,
           device.busId ? (
-            <code key={`${device.id}-bus`} className="device-bus-id">
-              {device.busId}
-            </code>
+            device.registrationNumber
           ) : (
             <span key={`${device.id}-bus`} className="device-unassigned">
               Not mapped
@@ -168,7 +166,7 @@ export default function Devices() {
         ])}
         sortValues={filteredDevices.map((device) => [
           device.serialNumber,
-          null,
+          device.registrationNumber,
           device.isActive,
           device.createdAtIso,
           null,
