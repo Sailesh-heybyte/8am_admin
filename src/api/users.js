@@ -39,6 +39,7 @@ function toUiUser(apiUser = {}) {
     phoneNumber: apiUser.phone_number || "",
     isActive: Boolean(apiUser.is_active),
     roleIds: apiUser.role_ids || [],
+    roleNames: apiUser.roles.map((role) => role.name),
     createdAt: formatDate(apiUser.created_at),
   };
 }

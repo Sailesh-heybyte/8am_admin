@@ -32,10 +32,10 @@ export default function Users() {
   }, []);
 
   const getRoleDisplay = (user) => {
-    if (!user?.roleIds || user.roleIds.length === 0) {
-      return "-";
+    if (!user.roleNames || user.roleNames.length === 0) {
+      return "—";
     }
-    return user.roleIds.join(", ");
+    return user.roleNames.join(", ");
   };
 
   const filteredUsers = users.filter((user) => {
@@ -99,17 +99,7 @@ export default function Users() {
           rows={filteredUsers.map((user) => [
             <strong key={`${user.id}-name`}>{user.fullName}</strong>,
             user.email,
-            user.roleIds && user.roleIds.length > 0 ? (
-              <code
-                key={`${user.id}-role`}
-                className="device-serial-cell"
-                title={getRoleDisplay(user)}
-              >
-                {getRoleDisplay(user)}
-              </code>
-            ) : (
-              "-"
-            ),
+            getRoleDisplay(user),
             <StatusBadge
               key={`${user.id}-status`}
               status={user.isActive ? "Active" : "Inactive"}
