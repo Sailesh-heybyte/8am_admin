@@ -763,6 +763,11 @@ td {
   }
 }
 
+.text-muted {
+  color: $text-muted;
+  font-size: 0.65rem;
+}
+
 tbody tr:hover {
   background: $surface-hover;
 }

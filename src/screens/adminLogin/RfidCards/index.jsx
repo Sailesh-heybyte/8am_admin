@@ -79,7 +79,8 @@ export default function RfidCards() {
     return cards.filter((card) => {
       const matchesSearch =
         search === "" ||
-        card.cardNumber.toLowerCase().includes(search);
+        card.cardNumber.toLowerCase().includes(search) ||
+        (card.admissionNumber || "").toLowerCase().includes(search);
 
       const matchesAssignment =
         assignmentFilter === "All" ||
@@ -128,7 +129,7 @@ export default function RfidCards() {
         className="rfid-table-card"
         headers={[
           { label: "Card Number", sortKey: "cardNumber" },
-          "Student",
+          { label: "Student", sortKey: "studentName" },
           { label: "Status", sortKey: "isActive" },
           { label: "Created", sortKey: "createdAtIso" },
           "Actions",
@@ -138,12 +139,13 @@ export default function RfidCards() {
             {card.cardNumber}
           </code>,
           card.studentId ? (
-            <code key={`${card.id}-student`} className="device-bus-id">
-              {card.studentId}
-            </code>
+            <div key={`${card.id}-student`}>
+              <div>{card.studentName}</div>
+              <div className="text-muted">{card.admissionNumber}</div>
+            </div>
           ) : (
             <span key={`${card.id}-student`} className="device-unassigned">
-              Not mapped
+              Not assigned
             </span>
           ),
           <StatusBadge
@@ -173,7 +175,7 @@ export default function RfidCards() {
         ])}
         sortValues={filteredCards.map((card) => [
           card.cardNumber,
-          null,
+          card.studentName,
           card.isActive,
           card.createdAtIso,
           null,

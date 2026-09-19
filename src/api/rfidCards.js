@@ -6,6 +6,8 @@ function toUiCard(card = {}) {
     id: card.id,
     cardNumber: card.card_number || "",
     studentId: card.student_id,
+    studentName: card.student_name,
+    admissionNumber: card.admission_number,
     isActive: Boolean(card.is_active),
     createdAt: formatDate(card.created_at),
     createdAtIso: card.created_at,
