@@ -98,6 +98,11 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     try {
       const data = await getBusesBySchool(schoolId);
       setBuses(data);
+      if (data.length === 0) {
+        setError(
+          "No buses found for this school. Register a bus before mapping a device."
+        );
+      }
     } catch (err) {
       setError(err.message || "Failed to load buses.");
       setBuses([]);
