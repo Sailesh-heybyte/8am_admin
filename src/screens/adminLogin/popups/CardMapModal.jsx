@@ -98,6 +98,11 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
     try {
       const data = await getStudentsBySchool(schoolId);
       setStudents(data);
+      if (data.length === 0) {
+        setError(
+          "No students found for this school. Add a student before mapping a card."
+        );
+      }
     } catch (err) {
       setError(err.message || "Failed to load students.");
       setStudents([]);
