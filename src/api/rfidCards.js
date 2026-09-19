@@ -8,6 +8,7 @@ function toUiCard(card = {}) {
     studentId: card.student_id,
     isActive: Boolean(card.is_active),
     createdAt: formatDate(card.created_at),
+    createdAtIso: card.created_at,
   };
 }
 

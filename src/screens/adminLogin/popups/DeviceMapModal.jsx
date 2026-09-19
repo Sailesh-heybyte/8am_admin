@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getSchools } from "../../../api/schools.js";
-import { getBranches } from "../../../api/branches.js";
+import { getBusesBySchool } from "../../../api/buses.js";
 import TypeAhead from "../../../components/TypeAhead.jsx";
 import "./AddSchoolModal.scss";
 import "./DeviceModal.scss";
@@ -10,10 +10,10 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
   const [schoolsLoading, setSchoolsLoading] = useState(true);
 
   const [selectedSchoolId, setSelectedSchoolId] = useState("");
-  const [branches, setBranches] = useState([]);
-  const [branchesLoading, setBranchesLoading] = useState(false);
-
   const [selectedBranchId, setSelectedBranchId] = useState("");
+
+  const [buses, setBuses] = useState([]);
+  const [busesLoading, setBusesLoading] = useState(false);
   const [selectedBusId, setSelectedBusId] = useState("");
 
   const [error, setError] = useState("");
@@ -46,6 +46,26 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     };
   }, [isOpen]);
 
+  const branchOptions = useMemo(() => {
+    const branchMap = new Map();
+    for (const bus of buses) {
+      if (bus.branchId && !branchMap.has(bus.branchId)) {
+        branchMap.set(bus.branchId, bus.branchName);
+      }
+    }
+    return Array.from(branchMap.entries())
+      .map(([branchId, branchName]) => ({
+        value: branchId,
+        label: branchName,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [buses]);
+
+  const visibleBuses = useMemo(() => {
+    if (!selectedBranchId) return [];
+    return buses.filter((bus) => bus.branchId === selectedBranchId);
+  }, [buses, selectedBranchId]);
+
   if (!isOpen) return null;
 
   const handleClose = () => {
@@ -53,7 +73,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     setSelectedSchoolId("");
     setSelectedBranchId("");
     setSelectedBusId("");
-    setBranches([]);
+    setBuses([]);
     setError("");
     setSchoolsLoading(true);
     onClose?.();
@@ -67,22 +87,22 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     setSelectedSchoolId(schoolId);
     setSelectedBranchId("");
     setSelectedBusId("");
+    setBuses([]);
     setError("");
 
     if (!schoolId) {
-      setBranches([]);
       return;
     }
 
-    setBranchesLoading(true);
+    setBusesLoading(true);
     try {
-      const data = await getBranches(schoolId);
-      setBranches(data);
+      const data = await getBusesBySchool(schoolId);
+      setBuses(data);
     } catch (err) {
-      setError(err.message || "Failed to load branches.");
-      setBranches([]);
+      setError(err.message || "Failed to load buses.");
+      setBuses([]);
     } finally {
-      setBranchesLoading(false);
+      setBusesLoading(false);
     }
   };
 
@@ -158,14 +178,12 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
                 <div className="form-field full">
                   <label>Branch</label>
                   <TypeAhead
-                    options={branches.map((branch) => ({
-                      value: branch.id,
-                      label: branch.branchName,
-                    }))}
+                    options={branchOptions}
                     value={selectedBranchId}
                     onChange={handleBranchChange}
                     placeholder="Select a branch"
-                    disabled={!selectedSchoolId || branchesLoading || isSaving}
+                    disabled={!selectedSchoolId || busesLoading || isSaving}
+                    loading={busesLoading}
                     emptyMessage="No branches available"
                     noMatchMessage="No branches found"
                   />
@@ -174,7 +192,10 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
                 <div className="form-field full">
                   <label>Bus</label>
                   <TypeAhead
-                    options={[]}
+                    options={visibleBuses.map((bus) => ({
+                      value: bus.id,
+                      label: `${bus.name} · ${bus.registrationNumber}`,
+                    }))}
                     value={selectedBusId}
                     onChange={(busId) => setSelectedBusId(busId)}
                     placeholder="Select a bus"

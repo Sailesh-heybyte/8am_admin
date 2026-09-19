@@ -13,6 +13,8 @@ export default function Users() {
   const [usersLoading, setUsersLoading] = useState(true);
   const [usersError, setUsersError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("All roles");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
   const loadUsers = async () => {
@@ -38,13 +40,39 @@ export default function Users() {
     return user.roleNames.join(", ");
   };
 
+  const roleOptions = [
+    ...new Set(users.flatMap((user) => user.roleNames)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchTerm.trim() !== "" ||
+    roleFilter !== "All roles" ||
+    statusFilter !== "All";
+
+  const handleClear = () => {
+    setSearchTerm("");
+    setRoleFilter("All roles");
+    setStatusFilter("All");
+  };
+
   const filteredUsers = users.filter((user) => {
     const search = searchTerm.trim().toLowerCase();
-    return [user.fullName, user.email, getRoleDisplay(user)]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase()
-      .includes(search);
+    const matchesSearch =
+      search === "" ||
+      [user.fullName, user.email, getRoleDisplay(user)]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(search);
+
+    const matchesRole =
+      roleFilter === "All roles" || user.roleNames.includes(roleFilter);
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? user.isActive : !user.isActive);
+
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
   const handleSave = async (user) => {
@@ -74,6 +102,46 @@ export default function Users() {
       />
 
       <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          <div className="filter-group">
+            <label>Role:</label>
+            <select
+              value={roleFilter}
+              onChange={(event) => setRoleFilter(event.target.value)}
+            >
+              <option value="All roles">All roles</option>
+              {roleOptions.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <input
           type="text"
           placeholder="Search users..."
@@ -94,7 +162,13 @@ export default function Users() {
         </div>
       ) : (
         <DataTable
-          headers={["Staff Member", "Email", "Role", "Status", "Created"]}
+          headers={[
+            { label: "Staff Member", sortKey: "fullName" },
+            { label: "Email", sortKey: "email" },
+            { label: "Role", sortKey: "roleNames" },
+            { label: "Status", sortKey: "isActive" },
+            { label: "Created", sortKey: "createdAtIso" },
+          ]}
           className="users-table-card"
           rows={filteredUsers.map((user) => [
             <strong key={`${user.id}-name`}>{user.fullName}</strong>,
@@ -105,6 +179,13 @@ export default function Users() {
               status={user.isActive ? "Active" : "Inactive"}
             />,
             user.createdAt,
+          ])}
+          sortValues={filteredUsers.map((user) => [
+            user.fullName,
+            user.email,
+            user.roleNames.join(", "),
+            user.isActive,
+            user.createdAtIso,
           ])}
           withoutFilter={false}
           footer={`Showing ${filteredUsers.length} matching of ${users.length} users`}

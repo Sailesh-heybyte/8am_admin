@@ -20,6 +20,8 @@ export default function Devices() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [mappingFilter, setMappingFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
   const [deviceToMap, setDeviceToMap] = useState(null);
   const [deviceToUnmap, setDeviceToUnmap] = useState(null);
@@ -60,13 +62,36 @@ export default function Devices() {
     setDeviceToUnmap(null);
   };
 
-  const filteredDevices = useMemo(
-    () =>
-      devices.filter((device) =>
-        (device.serialNumber || "").toLowerCase().includes(query.toLowerCase()),
-      ),
-    [devices, query],
-  );
+  const isFilterActive =
+    query.trim() !== "" ||
+    mappingFilter !== "All" ||
+    statusFilter !== "All";
+
+  const handleClear = () => {
+    setQuery("");
+    setMappingFilter("All");
+    setStatusFilter("All");
+  };
+
+  const filteredDevices = useMemo(() => {
+    const search = query.trim().toLowerCase();
+
+    return devices.filter((device) => {
+      const matchesSearch =
+        search === "" ||
+        (device.serialNumber || "").toLowerCase().includes(search);
+
+      const matchesMapping =
+        mappingFilter === "All" ||
+        (mappingFilter === "Mapped" ? Boolean(device.busId) : !device.busId);
+
+      const matchesStatus =
+        statusFilter === "All" ||
+        (statusFilter === "Active" ? device.isActive : !device.isActive);
+
+      return matchesSearch && matchesMapping && matchesStatus;
+    });
+  }, [devices, query, mappingFilter, statusFilter]);
 
   const renderTable = () => {
     if (loading) {
@@ -96,7 +121,13 @@ export default function Devices() {
     return (
       <DataTable
         className="devices-table-card"
-        headers={["Serial Number", "Bus", "Status", "Created", "Actions"]}
+        headers={[
+          { label: "Serial Number", sortKey: "serialNumber" },
+          "Bus",
+          { label: "Status", sortKey: "isActive" },
+          { label: "Created", sortKey: "createdAtIso" },
+          "Actions",
+        ]}
         rows={filteredDevices.map((device) => [
           <code key={`${device.id}-serial`} className="device-serial-cell">
             {device.serialNumber}
@@ -119,7 +150,7 @@ export default function Devices() {
             <button
               key={`${device.id}-action`}
               type="button"
-              className="table-action"
+              className="table-action table-action-danger"
               onClick={() => setDeviceToUnmap(device)}
             >
               Unmap
@@ -134,6 +165,13 @@ export default function Devices() {
               Map to Bus
             </button>
           ),
+        ])}
+        sortValues={filteredDevices.map((device) => [
+          device.serialNumber,
+          null,
+          device.isActive,
+          device.createdAtIso,
+          null,
         ])}
         withoutFilter={false}
         footer={`Showing ${filteredDevices.length} of ${devices.length} devices`}
@@ -163,6 +201,43 @@ export default function Devices() {
       />
 
       <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          <div className="filter-group">
+            <label>Mapping:</label>
+            <select
+              value={mappingFilter}
+              onChange={(event) => setMappingFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Mapped">Mapped</option>
+              <option value="Unmapped">Unmapped</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <input
           type="search"
           placeholder="Search by serial number..."

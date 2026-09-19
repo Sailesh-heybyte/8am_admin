@@ -1307,6 +1307,11 @@ tbody tr:hover {
   cursor: pointer;
 }
 
+.table-action-danger {
+  background: $red-light;
+  color: $red;
+}
+
 .platform-dashboard-grid {
   display: flex;
   flex-direction: row;

@@ -8,6 +8,7 @@ function toUiDevice(device = {}) {
     busId: device.bus_id,
     isActive: Boolean(device.is_active),
     createdAt: formatDate(device.created_at),
+    createdAtIso: device.created_at,
   };
 }
 

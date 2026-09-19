@@ -10,6 +10,7 @@ function toUiBranch(branch = {}) {
     isMainBranch: Boolean(branch.is_main_branch),
     isActive: Boolean(branch.is_active),
     createdAt: formatDate(branch.created_at),
+    createdAtIso: branch.created_at,
   };
 }
 

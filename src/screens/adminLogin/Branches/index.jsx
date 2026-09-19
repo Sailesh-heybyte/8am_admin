@@ -25,6 +25,8 @@ export default function Branches() {
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [typeFilter, setTypeFilter] = useState("All");
   const [branchToEdit, setBranchToEdit] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -61,6 +63,8 @@ export default function Branches() {
     const schoolId = event.target.value;
     setSelectedSchoolId(schoolId);
     setQuery("");
+    setStatusFilter("All");
+    setTypeFilter("All");
     loadBranches(schoolId);
   };
 
@@ -84,15 +88,40 @@ export default function Branches() {
     schools.find((school) => school.id === selectedSchoolId)?.schoolName ||
     "This school";
 
-  const filteredBranches = useMemo(
-    () =>
-      branches.filter((branch) =>
+  const isFilterActive =
+    query.trim() !== "" ||
+    statusFilter !== "All" ||
+    typeFilter !== "All";
+
+  const handleClear = () => {
+    setQuery("");
+    setStatusFilter("All");
+    setTypeFilter("All");
+  };
+
+  const filteredBranches = useMemo(() => {
+    const search = query.trim().toLowerCase();
+
+    return branches.filter((branch) => {
+      const matchesSearch =
+        search === "" ||
         `${branch.branchName} ${branch.address}`
           .toLowerCase()
-          .includes(query.toLowerCase()),
-      ),
-    [branches, query],
-  );
+          .includes(search);
+
+      const matchesStatus =
+        statusFilter === "All" ||
+        (statusFilter === "Active" ? branch.isActive : !branch.isActive);
+
+      const matchesType =
+        typeFilter === "All" ||
+        (typeFilter === "Main branch"
+          ? branch.isMainBranch
+          : !branch.isMainBranch);
+
+      return matchesSearch && matchesStatus && matchesType;
+    });
+  }, [branches, query, statusFilter, typeFilter]);
 
   if (isPermissionDenied(error)) {
     return (
@@ -161,11 +190,11 @@ export default function Branches() {
       <DataTable
         className="branches-table-card"
         headers={[
-          "Branch",
-          "Address",
-          "Main Branch",
-          "Status",
-          "Created",
+          { label: "Branch", sortKey: "branchName" },
+          { label: "Address", sortKey: "address" },
+          { label: "Main Branch", sortKey: "isMainBranch" },
+          { label: "Status", sortKey: "isActive" },
+          { label: "Created", sortKey: "createdAtIso" },
           "Actions",
         ]}
         rows={filteredBranches.map((branch) => [
@@ -191,6 +220,14 @@ export default function Branches() {
             </button>
           </div>,
         ])}
+        sortValues={filteredBranches.map((branch) => [
+          branch.branchName,
+          branch.address,
+          branch.isMainBranch,
+          branch.isActive,
+          branch.createdAtIso,
+          null,
+        ])}
         withoutFilter={false}
         footer={`Showing ${filteredBranches.length} of ${branches.length} branches`}
       />
@@ -208,7 +245,7 @@ export default function Branches() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem" }}>
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
           <div className="filter-group">
             <label>School:</label>
             <TypeAhead
@@ -220,6 +257,8 @@ export default function Branches() {
               onChange={(schoolId) => {
                 setSelectedSchoolId(schoolId);
                 setQuery("");
+                setStatusFilter("All");
+                setTypeFilter("All");
                 loadBranches(schoolId);
               }}
               placeholder="Select a school"
@@ -228,6 +267,45 @@ export default function Branches() {
               noMatchMessage="No schools found"
             />
           </div>
+
+          {selectedSchoolId && (
+            <>
+              <div className="filter-group">
+                <label>Status:</label>
+                <select
+                  value={statusFilter}
+                  onChange={(event) => setStatusFilter(event.target.value)}
+                >
+                  <option value="All">All</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+
+              <div className="filter-group">
+                <label>Type:</label>
+                <select
+                  value={typeFilter}
+                  onChange={(event) => setTypeFilter(event.target.value)}
+                >
+                  <option value="All">All</option>
+                  <option value="Main branch">Main branch</option>
+                  <option value="Other branches">Other branches</option>
+                </select>
+              </div>
+
+              {isFilterActive && (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  style={{ height: "2.3rem" }}
+                  onClick={handleClear}
+                >
+                  Clear
+                </button>
+              )}
+            </>
+          )}
         </div>
 
         <input

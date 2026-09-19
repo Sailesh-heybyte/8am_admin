@@ -20,6 +20,8 @@ export default function RfidCards() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [assignmentFilter, setAssignmentFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cardToMap, setCardToMap] = useState(null);
   const [cardToUnmap, setCardToUnmap] = useState(null);
@@ -60,13 +62,38 @@ export default function RfidCards() {
     setCardToUnmap(null);
   };
 
-  const filteredCards = useMemo(
-    () =>
-      cards.filter((card) =>
-        (card.cardNumber || "").toLowerCase().includes(query.toLowerCase()),
-      ),
-    [cards, query],
-  );
+  const isFilterActive =
+    query.trim() !== "" ||
+    assignmentFilter !== "All" ||
+    statusFilter !== "All";
+
+  const handleClear = () => {
+    setQuery("");
+    setAssignmentFilter("All");
+    setStatusFilter("All");
+  };
+
+  const filteredCards = useMemo(() => {
+    const search = query.trim().toLowerCase();
+
+    return cards.filter((card) => {
+      const matchesSearch =
+        search === "" ||
+        card.cardNumber.toLowerCase().includes(search);
+
+      const matchesAssignment =
+        assignmentFilter === "All" ||
+        (assignmentFilter === "Assigned"
+          ? Boolean(card.studentId)
+          : !card.studentId);
+
+      const matchesStatus =
+        statusFilter === "All" ||
+        (statusFilter === "Active" ? card.isActive : !card.isActive);
+
+      return matchesSearch && matchesAssignment && matchesStatus;
+    });
+  }, [cards, query, assignmentFilter, statusFilter]);
 
   const renderTable = () => {
     if (loading) {
@@ -99,7 +126,13 @@ export default function RfidCards() {
     return (
       <DataTable
         className="rfid-table-card"
-        headers={["Card Number", "Student", "Status", "Created", "Actions"]}
+        headers={[
+          { label: "Card Number", sortKey: "cardNumber" },
+          "Student",
+          { label: "Status", sortKey: "isActive" },
+          { label: "Created", sortKey: "createdAtIso" },
+          "Actions",
+        ]}
         rows={filteredCards.map((card) => [
           <code key={`${card.id}-number`} className="device-serial-cell">
             {card.cardNumber}
@@ -122,7 +155,7 @@ export default function RfidCards() {
             <button
               key={`${card.id}-action`}
               type="button"
-              className="table-action"
+              className="table-action table-action-danger"
               onClick={() => setCardToUnmap(card)}
             >
               Unmap
@@ -137,6 +170,13 @@ export default function RfidCards() {
               Map to Student
             </button>
           ),
+        ])}
+        sortValues={filteredCards.map((card) => [
+          card.cardNumber,
+          null,
+          card.isActive,
+          card.createdAtIso,
+          null,
         ])}
         withoutFilter={false}
         footer={`Showing ${filteredCards.length} of ${cards.length} cards`}
@@ -166,6 +206,43 @@ export default function RfidCards() {
       />
 
       <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          <div className="filter-group">
+            <label>Assignment:</label>
+            <select
+              value={assignmentFilter}
+              onChange={(event) => setAssignmentFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Assigned">Assigned</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <input
           type="search"
           placeholder="Search by card number..."

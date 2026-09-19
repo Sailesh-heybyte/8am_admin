@@ -41,6 +41,7 @@ function toUiUser(apiUser = {}) {
     roleIds: apiUser.role_ids || [],
     roleNames: apiUser.roles.map((role) => role.name),
     createdAt: formatDate(apiUser.created_at),
+    createdAtIso: apiUser.created_at,
   };
 }
 
