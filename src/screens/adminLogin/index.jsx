@@ -57,6 +57,7 @@ function App({ onLogout }) {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
+  const [me, setMe] = useState(null);
 
   const activeMenu = menuItems.find((item) => item.path === location.pathname);
 
@@ -70,6 +71,7 @@ function App({ onLogout }) {
   useEffect(() => {
     getMe()
       .then((data) => {
+        setMe(data);
         if (data?.must_change_password) {
           navigate("/change-password", { replace: true });
         }
@@ -203,7 +205,7 @@ function App({ onLogout }) {
         </header>
 
         <section className="page-content">
-          <Outlet />
+          <Outlet context={{ me }} />
         </section>
       </main>
 
