@@ -9,7 +9,7 @@ import {
   getRoles,
   getPermissions,
   createRole,
-  assignPermissions,
+  updateRolePermissions,
 } from "../../../api/roles.js";
 
 export default function Roles() {
@@ -17,6 +17,7 @@ export default function Roles() {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [permissionsError, setPermissionsError] = useState("");
   const [actionError, setActionError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [roleToEdit, setRoleToEdit] = useState(null);
@@ -41,8 +42,12 @@ export default function Roles() {
 
   const loadPermissions = async () => {
     if (permissions.length > 0) return;
-    const data = await getPermissions();
-    setPermissions(data);
+    try {
+      const data = await getPermissions();
+      setPermissions(data);
+    } catch (err) {
+      setPermissionsError(err.message || "Could not load permissions");
+    }
   };
 
   const filteredRoles = roles.filter((role) =>
@@ -51,29 +56,23 @@ export default function Roles() {
 
   const openCreate = async () => {
     setActionError("");
-    try {
-      await loadPermissions();
-      setRoleToEdit(null);
-      setIsModalOpen(true);
-    } catch {
-      setActionError("Could not open the role form. Please try again.");
-    }
+    setPermissionsError("");
+    setRoleToEdit(null);
+    setIsModalOpen(true);
+    await loadPermissions();
   };
 
   const openEdit = async (role) => {
     setActionError("");
-    try {
-      await loadPermissions();
-      setRoleToEdit(role);
-      setIsModalOpen(true);
-    } catch {
-      setActionError("Could not open the role form. Please try again.");
-    }
+    setPermissionsError("");
+    setRoleToEdit(role);
+    setIsModalOpen(true);
+    await loadPermissions();
   };
 
   const handleSave = async (formData) => {
     if (roleToEdit?.id) {
-      await assignPermissions(roleToEdit.id, formData.permissions);
+      await updateRolePermissions(roleToEdit.id, formData.permissions);
     } else {
       await createRole(formData);
     }
@@ -157,6 +156,7 @@ export default function Roles() {
           isOpen={isModalOpen}
           role={roleToEdit}
           permissions={permissions}
+          permissionsError={permissionsError}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSave}
         />

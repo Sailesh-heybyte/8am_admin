@@ -6,16 +6,15 @@ export default function RoleModal({
   isOpen,
   role,
   permissions,
+  permissionsError,
   onClose,
   onSave,
 }) {
   const isEditMode = Boolean(role?.id);
 
   const [formData, setFormData] = useState(() => ({
-    name: role?.name || "",
-    permissions: Array.isArray(role?.permissions)
-      ? role.permissions.map((p) => (typeof p === "string" ? p : p.codename))
-      : [],
+    name: role ? role.name : "",
+    permissions: [],
   }));
 
   const [isLoadingRole, setIsLoadingRole] = useState(isEditMode);
@@ -25,30 +24,26 @@ export default function RoleModal({
 
   useEffect(() => {
     if (!isEditMode || !role?.id) {
-      setIsLoadingRole(false);
       return;
     }
 
     let isMounted = true;
-    setIsLoadingRole(true);
 
     getRole(role.id)
       .then((fullRole) => {
         if (!isMounted) return;
-        const codenames = (fullRole.permissions || []).map((p) =>
-          typeof p === "string" ? p : p.codename,
-        );
+        const codenames = fullRole.permissions.map((p) => p.codename);
         setFormData((current) => ({
           ...current,
-          name: fullRole.name || role.name || "",
+          name: fullRole.name,
           permissions: codenames,
         }));
+        setIsLoadingRole(false);
       })
       .catch((err) => {
+        if (!isMounted) return;
         console.error("Failed to load role details:", err);
-      })
-      .finally(() => {
-        if (isMounted) setIsLoadingRole(false);
+        setError("Failed to load role permissions.");
       });
 
     return () => {
@@ -86,6 +81,8 @@ export default function RoleModal({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (permissionsError) return;
 
     if (formData.permissions.length === 0 && !confirmEmptyWarning) {
       setConfirmEmptyWarning(true);
@@ -157,7 +154,7 @@ export default function RoleModal({
                     type="button"
                     className="select-all-btn"
                     onClick={handleToggleSelectAll}
-                    disabled={isLoadingRole}
+                    disabled={isLoadingRole || Boolean(permissionsError)}
                   >
                     {allSelected ? "Deselect All" : "Select All"}
                   </button>
@@ -169,7 +166,12 @@ export default function RoleModal({
                 </div>
               </div>
 
-              {isLoadingRole ? (
+              {permissionsError ? (
+                <div className="add-user-error" role="alert">
+                  <i className="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                  <span>{permissionsError}</span>
+                </div>
+              ) : isLoadingRole ? (
                 <p className="roles-message">Loading role permissions...</p>
               ) : (
                 <div className="permission-list">
@@ -215,7 +217,7 @@ export default function RoleModal({
             <button
               type="submit"
               className="modal-save"
-              disabled={isSaving || isLoadingRole}
+              disabled={isSaving || isLoadingRole || Boolean(permissionsError)}
             >
               {isSaving
                 ? "Saving..."
