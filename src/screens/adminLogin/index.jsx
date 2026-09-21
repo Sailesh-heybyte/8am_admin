@@ -127,7 +127,6 @@ function App({ onLogout }) {
               <h2>
                 8AM<span>Admin</span>
               </h2>
-              <p>Super Admin</p>
             </div>
           )}
         </div>
