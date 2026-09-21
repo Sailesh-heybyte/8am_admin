@@ -3,6 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../../App.scss";
 
 import { logout, getMe } from "../../api/auth.js";
+import { getTokenPermissions, refreshSession } from "../../api/client.js";
 import ProfileModal from "./popups/ProfileModal.jsx";
 
 const menuItems = [
@@ -70,10 +71,20 @@ function App({ onLogout }) {
   // cannot reach any screen until they have changed it.
   useEffect(() => {
     getMe()
-      .then((data) => {
+      .then(async (data) => {
         setMe(data);
         if (data?.must_change_password) {
           navigate("/change-password", { replace: true });
+        }
+
+        const tokenPerms = new Set(getTokenPermissions());
+        const mePerms = new Set(data.permissions);
+        const permsDiffer =
+          tokenPerms.size !== mePerms.size ||
+          [...tokenPerms].some((p) => !mePerms.has(p));
+
+        if (permsDiffer) {
+          await refreshSession();
         }
       })
       .catch(async () => {
