@@ -59,15 +59,6 @@ export default function Branches() {
     }
   };
 
-  const handleSchoolChange = (event) => {
-    const schoolId = event.target.value;
-    setSelectedSchoolId(schoolId);
-    setQuery("");
-    setStatusFilter("All");
-    setTypeFilter("All");
-    loadBranches(schoolId);
-  };
-
   // Create is nested under the school, update is not. The backend
   // paths differ, so the two calls take different ids.
   const handleSaveBranch = async (branch, branchId) => {

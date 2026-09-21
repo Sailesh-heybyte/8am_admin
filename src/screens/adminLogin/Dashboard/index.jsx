@@ -5,7 +5,7 @@ import AccessRestricted, {
 } from "../../../components/AccessRestricted.jsx";
 
 export default function Dashboard(props) {
-  const context = useOutletContext() || {};
+  const context = useOutletContext();
   const {
     users = [],
     schools = [],

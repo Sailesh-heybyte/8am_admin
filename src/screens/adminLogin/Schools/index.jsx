@@ -158,7 +158,7 @@ export default function Schools() {
     <>
       <PageTitle
         title="Schools"
-        description="Manage all schools connected to the BusGuard platform."
+        description="Manage all schools connected to the 8AM platform."
         button="+ Add School"
         onButtonClick={() => {
           setSchoolToEdit(null);

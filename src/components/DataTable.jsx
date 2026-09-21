@@ -12,7 +12,7 @@ function compareValues(a, b, direction) {
   if (aEmpty) return 1;
   if (bEmpty) return -1;
 
-  let comparison = 0;
+  let comparison;
   if (typeof a === "number" && typeof b === "number") {
     comparison = a - b;
   } else if (typeof a === "boolean" && typeof b === "boolean") {
