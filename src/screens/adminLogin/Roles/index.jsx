@@ -18,6 +18,7 @@ export default function Roles() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [permissionsError, setPermissionsError] = useState("");
+  const [permissionsLoading, setPermissionsLoading] = useState(false);
   const [actionError, setActionError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [roleToEdit, setRoleToEdit] = useState(null);
@@ -42,11 +43,14 @@ export default function Roles() {
 
   const loadPermissions = async () => {
     if (permissions.length > 0) return;
+    setPermissionsLoading(true);
     try {
       const data = await getPermissions();
       setPermissions(data);
     } catch (err) {
       setPermissionsError(err.message || "Could not load permissions");
+    } finally {
+      setPermissionsLoading(false);
     }
   };
 
@@ -157,6 +161,7 @@ export default function Roles() {
           role={roleToEdit}
           permissions={permissions}
           permissionsError={permissionsError}
+          permissionsLoading={permissionsLoading}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSave}
         />

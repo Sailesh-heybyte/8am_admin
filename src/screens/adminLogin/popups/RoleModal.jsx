@@ -7,6 +7,7 @@ export default function RoleModal({
   role,
   permissions,
   permissionsError,
+  permissionsLoading,
   onClose,
   onSave,
 }) {
@@ -82,7 +83,7 @@ export default function RoleModal({
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (permissionsError) return;
+    if (permissionsError || permissionsLoading) return;
 
     if (formData.permissions.length === 0 && !confirmEmptyWarning) {
       setConfirmEmptyWarning(true);
@@ -154,12 +155,16 @@ export default function RoleModal({
                     type="button"
                     className="select-all-btn"
                     onClick={handleToggleSelectAll}
-                    disabled={isLoadingRole || Boolean(permissionsError)}
+                    disabled={
+                      isLoadingRole ||
+                      permissionsLoading ||
+                      Boolean(permissionsError)
+                    }
                   >
                     {allSelected ? "Deselect All" : "Select All"}
                   </button>
                   <span>
-                    {isLoadingRole
+                    {isLoadingRole || permissionsLoading
                       ? "..."
                       : `${formData.permissions.length} selected`}
                   </span>
@@ -171,6 +176,8 @@ export default function RoleModal({
                   <i className="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
                   <span>{permissionsError}</span>
                 </div>
+              ) : permissionsLoading ? (
+                <p className="roles-message">Loading role permissions...</p>
               ) : isLoadingRole ? (
                 <p className="roles-message">Loading role permissions...</p>
               ) : (
@@ -217,7 +224,12 @@ export default function RoleModal({
             <button
               type="submit"
               className="modal-save"
-              disabled={isSaving || isLoadingRole || Boolean(permissionsError)}
+              disabled={
+                isSaving ||
+                isLoadingRole ||
+                permissionsLoading ||
+                Boolean(permissionsError)
+              }
             >
               {isSaving
                 ? "Saving..."
