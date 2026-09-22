@@ -21,7 +21,7 @@ function toApiDevice(device = {}) {
 
 export const getDevices = async () => {
   const data = await apiCall("/devices");
-  return Array.isArray(data) ? data.map(toUiDevice) : [];
+  return data.map(toUiDevice);
 };
 
 export const createDevice = (data) =>

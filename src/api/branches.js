@@ -33,7 +33,7 @@ function toApiBranchUpdate(branch = {}) {
 
 export const getBranches = async (schoolId) => {
   const data = await apiCall(`/tenancy/schools/${schoolId}/branches`);
-  return Array.isArray(data) ? data.map(toUiBranch) : [];
+  return data.map(toUiBranch);
 };
 
 export const createBranch = (schoolId, data) =>

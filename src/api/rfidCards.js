@@ -22,7 +22,7 @@ function toApiCard(card = {}) {
 
 export const getRfidCards = async () => {
   const data = await apiCall("/rfid-cards");
-  return Array.isArray(data) ? data.map(toUiCard) : [];
+  return data.map(toUiCard);
 };
 
 export const createRfidCard = (data) =>

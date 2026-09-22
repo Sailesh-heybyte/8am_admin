@@ -38,7 +38,7 @@ function toUiUser(apiUser = {}) {
     email: apiUser.email || "",
     phoneNumber: apiUser.phone_number || "",
     isActive: Boolean(apiUser.is_active),
-    roleIds: apiUser.role_ids || [],
+    roleIds: apiUser.role_ids,
     roleNames: apiUser.roles.map((role) => role.name),
     createdAt: formatDate(apiUser.created_at),
     createdAtIso: apiUser.created_at,
@@ -101,7 +101,7 @@ function toApiUser(uiUser = {}) {
 // GET /api/v1/iam/platform-users
 export const getUsers = async () => {
   const data = await apiCall("/iam/platform-users");
-  return Array.isArray(data) ? data.map(toUiUser) : [];
+  return data.map(toUiUser);
 };
 
 // POST /api/v1/iam/platform-users
