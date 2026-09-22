@@ -3,15 +3,14 @@ import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import AddUserModal from "../popups/AddUserModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-} from "../../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../../utils/errors.js";
 import { createUser, getUsers } from "../../../api/users.js";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
-  const [usersError, setUsersError] = useState("");
+  const [usersError, setUsersError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("All roles");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -21,9 +20,9 @@ export default function Users() {
     try {
       const data = await getUsers();
       setUsers(data);
-      setUsersError("");
+      setUsersError(null);
     } catch (err) {
-      setUsersError(err.message || "Failed to load users.");
+      setUsersError(err);
     } finally {
       setUsersLoading(false);
     }
@@ -158,7 +157,7 @@ export default function Users() {
         <div
           style={{ padding: "1.5rem", color: "#d9534f", fontSize: "0.85rem" }}
         >
-          {usersError}
+          {usersError.message}
         </div>
       ) : (
         <DataTable

@@ -5,9 +5,8 @@ import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeviceModal from "../popups/DeviceModal.jsx";
 import DeviceMapModal from "../popups/DeviceMapModal.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-} from "../../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../../utils/errors.js";
 import {
   getDevices,
   createDevice,
@@ -18,7 +17,7 @@ import {
 export default function Devices() {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [mappingFilter, setMappingFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -29,13 +28,13 @@ export default function Devices() {
   // GET /devices
   const loadDevices = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
 
     try {
       const data = await getDevices();
       setDevices(data);
     } catch (err) {
-      setError(err.message || "Failed to load devices.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -244,7 +243,7 @@ export default function Devices() {
         />
       </div>
 
-      {error && <p className="branch-error">{error}</p>}
+      {error && <p className="branch-error">{error.message}</p>}
 
       {renderTable()}
 

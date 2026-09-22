@@ -1,8 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import StatCard from "../../../components/StatCard.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-} from "../../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../../utils/errors.js";
 
 export default function Dashboard(props) {
   const context = useOutletContext();

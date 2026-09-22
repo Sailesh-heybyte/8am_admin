@@ -4,9 +4,8 @@ import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
 import TypeAhead from "../../../components/TypeAhead.jsx";
 import BranchModal from "../popups/BranchModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-} from "../../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../../utils/errors.js";
 import { getSchools } from "../../../api/schools.js";
 import {
   getBranches,
@@ -23,7 +22,7 @@ export default function Branches() {
   const [selectedSchoolId, setSelectedSchoolId] = useState("");
   const [branches, setBranches] = useState([]);
   const [branchesLoading, setBranchesLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
@@ -34,7 +33,7 @@ export default function Branches() {
   useEffect(() => {
     getSchools()
       .then((data) => setSchools(data))
-      .catch((err) => setError(err.message || "Failed to load schools."))
+      .catch((err) => setError(err))
       .finally(() => setSchoolsLoading(false));
   }, []);
 
@@ -46,13 +45,13 @@ export default function Branches() {
     }
 
     setBranchesLoading(true);
-    setError("");
+    setError(null);
 
     try {
       const data = await getBranches(schoolId);
       setBranches(data);
     } catch (err) {
-      setError(err.message || "Failed to load branches.");
+      setError(err);
       setBranches([]);
     } finally {
       setBranchesLoading(false);
@@ -124,14 +123,14 @@ export default function Branches() {
         <AccessRestricted
           resource="branches"
           onRetry={() => {
-            setError("");
+            setError(null);
             if (selectedSchoolId) {
               loadBranches(selectedSchoolId);
             } else {
               setSchoolsLoading(true);
               getSchools()
                 .then(setSchools)
-                .catch((err) => setError(err.message || "Failed to load schools."))
+                .catch((err) => setError(err))
                 .finally(() => setSchoolsLoading(false));
             }
           }}
@@ -308,7 +307,7 @@ export default function Branches() {
         />
       </div>
 
-      {error && <p className="branch-error">{error}</p>}
+      {error && <p className="branch-error">{error.message}</p>}
 
       {renderTable()}
 

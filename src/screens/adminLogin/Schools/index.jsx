@@ -5,9 +5,8 @@ import StatusBadge from "../../../components/StatusBadge.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddSchoolModal from "../popups/AddSchoolModal.jsx";
 import SchoolDetails from "./SchoolDetails.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-} from "../../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../../utils/errors.js";
 import {
   getSchools,
   createSchool,
@@ -19,7 +18,7 @@ import {
 export default function Schools() {
   const [schools, setSchools] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
 
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
@@ -32,9 +31,9 @@ export default function Schools() {
     try {
       const data = await getSchools();
       setSchools(data);
-      setError("");
+      setError(null);
     } catch (err) {
-      setError(err.message || "Failed to load schools.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -196,7 +195,7 @@ export default function Schools() {
         <div
           style={{ padding: "1.5rem", color: "#d9534f", fontSize: "0.85rem" }}
         >
-          {error}
+          {error.message}
         </div>
       ) : (
         <DataTable

@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import RoleModal from "../popups/RoleModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-} from "../../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../../utils/errors.js";
 import {
   getRoles,
   getPermissions,
@@ -16,7 +15,7 @@ export default function Roles() {
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [permissionsError, setPermissionsError] = useState("");
   const [permissionsLoading, setPermissionsLoading] = useState(false);
   const [actionError, setActionError] = useState("");
@@ -26,12 +25,12 @@ export default function Roles() {
 
   const loadRoles = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getRoles();
       setRoles(data);
     } catch (err) {
-      setError(err.message || "Could not load roles");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -128,7 +127,7 @@ export default function Roles() {
         <div
           style={{ padding: "1.5rem", color: "#d9534f", fontSize: "0.85rem" }}
         >
-          {error}
+          {error.message}
         </div>
       ) : (
         <DataTable
