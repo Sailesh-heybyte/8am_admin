@@ -191,12 +191,14 @@ export default function Users() {
         />
       )}
 
-      <AddUserModal
-        isOpen={isAddUserOpen}
-        onClose={() => setIsAddUserOpen(false)}
-        title="Create Platform User"
-        onSave={handleSave}
-      />
+      {isAddUserOpen && (
+        <AddUserModal
+          isOpen={isAddUserOpen}
+          onClose={() => setIsAddUserOpen(false)}
+          title="Create Platform User"
+          onSave={handleSave}
+        />
+      )}
     </>
   );
 }

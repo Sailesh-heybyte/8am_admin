@@ -256,14 +256,16 @@ export default function RfidCards() {
 
       {renderTable()}
 
-      <RfidCardModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={async (card) => {
-          await handleSaveCard(card);
-          setIsModalOpen(false);
-        }}
-      />
+      {isModalOpen && (
+        <RfidCardModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={async (card) => {
+            await handleSaveCard(card);
+            setIsModalOpen(false);
+          }}
+        />
+      )}
 
       <CardMapModal
         key={cardToMap?.id || "none"}

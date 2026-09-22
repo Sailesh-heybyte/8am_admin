@@ -247,14 +247,16 @@ export default function Devices() {
 
       {renderTable()}
 
-      <DeviceModal
-        isOpen={isDeviceModalOpen}
-        onClose={() => setIsDeviceModalOpen(false)}
-        onSave={async (device) => {
-          await handleSaveDevice(device);
-          setIsDeviceModalOpen(false);
-        }}
-      />
+      {isDeviceModalOpen && (
+        <DeviceModal
+          isOpen={isDeviceModalOpen}
+          onClose={() => setIsDeviceModalOpen(false)}
+          onSave={async (device) => {
+            await handleSaveDevice(device);
+            setIsDeviceModalOpen(false);
+          }}
+        />
+      )}
 
       <DeviceMapModal
         key={deviceToMap?.id || "none"}

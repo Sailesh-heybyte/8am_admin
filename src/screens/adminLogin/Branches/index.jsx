@@ -311,17 +311,19 @@ export default function Branches() {
 
       {renderTable()}
 
-      <BranchModal
-        key={branchToEdit?.id || "new-branch"}
-        isOpen={isFormOpen}
-        branch={branchToEdit}
-        schoolName={selectedSchoolName}
-        onClose={() => setIsFormOpen(false)}
-        onSave={async (branch) => {
-          await handleSaveBranch(branch, branchToEdit?.id);
-          setIsFormOpen(false);
-        }}
-      />
+      {isFormOpen && (
+        <BranchModal
+          key={branchToEdit?.id || "new-branch"}
+          isOpen={isFormOpen}
+          branch={branchToEdit}
+          schoolName={selectedSchoolName}
+          onClose={() => setIsFormOpen(false)}
+          onSave={async (branch) => {
+            await handleSaveBranch(branch, branchToEdit?.id);
+            setIsFormOpen(false);
+          }}
+        />
+      )}
     </>
   );
 }

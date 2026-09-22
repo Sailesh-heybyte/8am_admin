@@ -135,20 +135,22 @@ export default function Schools() {
               : "Reactivate School"
           }
         />
-        <AddSchoolModal
-          key={schoolToEdit?.id || "new-school"}
-          isOpen={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
-          initialData={schoolToEdit}
-          title="Update School"
-          onSave={async (schoolData) => {
-            await handleSaveSchool(schoolData, schoolToEdit?.id);
-            setSelectedSchool((prev) =>
-              prev ? { ...prev, ...schoolData } : prev,
-            );
-            setIsFormOpen(false);
-          }}
-        />
+        {isFormOpen && (
+          <AddSchoolModal
+            key={schoolToEdit?.id || "new-school"}
+            isOpen={isFormOpen}
+            onClose={() => setIsFormOpen(false)}
+            initialData={schoolToEdit}
+            title="Update School"
+            onSave={async (schoolData) => {
+              await handleSaveSchool(schoolData, schoolToEdit?.id);
+              setSelectedSchool((prev) =>
+                prev ? { ...prev, ...schoolData } : prev,
+              );
+              setIsFormOpen(false);
+            }}
+          />
+        )}
       </>
     );
   }
@@ -277,17 +279,19 @@ export default function Schools() {
             : "Reactivate School"
         }
       />
-      <AddSchoolModal
-        key={schoolToEdit?.id || "new-school"}
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        initialData={schoolToEdit}
-        title={schoolToEdit ? "Update School" : "Create School"}
-        onSave={async (schoolData) => {
-          await handleSaveSchool(schoolData, schoolToEdit?.id);
-          setIsFormOpen(false);
-        }}
-      />
+      {isFormOpen && (
+        <AddSchoolModal
+          key={schoolToEdit?.id || "new-school"}
+          isOpen={isFormOpen}
+          onClose={() => setIsFormOpen(false)}
+          initialData={schoolToEdit}
+          title={schoolToEdit ? "Update School" : "Create School"}
+          onSave={async (schoolData) => {
+            await handleSaveSchool(schoolData, schoolToEdit?.id);
+            setIsFormOpen(false);
+          }}
+        />
+      )}
     </>
   );
 }
