@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
+import TypeAhead from "../../../components/TypeAhead.jsx";
 import RfidCardModal from "../popups/RfidCardModal.jsx";
 import CardMapModal from "../popups/CardMapModal.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
@@ -19,8 +20,8 @@ export default function RfidCards() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
-  const [assignmentFilter, setAssignmentFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [assignmentFilter, setAssignmentFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cardToMap, setCardToMap] = useState(null);
   const [cardToUnmap, setCardToUnmap] = useState(null);
@@ -63,13 +64,13 @@ export default function RfidCards() {
 
   const isFilterActive =
     query.trim() !== "" ||
-    assignmentFilter !== "All" ||
-    statusFilter !== "All";
+    assignmentFilter !== "" ||
+    statusFilter !== "";
 
   const handleClear = () => {
     setQuery("");
-    setAssignmentFilter("All");
-    setStatusFilter("All");
+    setAssignmentFilter("");
+    setStatusFilter("");
   };
 
   const filteredCards = useMemo(() => {
@@ -82,13 +83,13 @@ export default function RfidCards() {
         (card.admissionNumber || "").toLowerCase().includes(search);
 
       const matchesAssignment =
-        assignmentFilter === "All" ||
+        assignmentFilter === "" ||
         (assignmentFilter === "Assigned"
           ? Boolean(card.studentId)
           : !card.studentId);
 
       const matchesStatus =
-        statusFilter === "All" ||
+        statusFilter === "" ||
         (statusFilter === "Active" ? card.isActive : !card.isActive);
 
       return matchesSearch && matchesAssignment && matchesStatus;
@@ -210,26 +211,30 @@ export default function RfidCards() {
         <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
           <div className="filter-group">
             <label>Assignment:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Assigned", label: "Assigned" },
+                { value: "Unassigned", label: "Unassigned" },
+              ]}
               value={assignmentFilter}
-              onChange={(event) => setAssignmentFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Assigned">Assigned</option>
-              <option value="Unassigned">Unassigned</option>
-            </select>
+              onChange={setAssignmentFilter}
+              placeholder="All"
+              noMatchMessage="No options found"
+            />
           </div>
 
           <div className="filter-group">
             <label>Status:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" },
+              ]}
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
 
           {isFilterActive && (

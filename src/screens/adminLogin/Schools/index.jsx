@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
+import TypeAhead from "../../../components/TypeAhead.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
 import AddSchoolModal from "../popups/AddSchoolModal.jsx";
 import SchoolDetails from "./SchoolDetails.jsx";
@@ -21,7 +22,7 @@ export default function Schools() {
   const [error, setError] = useState(null);
 
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All Status");
+  const [statusFilter, setStatusFilter] = useState("");
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [schoolToChange, setSchoolToChange] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -69,10 +70,17 @@ export default function Schools() {
             .join(" ")
             .toLowerCase()
             .includes(query.toLowerCase()) &&
-          (statusFilter === "All Status" || school.status === statusFilter),
+          (statusFilter === "" || school.status === statusFilter),
       ),
     [query, statusFilter, schools],
   );
+
+  const isFilterActive = query.trim() !== "" || statusFilter !== "";
+
+  const handleClear = () => {
+    setQuery("");
+    setStatusFilter("");
+  };
 
   if (isPermissionDenied(error)) {
     return (
@@ -166,27 +174,40 @@ export default function Schools() {
           setIsFormOpen(true);
         }}
       />
-      <div className="filter-card ">
-        <div style={{ display: "flex", gap: "1rem" }}>
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
           <div className="filter-group">
-            <label>Filter by Status:</label>
-            <select
+            <label>Status:</label>
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Suspended", label: "Suspended" },
+              ]}
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Suspended</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
         </div>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search schools..."
-          />
-        </div>
+
+        <input
+          type="search"
+          placeholder="Search schools..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
       </div>
 
       {loading ? (

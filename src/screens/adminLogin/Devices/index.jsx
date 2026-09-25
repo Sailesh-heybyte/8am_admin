@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
+import TypeAhead from "../../../components/TypeAhead.jsx";
 import DeviceModal from "../popups/DeviceModal.jsx";
 import DeviceMapModal from "../popups/DeviceMapModal.jsx";
 import DeleteConfirmationModal from "../popups/DeleteConfirmationModal.jsx";
@@ -19,8 +20,8 @@ export default function Devices() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
-  const [mappingFilter, setMappingFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [mappingFilter, setMappingFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
   const [deviceToMap, setDeviceToMap] = useState(null);
   const [deviceToUnmap, setDeviceToUnmap] = useState(null);
@@ -63,13 +64,13 @@ export default function Devices() {
 
   const isFilterActive =
     query.trim() !== "" ||
-    mappingFilter !== "All" ||
-    statusFilter !== "All";
+    mappingFilter !== "" ||
+    statusFilter !== "";
 
   const handleClear = () => {
     setQuery("");
-    setMappingFilter("All");
-    setStatusFilter("All");
+    setMappingFilter("");
+    setStatusFilter("");
   };
 
   const filteredDevices = useMemo(() => {
@@ -81,11 +82,11 @@ export default function Devices() {
         (device.serialNumber || "").toLowerCase().includes(search);
 
       const matchesMapping =
-        mappingFilter === "All" ||
+        mappingFilter === "" ||
         (mappingFilter === "Mapped" ? Boolean(device.busId) : !device.busId);
 
       const matchesStatus =
-        statusFilter === "All" ||
+        statusFilter === "" ||
         (statusFilter === "Active" ? device.isActive : !device.isActive);
 
       return matchesSearch && matchesMapping && matchesStatus;
@@ -201,26 +202,30 @@ export default function Devices() {
         <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
           <div className="filter-group">
             <label>Mapping:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Mapped", label: "Mapped" },
+                { value: "Unmapped", label: "Unmapped" },
+              ]}
               value={mappingFilter}
-              onChange={(event) => setMappingFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Mapped">Mapped</option>
-              <option value="Unmapped">Unmapped</option>
-            </select>
+              onChange={setMappingFilter}
+              placeholder="All"
+              noMatchMessage="No options found"
+            />
           </div>
 
           <div className="filter-group">
             <label>Status:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" },
+              ]}
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
 
           {isFilterActive && (

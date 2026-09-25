@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
+import TypeAhead from "../../../components/TypeAhead.jsx";
 import AddUserModal from "../popups/AddUserModal.jsx";
 import AccessRestricted from "../../../components/AccessRestricted.jsx";
 import { isPermissionDenied } from "../../../utils/errors.js";
@@ -12,8 +13,8 @@ export default function Users() {
   const [usersLoading, setUsersLoading] = useState(true);
   const [usersError, setUsersError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("All roles");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
 
   const loadUsers = async () => {
@@ -45,13 +46,13 @@ export default function Users() {
 
   const isFilterActive =
     searchTerm.trim() !== "" ||
-    roleFilter !== "All roles" ||
-    statusFilter !== "All";
+    roleFilter !== "" ||
+    statusFilter !== "";
 
   const handleClear = () => {
     setSearchTerm("");
-    setRoleFilter("All roles");
-    setStatusFilter("All");
+    setRoleFilter("");
+    setStatusFilter("");
   };
 
   const filteredUsers = users.filter((user) => {
@@ -65,10 +66,10 @@ export default function Users() {
         .includes(search);
 
     const matchesRole =
-      roleFilter === "All roles" || user.roleNames.includes(roleFilter);
+      roleFilter === "" || user.roleNames.includes(roleFilter);
 
     const matchesStatus =
-      statusFilter === "All" ||
+      statusFilter === "" ||
       (statusFilter === "Active" ? user.isActive : !user.isActive);
 
     return matchesSearch && matchesRole && matchesStatus;
@@ -104,29 +105,28 @@ export default function Users() {
         <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
           <div className="filter-group">
             <label>Role:</label>
-            <select
+            <TypeAhead
+              options={roleOptions.map((role) => ({ value: role, label: role }))}
               value={roleFilter}
-              onChange={(event) => setRoleFilter(event.target.value)}
-            >
-              <option value="All roles">All roles</option>
-              {roleOptions.map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
+              onChange={setRoleFilter}
+              placeholder="All roles"
+              emptyMessage="No roles available"
+              noMatchMessage="No roles found"
+            />
           </div>
 
           <div className="filter-group">
             <label>Status:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" },
+              ]}
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
 
           {isFilterActive && (
@@ -142,7 +142,7 @@ export default function Users() {
         </div>
 
         <input
-          type="text"
+          type="search"
           placeholder="Search users..."
           value={searchTerm}
           onChange={(event) => setSearchTerm(event.target.value)}

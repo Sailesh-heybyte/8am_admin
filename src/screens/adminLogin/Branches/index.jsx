@@ -24,8 +24,8 @@ export default function Branches() {
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [typeFilter, setTypeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
   const [branchToEdit, setBranchToEdit] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -80,13 +80,13 @@ export default function Branches() {
 
   const isFilterActive =
     query.trim() !== "" ||
-    statusFilter !== "All" ||
-    typeFilter !== "All";
+    statusFilter !== "" ||
+    typeFilter !== "";
 
   const handleClear = () => {
     setQuery("");
-    setStatusFilter("All");
-    setTypeFilter("All");
+    setStatusFilter("");
+    setTypeFilter("");
   };
 
   const filteredBranches = useMemo(() => {
@@ -100,11 +100,11 @@ export default function Branches() {
           .includes(search);
 
       const matchesStatus =
-        statusFilter === "All" ||
+        statusFilter === "" ||
         (statusFilter === "Active" ? branch.isActive : !branch.isActive);
 
       const matchesType =
-        typeFilter === "All" ||
+        typeFilter === "" ||
         (typeFilter === "Main branch"
           ? branch.isMainBranch
           : !branch.isMainBranch);
@@ -247,8 +247,8 @@ export default function Branches() {
               onChange={(schoolId) => {
                 setSelectedSchoolId(schoolId);
                 setQuery("");
-                setStatusFilter("All");
-                setTypeFilter("All");
+                setStatusFilter("");
+                setTypeFilter("");
                 loadBranches(schoolId);
               }}
               placeholder="Select a school"
@@ -262,26 +262,30 @@ export default function Branches() {
             <>
               <div className="filter-group">
                 <label>Status:</label>
-                <select
+                <TypeAhead
+                  options={[
+                    { value: "Active", label: "Active" },
+                    { value: "Inactive", label: "Inactive" },
+                  ]}
                   value={statusFilter}
-                  onChange={(event) => setStatusFilter(event.target.value)}
-                >
-                  <option value="All">All</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
+                  onChange={setStatusFilter}
+                  placeholder="All"
+                  noMatchMessage="No statuses found"
+                />
               </div>
 
               <div className="filter-group">
                 <label>Type:</label>
-                <select
+                <TypeAhead
+                  options={[
+                    { value: "Main branch", label: "Main branch" },
+                    { value: "Other branches", label: "Other branches" },
+                  ]}
                   value={typeFilter}
-                  onChange={(event) => setTypeFilter(event.target.value)}
-                >
-                  <option value="All">All</option>
-                  <option value="Main branch">Main branch</option>
-                  <option value="Other branches">Other branches</option>
-                </select>
+                  onChange={setTypeFilter}
+                  placeholder="All"
+                  noMatchMessage="No types found"
+                />
               </div>
 
               {isFilterActive && (
