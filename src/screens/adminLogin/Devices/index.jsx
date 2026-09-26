@@ -153,7 +153,7 @@ export default function Devices() {
             >
               Unmap
             </button>
-          ) : (
+          ) : device.status === "active" ? (
             <button
               key={`${device.id}-action`}
               type="button"
@@ -162,6 +162,10 @@ export default function Devices() {
             >
               Map to Bus
             </button>
+          ) : (
+            <span key={`${device.id}-action`} className="device-unassigned">
+              Awaiting activation
+            </span>
           ),
         ])}
         sortValues={filteredDevices.map((device) => [
