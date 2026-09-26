@@ -942,7 +942,8 @@ tbody tr:hover {
   &.delayed,
   &.on-leave,
   &.medium,
-  &.expiring-soon {
+  &.expiring-soon,
+  &.pending {
     background: $orange-light;
     color: $orange;
   }

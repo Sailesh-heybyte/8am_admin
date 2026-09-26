@@ -86,8 +86,7 @@ export default function Devices() {
         (mappingFilter === "Mapped" ? Boolean(device.busId) : !device.busId);
 
       const matchesStatus =
-        statusFilter === "" ||
-        (statusFilter === "Active" ? device.isActive : !device.isActive);
+        statusFilter === "" || device.status === statusFilter;
 
       return matchesSearch && matchesMapping && matchesStatus;
     });
@@ -124,7 +123,7 @@ export default function Devices() {
         headers={[
           { label: "Serial Number", sortKey: "serialNumber" },
           { label: "Bus", sortKey: "registrationNumber" },
-          { label: "Status", sortKey: "isActive" },
+          { label: "Status", sortKey: "status" },
           { label: "Created", sortKey: "createdAtIso" },
           "Actions",
         ]}
@@ -141,7 +140,7 @@ export default function Devices() {
           ),
           <StatusBadge
             key={`${device.id}-status`}
-            status={device.isActive ? "Active" : "Inactive"}
+            status={device.status.charAt(0).toUpperCase() + device.status.slice(1)}
           />,
           device.createdAt || "-",
           device.busId ? (
@@ -171,7 +170,7 @@ export default function Devices() {
         sortValues={filteredDevices.map((device) => [
           device.serialNumber,
           device.registrationNumber,
-          device.isActive,
+          device.status,
           device.createdAtIso,
           null,
         ])}
@@ -222,8 +221,8 @@ export default function Devices() {
             <label>Status:</label>
             <TypeAhead
               options={[
-                { value: "Active", label: "Active" },
-                { value: "Inactive", label: "Inactive" },
+                { value: "active", label: "Active" },
+                { value: "pending", label: "Pending" },
               ]}
               value={statusFilter}
               onChange={setStatusFilter}
