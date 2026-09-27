@@ -78,6 +78,14 @@ export default function DataTable({
     currentPage * PAGE_SIZE,
   );
 
+  // Show at most 5 page buttons, centred on the current page.
+  const firstShown = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+  const lastShown = Math.min(totalPages, firstShown + 4);
+  const pageNumbers = [];
+  for (let number = firstShown; number <= lastShown; number++) {
+    pageNumbers.push(number);
+  }
+
   return (
     <div
       className={`table-card ${withoutFilter ? "without-filter" : ""} ${className}`}
@@ -187,7 +195,7 @@ export default function DataTable({
               >
                 ‹
               </button>
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              {pageNumbers.map(
                 (pageNumber) => (
                   <button
                     type="button"
