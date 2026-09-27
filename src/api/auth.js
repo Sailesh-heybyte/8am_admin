@@ -14,7 +14,9 @@ export async function login(identifier, password) {
 export async function refreshAccessToken() {
   const refresh_token = localStorage.getItem("refresh_token");
   if (!refresh_token) {
-    throw new Error("No refresh token");
+    const error = new Error("No refresh token");
+    error.status = 401;
+    throw error;
   }
   const data = await apiCall("/iam/refresh", {
     method: "POST",
