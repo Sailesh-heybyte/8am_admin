@@ -9,6 +9,7 @@ export default function DeviceModal({ isOpen, onClose, onSave }) {
   if (!isOpen) return null;
 
   const handleClose = () => {
+    if (isSubmitting) return;
     setSerialNumber("");
     setError("");
     onClose();
@@ -30,7 +31,7 @@ export default function DeviceModal({ isOpen, onClose, onSave }) {
   };
 
   return (
-    <div className="device-overlay" onMouseDown={handleClose}>
+    <div className="device-overlay">
       <div
         className="device-modal"
         onMouseDown={(event) => event.stopPropagation()}

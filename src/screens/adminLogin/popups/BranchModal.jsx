@@ -44,8 +44,14 @@ export default function BranchModal({
     }
   };
 
+  // Ignore close requests while a save is in progress.
+  const requestClose = () => {
+    if (isSubmitting) return;
+    onClose();
+  };
+
   return (
-    <div className="branch-overlay" onMouseDown={onClose}>
+    <div className="branch-overlay">
       <div
         className="branch-modal"
         onMouseDown={(event) => event.stopPropagation()}
@@ -59,7 +65,7 @@ export default function BranchModal({
                 : `Add a new branch to ${schoolName}.`}
             </p>
           </div>
-          <button type="button" className="branch-close" onClick={onClose}>
+          <button type="button" className="branch-close" onClick={requestClose}>
             <i className="bi bi-x"></i>
           </button>
         </div>
@@ -139,7 +145,7 @@ export default function BranchModal({
             <button
               type="button"
               className="modal-cancel"
-              onClick={onClose}
+              onClick={requestClose}
               disabled={isSubmitting}
             >
               Cancel

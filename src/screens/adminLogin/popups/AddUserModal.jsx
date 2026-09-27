@@ -132,6 +132,7 @@ const AddUserModal = ({
   };
 
   const handleClose = () => {
+    if (isSubmitting) return;
     setError("");
     setFormData(initialFormData);
     onClose();
@@ -211,7 +212,7 @@ const AddUserModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="add-user-overlay" onMouseDown={handleClose}>
+    <div className="add-user-overlay">
       <div className="add-user-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="add-user-header">
           <div>

@@ -76,7 +76,7 @@ const AddSchoolModal = ({
   }
 
   return (
-    <div className="add-school-overlay" onMouseDown={handleClose}>
+    <div className="add-school-overlay">
       <div
         className="add-school-modal"
         onMouseDown={(e) => e.stopPropagation()}

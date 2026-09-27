@@ -101,8 +101,14 @@ export default function RoleModal({
     }
   };
 
+  // Ignore close requests while a save is in progress.
+  const requestClose = () => {
+    if (isSaving) return;
+    onClose();
+  };
+
   return (
-    <div className="add-user-overlay" onMouseDown={onClose}>
+    <div className="add-user-overlay">
       <div
         className="add-user-modal role-modal"
         onMouseDown={(event) => event.stopPropagation()}
@@ -112,7 +118,7 @@ export default function RoleModal({
             <h2>{isEditMode ? "Edit Permissions" : "Create Role"}</h2>
             <p>Define a clear access boundary for your team.</p>
           </div>
-          <button type="button" className="add-user-close" onClick={onClose}>
+          <button type="button" className="add-user-close" onClick={requestClose}>
             <i className="bi bi-x"></i>
           </button>
         </div>
@@ -218,7 +224,7 @@ export default function RoleModal({
           )}
 
           <div className="add-user-footer">
-            <button type="button" className="modal-cancel" onClick={onClose}>
+            <button type="button" className="modal-cancel" onClick={requestClose}>
               Cancel
             </button>
             <button

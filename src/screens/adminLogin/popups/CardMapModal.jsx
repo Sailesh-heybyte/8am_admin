@@ -134,7 +134,7 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
   };
 
   return (
-    <div className="add-school-overlay" onMouseDown={handleClose}>
+    <div className="add-school-overlay">
       <div
         className="add-school-modal"
         onMouseDown={(event) => event.stopPropagation()}
