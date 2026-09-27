@@ -48,16 +48,16 @@ export default function Login({ onLoginSuccess }) {
 
         <div className="hero-stats">
           <div>
-            <strong>24/7</strong>
-            <span>Live tracking</span>
+            <strong>All schools</strong>
+            <span>One dashboard</span>
           </div>
           <div>
-            <strong>12K+</strong>
-            <span>Trips monitored</span>
+            <strong>Every device</strong>
+            <span>Mapped to a bus</span>
           </div>
           <div>
-            <strong>99.9%</strong>
-            <span>Operational uptime</span>
+            <strong>Every card</strong>
+            <span>Linked to a student</span>
           </div>
         </div>
       </aside>
@@ -79,7 +79,7 @@ export default function Login({ onLoginSuccess }) {
                   type="text"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="admin@busguard.in"
+                  placeholder="name@the8am.in"
                 />
               </div>
             </div>

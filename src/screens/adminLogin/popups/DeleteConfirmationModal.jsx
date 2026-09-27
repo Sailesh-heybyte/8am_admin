@@ -45,7 +45,7 @@ const DeleteConfirmationModal = ({
           disabled={isBusy}
           aria-label="Close"
         >
-          <i class="bi bi-x"></i>
+          <i className="bi bi-x"></i>
         </button>
 
         <div className="delete-modal-content">
