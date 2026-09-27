@@ -666,8 +666,8 @@
 }
 
 .table-card.schools-table-card {
-  height: 69%;
-  max-height: 69%;
+  height: auto;
+  max-height: none;
 
   th:nth-child(1),
   td:nth-child(1) {
@@ -692,7 +692,7 @@
 
 .table-card.roles-table-card {
   height: auto;
-  max-height: 67%;
+  max-height: none;
 
   th:nth-child(1),
   td:nth-child(1) {
@@ -711,21 +711,14 @@
 }
 
 .table-card.users-table-card {
-  height: 69%;
-  max-height: 69%;
+  height: auto;
+  max-height: none;
 }
 
 .table-card.branches-table-card,
 .table-card.devices-table-card {
-  height: 69%;
-  max-height: 69%;
-
-  .table-wrapper {
-    min-height: 0;
-    max-height: none;
-    flex: 1 1 auto;
-    overflow-y: auto;
-  }
+  height: auto;
+  max-height: none;
 }
 
 th {

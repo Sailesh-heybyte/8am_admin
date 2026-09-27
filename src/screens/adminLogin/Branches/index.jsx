@@ -219,7 +219,8 @@ export default function Branches() {
           null,
         ])}
         withoutFilter={false}
-        footer={`Showing ${filteredBranches.length} of ${branches.length} branches`}
+        itemLabel="branches"
+        totalCount={branches.length}
       />
     );
   };

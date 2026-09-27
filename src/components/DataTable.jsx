@@ -29,6 +29,8 @@ export default function DataTable({
   rows,
   sortValues,
   footer,
+  itemLabel,
+  totalCount,
   withoutFilter = true,
   onRowClick,
   className = "",
@@ -85,6 +87,20 @@ export default function DataTable({
   for (let number = firstShown; number <= lastShown; number++) {
     pageNumbers.push(number);
   }
+
+  // "Showing 11–20 of 60 devices (filtered from 75)"
+  const renderFooterText = () => {
+    if (footer) return footer;
+    if (!itemLabel) return `Showing ${visibleIndices.length} of ${rows.length}`;
+    if (rows.length === 0) return `No ${itemLabel}`;
+    const start = (currentPage - 1) * PAGE_SIZE + 1;
+    const end = Math.min(currentPage * PAGE_SIZE, rows.length);
+    const filtered =
+      totalCount !== undefined && totalCount !== rows.length
+        ? ` (filtered from ${totalCount})`
+        : "";
+    return `Showing ${start}–${end} of ${rows.length} ${itemLabel}${filtered}`;
+  };
 
   return (
     <div
@@ -181,11 +197,9 @@ export default function DataTable({
           </tbody>
         </table>
       </div>
-      {(footer || rows.length > PAGE_SIZE) && (
+      {(footer || itemLabel || rows.length > PAGE_SIZE) && (
         <div className="pagination">
-          <span>
-            {footer || `Showing ${visibleIndices.length} of ${rows.length}`}
-          </span>
+          <span>{renderFooterText()}</span>
           {rows.length > PAGE_SIZE && (
             <div>
               <button

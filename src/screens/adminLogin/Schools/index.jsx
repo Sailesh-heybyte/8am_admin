@@ -273,7 +273,8 @@ export default function Schools() {
             </div>,
           ])}
           withoutFilter={false}
-          footer={`Showing ${filtered.length} of ${schools.length} schools`}
+          itemLabel="schools"
+          totalCount={schools.length}
         />
       )}
 

@@ -175,7 +175,8 @@ export default function Devices() {
           null,
         ])}
         withoutFilter={false}
-        footer={`Showing ${filteredDevices.length} of ${devices.length} devices`}
+        itemLabel="devices"
+        totalCount={devices.length}
       />
     );
   };

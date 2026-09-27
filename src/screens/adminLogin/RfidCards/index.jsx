@@ -181,7 +181,8 @@ export default function RfidCards() {
           null,
         ])}
         withoutFilter={false}
-        footer={`Showing ${filteredCards.length} of ${cards.length} cards`}
+        itemLabel="cards"
+        totalCount={cards.length}
       />
     );
   };

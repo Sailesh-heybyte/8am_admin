@@ -149,7 +149,8 @@ export default function Roles() {
             </div>,
           ])}
           withoutFilter={false}
-          footer={`Showing ${filteredRoles.length} of ${roles.length} roles`}
+          itemLabel="roles"
+          totalCount={roles.length}
         />
       )}
 

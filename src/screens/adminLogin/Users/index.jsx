@@ -187,7 +187,8 @@ export default function Users() {
             user.createdAtIso,
           ])}
           withoutFilter={false}
-          footer={`Showing ${filteredUsers.length} matching of ${users.length} users`}
+          itemLabel="users"
+          totalCount={users.length}
         />
       )}
 
