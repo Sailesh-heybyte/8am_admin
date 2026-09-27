@@ -41,6 +41,7 @@ export default function App() {
           element={
             <ChangePassword
               onPasswordChanged={() => setIsAuthenticated(true)}
+              onSignedOut={() => setIsAuthenticated(false)}
             />
           }
         />

@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import "../Login/Login.scss";
 import { changePassword, login } from "../../../api/auth.js";
 
-export default function ChangePassword({ onPasswordChanged }) {
+export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -58,8 +58,18 @@ export default function ChangePassword({ onPasswordChanged }) {
         location.state?.identifier ||
         sessionStorage.getItem("admin_login_identifier");
 
+      // No remembered login name, so we cannot sign in again for the user.
+      // End the session and send them to login with a message.
       if (!identifier) {
-        navigate("/login");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        onSignedOut();
+        navigate("/login", {
+          replace: true,
+          state: {
+            notice: "Password changed. Please sign in with your new password.",
+          },
+        });
         return;
       }
 
