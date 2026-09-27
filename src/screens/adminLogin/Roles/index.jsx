@@ -119,7 +119,7 @@ export default function Roles() {
         </div>
       )}
 
-      {loading ? (
+      {loading && roles.length === 0 ? (
         <div style={{ padding: "1.5rem", color: "#666", fontSize: "0.85rem" }}>
           Loading roles...
         </div>

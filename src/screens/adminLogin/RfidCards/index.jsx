@@ -97,7 +97,7 @@ export default function RfidCards() {
   }, [cards, query, assignmentFilter, statusFilter]);
 
   const renderTable = () => {
-    if (loading) {
+    if (loading && cards.length === 0) {
       return (
         <div className="branch-empty-card">
           <p>Loading RFID cards...</p>

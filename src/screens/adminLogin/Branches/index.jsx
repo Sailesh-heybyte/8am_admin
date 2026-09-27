@@ -154,7 +154,7 @@ export default function Branches() {
       );
     }
 
-    if (branchesLoading) {
+    if (branchesLoading && branches.length === 0) {
       return (
         <div className="branch-empty-card">
           <p>Loading branches...</p>
@@ -246,6 +246,7 @@ export default function Branches() {
               value={selectedSchoolId}
               onChange={(schoolId) => {
                 setSelectedSchoolId(schoolId);
+                setBranches([]);
                 setQuery("");
                 setStatusFilter("");
                 setTypeFilter("");

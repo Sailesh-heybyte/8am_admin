@@ -93,7 +93,7 @@ export default function Devices() {
   }, [devices, query, mappingFilter, statusFilter]);
 
   const renderTable = () => {
-    if (loading) {
+    if (loading && devices.length === 0) {
       return (
         <div className="branch-empty-card">
           <p>Loading devices...</p>
