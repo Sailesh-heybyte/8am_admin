@@ -16,7 +16,7 @@
   p {
     margin-top: 1%;
     color: $text-light;
-    font-size: 0.75rem;
+    font-size: max(0.75rem, 10px);
   }
 }
 
@@ -26,7 +26,7 @@
   border-radius: $radius-small;
   background: $primary;
   color: $text-white;
-  font-size: 0.75rem;
+  font-size: max(0.75rem, 10px);
   font-weight: 600;
   cursor: pointer;
   box-shadow: $shadow-primary;
@@ -42,7 +42,7 @@
   border-radius: $radius-small;
   background: $white;
   color: $text;
-  font-size: 0.75rem;
+  font-size: max(0.75rem, 10px);
   cursor: pointer;
 
   &:hover {
@@ -108,7 +108,7 @@
 
       span {
         color: $text-light;
-        font-size: 0.7rem;
+        font-size: max(0.7rem, 10px);
       }
       strong {
         font-size: 1.35rem;
@@ -116,7 +116,7 @@
       }
       small {
         color: $text-muted;
-        font-size: 0.62rem;
+        font-size: max(0.62rem, 10px);
       }
     }
   }
@@ -138,7 +138,7 @@
 
   h3 {
     margin: 0;
-    font-size: 0.82rem;
+    font-size: max(0.82rem, 10px);
   }
 }
 
@@ -146,7 +146,7 @@
   border: none;
   background: transparent;
   color: $primary;
-  font-size: 0.68rem;
+  font-size: max(0.68rem, 10px);
   cursor: pointer;
 }
 
@@ -176,7 +176,7 @@
       padding: 0 1rem;
 
       p {
-        font-size: 0.82rem;
+        font-size: max(0.82rem, 10px);
         font-weight: 700;
       }
     }
@@ -193,7 +193,7 @@
   background: $surface-hover;
   color: $text-muted;
 
-  font-size: 0.58rem;
+  font-size: max(0.58rem, 10px);
   font-weight: 600;
 
   border-bottom: 0.05rem solid $border;
@@ -211,7 +211,7 @@
   gap: 0.5rem;
   padding: 0 0.8rem;
   border-bottom: 0.05rem solid $border;
-  font-size: 0.62rem;
+  font-size: max(0.62rem, 10px);
   color: $text-light;
 
   &:last-child {
@@ -228,7 +228,7 @@
   strong {
     display: block;
     color: $text;
-    font-size: 0.64rem;
+    font-size: max(0.64rem, 10px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -238,7 +238,7 @@
     display: block;
     margin-top: 0.1rem;
     color: $text-muted;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, 10px);
   }
 }
 
@@ -252,7 +252,7 @@
   border-radius: 0.45rem;
   background: $blue-light;
   color: $primary;
-  font-size: 0.7rem;
+  font-size: max(0.7rem, 10px);
   font-weight: 700;
 }
 
@@ -272,7 +272,7 @@
     padding: 0 1rem;
 
     p {
-      font-size: 0.82rem;
+      font-size: max(0.82rem, 10px);
       font-weight: 700;
     }
   }
@@ -318,7 +318,7 @@
   border-radius: 0.55rem;
   background: rgba(255, 255, 255, 0.92);
   box-shadow: $shadow;
-  font-size: 0.55rem;
+  font-size: max(0.55rem, 10px);
   color: $text-light;
   width: 16rem;
   span {
@@ -366,7 +366,7 @@
       padding: 0 1rem;
 
       p {
-        font-size: 0.82rem;
+        font-size: max(0.82rem, 10px);
         font-weight: 700;
       }
     }
@@ -395,7 +395,7 @@
           justify-content: center;
           flex-shrink: 0;
           border-radius: 50%;
-          font-size: 0.65rem;
+          font-size: max(0.65rem, 10px);
           font-weight: 700;
 
           &.critical,
@@ -422,12 +422,12 @@
 
         strong {
           color: $text;
-          font-size: 0.65rem;
+          font-size: max(0.65rem, 10px);
           font-weight: 500;
         }
         span {
           color: $text-muted;
-          font-size: 0.58rem;
+          font-size: max(0.58rem, 10px);
         }
       }
     }
@@ -448,7 +448,7 @@
     padding: 0 1rem;
 
     p {
-      font-size: 0.82rem;
+      font-size: max(0.82rem, 10px);
       font-weight: 700;
     }
   }
@@ -492,7 +492,7 @@
   }
   span {
     color: $text-muted;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, 10px);
   }
 }
 
@@ -508,7 +508,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
 
   div {
     display: grid;
@@ -555,7 +555,7 @@
 
     label {
       color: #000000;
-      font-size: 0.58rem;
+      font-size: max(0.58rem, 10px);
       margin-bottom: 0.4rem;
     }
   }
@@ -567,7 +567,7 @@
     border-radius: $radius-small;
     background: $white;
     color: $text-light;
-    font-size: 0.68rem;
+    font-size: max(0.68rem, 10px);
     outline: none;
     width: 13rem;
 
@@ -725,7 +725,7 @@ th {
   background: $surface-hover;
   border-bottom: 0.05rem solid $border;
   color: $text-muted;
-  font-size: 0.62rem;
+  font-size: max(0.62rem, 10px);
   font-weight: 600;
   text-align: left;
 }
@@ -734,7 +734,7 @@ td {
   padding-left: 1rem;
 
   color: $text-light;
-  font-size: 0.75rem;
+  font-size: max(0.75rem, 10px);
   vertical-align: middle;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -748,7 +748,7 @@ td {
 
 .text-muted {
   color: $text-muted;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
 }
 
 tbody tr:hover {
@@ -814,7 +814,7 @@ tbody tr:hover {
   justify-content: space-between;
   padding: 0 1rem;
   color: $text-muted;
-  font-size: 0.62rem;
+  font-size: max(0.62rem, 10px);
   border-top: 0.05rem solid $border;
 
   > div {
@@ -829,7 +829,7 @@ tbody tr:hover {
     border-radius: $radius-small;
     background: $white;
     color: $text-light;
-    font-size: 0.65rem;
+    font-size: max(0.65rem, 10px);
     cursor: pointer;
 
     &.selected {
@@ -875,7 +875,7 @@ tbody tr:hover {
     border-radius: 50%;
     background: linear-gradient(135deg, $avatar-blue, $avatar-blue-light);
     color: $primary;
-    font-size: 0.7rem;
+    font-size: max(0.7rem, 10px);
     font-weight: 700;
   }
 
@@ -886,11 +886,11 @@ tbody tr:hover {
   }
 
   strong {
-    font-size: 0.68rem;
+    font-size: max(0.68rem, 10px);
   }
   span {
     color: $text-muted;
-    font-size: 0.58rem;
+    font-size: max(0.58rem, 10px);
   }
 }
 
@@ -906,7 +906,7 @@ tbody tr:hover {
   gap: 0.35rem;
   padding: 0.28rem 0.55rem;
   border-radius: 2rem;
-  font-size: 0.6rem;
+  font-size: max(0.6rem, 10px);
   font-weight: 600;
   white-space: nowrap;
 
@@ -992,7 +992,7 @@ tbody tr:hover {
     border: 0.05rem solid $border;
     border-radius: $radius-small;
     outline: none;
-    font-size: 0.62rem;
+    font-size: max(0.62rem, 10px);
   }
 }
 
@@ -1028,11 +1028,11 @@ tbody tr:hover {
   }
 
   strong {
-    font-size: 0.68rem;
+    font-size: max(0.68rem, 10px);
   }
   span {
     color: $text-muted;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, 10px);
   }
 }
 
@@ -1053,7 +1053,7 @@ tbody tr:hover {
   overflow: hidden;
   .map-title {
     margin: 0;
-    font-size: 0.82rem;
+    font-size: max(0.82rem, 10px);
     height: 10%;
     align-items: center;
     display: flex;
@@ -1082,7 +1082,7 @@ tbody tr:hover {
     width: 23rem;
 
     h3 {
-      font-size: 0.82rem;
+      font-size: max(0.82rem, 10px);
       height: 13%;
       padding: 0 1rem;
       display: flex;
@@ -1120,12 +1120,12 @@ tbody tr:hover {
     border-bottom: 0.05rem solid $border;
 
     h2 {
-      font-size: 0.82rem;
+      font-size: max(0.82rem, 10px);
     }
 
     p {
       color: #155eef;
-      font-size: 0.68rem;
+      font-size: max(0.68rem, 10px);
       cursor: pointer;
     }
   }
@@ -1159,7 +1159,7 @@ tbody tr:hover {
   top: -1rem;
   width: 100%;
   text-align: center;
-  font-size: 0.48rem;
+  font-size: max(0.48rem, 10px);
   color: $text-muted;
 }
 
@@ -1168,7 +1168,7 @@ tbody tr:hover {
   justify-content: space-between;
   padding: 0 1rem;
   color: $text-muted;
-  font-size: 0.6rem;
+  font-size: max(0.6rem, 10px);
   height: 15%;
   align-items: center;
 }
@@ -1180,7 +1180,7 @@ tbody tr:hover {
   gap: 0.5rem;
   padding: 3.1% 1rem;
   border-bottom: 0.05rem solid $border;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
 
   .rank {
     width: 1.5rem;
@@ -1214,7 +1214,7 @@ tbody tr:hover {
     border-radius: $radius-small;
     background: $white;
     color: $text-light;
-    font-size: 0.65rem;
+    font-size: max(0.65rem, 10px);
     cursor: pointer;
 
     &.active-filter {
@@ -1262,7 +1262,7 @@ tbody tr:hover {
   justify-content: center;
   border-radius: 50%;
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: max(0.7rem, 10px);
 
   &.critical,
   &.high {
@@ -1285,11 +1285,11 @@ tbody tr:hover {
   gap: 0.2rem;
 
   strong {
-    font-size: 0.7rem;
+    font-size: max(0.7rem, 10px);
   }
   span {
     color: $text-muted;
-    font-size: 0.58rem;
+    font-size: max(0.58rem, 10px);
   }
 }
 
@@ -1299,7 +1299,7 @@ tbody tr:hover {
   border-radius: $radius-small;
   background: $primary-light;
   color: $primary;
-  font-size: 0.6rem;
+  font-size: max(0.6rem, 10px);
   cursor: pointer;
 }
 
@@ -1341,12 +1341,12 @@ tbody tr:hover {
   h3 {
     margin: 0;
     color: $text;
-    font-size: 0.8rem;
+    font-size: max(0.8rem, 10px);
   }
   p {
     margin: 0.25rem 0 0;
     color: $text-muted;
-    font-size: 0.58rem;
+    font-size: max(0.58rem, 10px);
   }
 }
 
@@ -1396,21 +1396,21 @@ tbody tr:hover {
 .platform-school-name strong {
   overflow: hidden;
   color: $text;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .platform-school-name small,
 .platform-school-metric small {
   color: $text-muted;
-  font-size: 0.56rem;
+  font-size: max(0.56rem, 10px);
 }
 .platform-school-metric {
   align-items: flex-end;
 }
 .platform-school-metric strong {
   color: $text;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
 }
 
 .health-list,
@@ -1450,15 +1450,15 @@ tbody tr:hover {
   }
   strong {
     color: $text;
-    font-size: 0.62rem;
+    font-size: max(0.62rem, 10px);
   }
   small {
     color: $text-muted;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, 10px);
   }
   b {
     color: $primary;
-    font-size: 0.75rem;
+    font-size: max(0.75rem, 10px);
   }
 }
 
@@ -1479,7 +1479,7 @@ tbody tr:hover {
   border: 0;
   background: transparent;
   color: $primary;
-  font-size: 0.68rem;
+  font-size: max(0.68rem, 10px);
   cursor: pointer;
 }
 
@@ -1512,7 +1512,7 @@ tbody tr:hover {
 }
 .school-detail-identity span {
   color: $text-muted;
-  font-size: 0.58rem;
+  font-size: max(0.58rem, 10px);
 }
 .school-detail-identity h2 {
   margin: 0.2rem 0;
@@ -1521,7 +1521,7 @@ tbody tr:hover {
 .school-detail-identity p {
   margin: 0;
   color: $text-light;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
 }
 .school-detail-logo {
   width: 3.2rem;
@@ -1543,7 +1543,7 @@ tbody tr:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
 }
 .school-detail-content {
   display: grid;
@@ -1562,11 +1562,11 @@ tbody tr:hover {
 .detail-section-heading h3,
 .school-detail-metrics h3 {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: max(0.78rem, 10px);
 }
 .detail-section-heading span {
   color: $primary;
-  font-size: 0.6rem;
+  font-size: max(0.6rem, 10px);
   font-weight: 700;
 }
 .school-detail-fields {
@@ -1583,11 +1583,11 @@ tbody tr:hover {
 .school-detail-field span,
 .school-detail-metrics span {
   color: $text-muted;
-  font-size: 0.58rem;
+  font-size: max(0.58rem, 10px);
 }
 .school-detail-field strong {
   color: $text;
-  font-size: 0.67rem;
+  font-size: max(0.67rem, 10px);
   word-break: break-word;
 }
 .school-detail-metrics > div {
@@ -1611,7 +1611,7 @@ tbody tr:hover {
   font-size: 1rem;
 }
 .school-detail-metrics strong {
-  font-size: 0.72rem;
+  font-size: max(0.72rem, 10px);
 }
 
 /* =========================
@@ -1731,7 +1731,7 @@ tbody tr:hover {
     margin: 0;
     max-width: 24rem;
     color: $text-muted;
-    font-size: 0.72rem;
+    font-size: max(0.72rem, 10px);
     line-height: 1.5;
   }
 
@@ -1740,7 +1740,7 @@ tbody tr:hover {
     height: 2.25rem;
     padding: 0 1.25rem;
     border-radius: $radius-small;
-    font-size: 0.72rem;
+    font-size: max(0.72rem, 10px);
     font-weight: 600;
     display: inline-flex;
     align-items: center;

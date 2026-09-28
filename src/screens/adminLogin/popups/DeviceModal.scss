@@ -50,7 +50,7 @@
   p {
     margin: 0.25rem 0 0;
     color: $text-muted;
-    font-size: 0.65rem;
+    font-size: max(0.65rem, 10px);
   }
 }
 
@@ -90,7 +90,7 @@
     flex-direction: column;
     gap: 0.35rem;
     color: $text-light;
-    font-size: 0.62rem;
+    font-size: max(0.62rem, 10px);
     font-weight: 600;
 
     input {
@@ -102,7 +102,7 @@
       background: $white;
       color: $text;
       font: inherit;
-      font-size: 0.68rem;
+      font-size: max(0.68rem, 10px);
       outline: none;
 
       &:focus {
@@ -124,7 +124,7 @@
   background: $surface;
   border: 0.05rem solid $border;
   color: $text-muted;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
   line-height: 1.45;
 }
 
@@ -134,7 +134,7 @@
   border-top: 0.05rem solid #f5c6cb;
   background: #fdf2f2;
   color: #d9534f;
-  font-size: 0.62rem;
+  font-size: max(0.62rem, 10px);
   font-weight: 600;
 }
 
@@ -152,7 +152,7 @@
     height: 2.2rem;
     padding: 0 1rem;
     border-radius: 0.45rem;
-    font-size: 0.68rem;
+    font-size: max(0.68rem, 10px);
     font-weight: 600;
     cursor: pointer;
   }
@@ -186,23 +186,23 @@
 
 .device-unassigned {
   color: $text-muted;
-  font-size: 0.65rem;
+  font-size: max(0.65rem, 10px);
 }
 
 .device-bus-id {
   color: $text-light;
   font-family: monospace;
-  font-size: 0.6rem;
+  font-size: max(0.6rem, 10px);
 }
 
 .device-serial-cell {
   font-family: monospace;
-  font-size: 0.72rem;
+  font-size: max(0.72rem, 10px);
   color: $text;
   word-break: break-all;
 }
 
 .device-no-action {
   color: $text-muted;
-  font-size: 0.75rem;
+  font-size: max(0.75rem, 10px);
 }
