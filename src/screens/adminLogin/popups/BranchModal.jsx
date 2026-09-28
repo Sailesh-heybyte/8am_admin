@@ -82,7 +82,7 @@ export default function BranchModal({
                     name="branchName"
                     value={formData.branchName}
                     onChange={handleChange}
-                    placeholder="e.g. Main Campus"
+                    placeholder="Main Campus"
                     required
                   />
                 </label>

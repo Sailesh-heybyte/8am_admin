@@ -139,7 +139,7 @@ export default function RoleModal({
                     required
                     disabled={isEditMode}
                     readOnly={isEditMode}
-                    placeholder="e.g. Branch Manager"
+                    placeholder="Branch Manager"
                   />
                   {isEditMode && (
                     <span

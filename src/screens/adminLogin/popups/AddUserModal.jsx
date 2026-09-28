@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./AddUserModal.scss";
+import TypeAhead from "../../../components/TypeAhead.jsx";
 import { getRoles } from "../../../api/roles.js";
 
 const AddUserModal = ({
@@ -302,33 +303,39 @@ const AddUserModal = ({
 
                 <div className="form-field">
                   <label htmlFor="gender">Gender</label>
-                  <select
-                    id="gender"
-                    name="gender"
+                  <TypeAhead
+                    options={[
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                      { value: "other", label: "Other" },
+                    ]}
                     value={formData.gender}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
+                    onChange={(value) =>
+                      setFormData((current) => ({ ...current, gender: value }))
+                    }
+                    placeholder="Select gender"
+                    disabled={isSubmitting}
+                    noMatchMessage="No options found"
+                  />
                 </div>
 
                 <div className="form-field">
                   <label htmlFor="maritalStatus">Marital Status</label>
-                  <select
-                    id="maritalStatus"
-                    name="maritalStatus"
+                  <TypeAhead
+                    options={[
+                      { value: "single", label: "Single" },
+                      { value: "married", label: "Married" },
+                      { value: "divorced", label: "Divorced" },
+                      { value: "widowed", label: "Widowed" },
+                    ]}
                     value={formData.maritalStatus}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select status</option>
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                    <option value="divorced">Divorced</option>
-                    <option value="widowed">Widowed</option>
-                  </select>
+                    onChange={(value) =>
+                      setFormData((current) => ({ ...current, maritalStatus: value }))
+                    }
+                    placeholder="Select status"
+                    disabled={isSubmitting}
+                    noMatchMessage="No options found"
+                  />
                 </div>
               </div>
 
