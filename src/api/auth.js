@@ -44,6 +44,7 @@ export async function logout() {
   }
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
+  sessionStorage.removeItem("admin_login_identifier");
 }
 
 export async function getMe() {

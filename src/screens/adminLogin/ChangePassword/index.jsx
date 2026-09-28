@@ -63,6 +63,10 @@ export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
       if (!identifier) {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
+        sessionStorage.setItem(
+          "login_notice",
+          "Password changed. Please sign in with your new password.",
+        );
         onSignedOut();
         navigate("/login", {
           replace: true,
