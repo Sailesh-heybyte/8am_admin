@@ -6,5 +6,5 @@
 // (viewport width / 72) and (viewport height / 41), kept between
 // 12px and 20px. Same rule as the school panel, so both match.
 html {
-  font-size: clamp(12px, min(calc(100vw / 72), calc(100vh / 41)), 20px);
+  font-size: clamp(12px, min(calc(100vw / 72), calc(100vh / 48)), 20px);
 }
