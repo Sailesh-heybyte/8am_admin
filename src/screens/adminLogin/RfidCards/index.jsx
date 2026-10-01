@@ -26,7 +26,6 @@ export default function RfidCards() {
   const [cardToMap, setCardToMap] = useState(null);
   const [cardToUnmap, setCardToUnmap] = useState(null);
 
-  // GET /rfid-cards
   const loadCards = async () => {
     setLoading(true);
     setError(null);

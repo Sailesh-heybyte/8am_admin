@@ -25,10 +25,6 @@
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.18);
 }
 
-/* =========================
-   HEADER
-========================= */
-
 .add-school-header {
   min-height: 5rem;
   display: flex;
@@ -76,10 +72,6 @@
     cursor: not-allowed;
   }
 }
-
-/* =========================
-   BODY
-========================= */
 
 .add-school-body {
   overflow-y: auto;
@@ -163,10 +155,6 @@
   }
 }
 
-/* =========================
-   ERROR ALERT
-========================= */
-
 .add-user-error {
   flex-shrink: 0;
   margin: 0.5rem 1.25rem 0.5rem;
@@ -205,10 +193,6 @@
     transform: translateY(0);
   }
 }
-
-/* =========================
-   FOOTER
-========================= */
 
 .add-school-footer {
   min-height: 4.2rem;
@@ -254,10 +238,6 @@
     background: $primary-dark;
   }
 }
-
-/* =========================
-   SCHOOL DETAILS
-========================= */
 
 .school-details-grid {
   display: grid;
@@ -311,10 +291,6 @@
     background: $red;
   }
 }
-
-/* =========================
-   RESPONSIVE
-========================= */
 
 @media (max-width: 48rem) {
   .school-details-grid {

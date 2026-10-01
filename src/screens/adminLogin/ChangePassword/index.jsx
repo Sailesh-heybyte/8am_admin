@@ -58,8 +58,6 @@ export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
         location.state?.identifier ||
         sessionStorage.getItem("admin_login_identifier");
 
-      // No remembered login name, so we cannot sign in again for the user.
-      // End the session and send them to login with a message.
       if (!identifier) {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");

@@ -80,7 +80,6 @@ export default function DataTable({
     currentPage * PAGE_SIZE,
   );
 
-  // Show at most 5 page buttons, centred on the current page.
   const firstShown = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
   const lastShown = Math.min(totalPages, firstShown + 4);
   const pageNumbers = [];
@@ -88,7 +87,6 @@ export default function DataTable({
     pageNumbers.push(number);
   }
 
-  // "Showing 11–20 of 60 devices (filtered from 75)"
   const renderFooterText = () => {
     if (footer) return footer;
     if (!itemLabel) return `Showing ${visibleIndices.length} of ${rows.length}`;

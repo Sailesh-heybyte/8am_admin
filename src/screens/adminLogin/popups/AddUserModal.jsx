@@ -54,20 +54,17 @@ const AddUserModal = ({
     propRolesLoading !== undefined ? propRolesLoading : internalRolesLoading;
   const rolesError = propRolesError || internalRolesError;
   const initialFormData = {
-    // Required
     fullName: "",
     email: "",
     phoneNumber: "",
     roleIds: [],
 
-    // Personal
     dateOfBirth: "",
     gender: "",
     maritalStatus: "",
     nationality: "",
     joiningDate: "",
 
-    // Address
     addressLine1: "",
     addressLine2: "",
     city: "",
@@ -75,21 +72,17 @@ const AddUserModal = ({
     country: "",
     postalCode: "",
 
-    // Emergency contact
     emergencyName: "",
     emergencyRelationship: "",
     emergencyPhone: "",
 
-    // Bank
     bankName: "",
     bankAccountNumber: "",
     bankIfscCode: "",
 
-    // Government
     panNumber: "",
     aadhaarNumber: "",
 
-    // Other
     skills: "",
     notes: "",
   };
@@ -103,7 +96,6 @@ const AddUserModal = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Digits only, capped at 10. Used for both phone fields.
   const handleDigitsChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -112,7 +104,6 @@ const AddUserModal = ({
     }));
   };
 
-  // Aadhaar is 12 digits, not 10.
   const handleAadhaarChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -183,7 +174,6 @@ const AddUserModal = ({
     }
   };
 
-  // Roles area: loading, error, empty, or the checkbox list.
   const renderRoles = () => {
     if (rolesLoading) return <p className="roles-message">Loading roles...</p>;
     if (rolesError)
@@ -232,7 +222,6 @@ const AddUserModal = ({
 
         <form onSubmit={handleSubmit}>
           <div className="add-user-body">
-            {/* ---------- Required ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">User Information</h3>
 
@@ -279,13 +268,11 @@ const AddUserModal = ({
               </div>
             </div>
 
-            {/* ---------- Roles ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">Roles *</h3>
               {renderRoles()}
             </div>
 
-            {/* ---------- Personal ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">Personal Details</h3>
 
@@ -367,7 +354,6 @@ const AddUserModal = ({
               </div>
             </div>
 
-            {/* ---------- Address ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">Address</h3>
 
@@ -449,7 +435,6 @@ const AddUserModal = ({
               </div>
             </div>
 
-            {/* ---------- Emergency contact ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">Emergency Contact</h3>
 
@@ -493,7 +478,6 @@ const AddUserModal = ({
               </div>
             </div>
 
-            {/* ---------- Bank ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">Bank Details</h3>
 
@@ -537,7 +521,6 @@ const AddUserModal = ({
               </div>
             </div>
 
-            {/* ---------- Government ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">Government Details</h3>
 
@@ -572,7 +555,6 @@ const AddUserModal = ({
               </div>
             </div>
 
-            {/* ---------- Other ---------- */}
             <div className="form-section">
               <h3 className="form-section-title">Additional Information</h3>
 

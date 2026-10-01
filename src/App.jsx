@@ -18,8 +18,6 @@ export default function App() {
     () => !!localStorage.getItem("access_token"),
   );
 
-  // A session is only valid when memory and storage agree. If they
-  // disagree the app can bounce between /login and /dashboard forever.
   const hasSession =
     isAuthenticated && Boolean(localStorage.getItem("access_token"));
 

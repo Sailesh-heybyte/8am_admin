@@ -5,7 +5,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  // Sized by its content, not a share of the screen height.
   padding: 1.25rem 0 1rem;
 
   h2 {
@@ -50,10 +49,6 @@
     background: $surface-hover;
   }
 }
-
-/* =========================
-   CARDS / STATS
-========================= */
 
 .stats-grid {
   width: 100%;
@@ -150,10 +145,6 @@
   font-size: max(0.68rem, 10px);
   cursor: pointer;
 }
-
-/* =========================
-   DASHBOARD
-========================= */
 
 .super-dashboard-grid {
   display: flex;
@@ -533,10 +524,6 @@
   }
 }
 
-/* =========================
-   FILTERS / TABLES
-========================= */
-
 .filter-card {
   display: flex;
   padding: 1.25rem 0.8rem;
@@ -800,7 +787,6 @@ tbody tr:hover {
 }
 
 .pagination {
-  // Keep the page buttons in view while scrolling a long table.
   position: sticky;
   bottom: 0;
   z-index: 1;
@@ -895,10 +881,6 @@ tbody tr:hover {
   }
 }
 
-/* =========================
-   STATUS
-========================= */
-
 .status {
   display: inline-flex !important;
   flex-direction: row !important;
@@ -961,10 +943,6 @@ tbody tr:hover {
     color: $green;
   }
 }
-
-/* =========================
-   LIVE FLEET
-========================= */
 
 .fleet-layout {
   height: 86%;
@@ -1068,10 +1046,6 @@ tbody tr:hover {
   }
 }
 
-/* =========================
-   REPORTS
-========================= */
-
 .reports-dashboard {
   height: 67%;
   display: flex;
@@ -1101,7 +1075,6 @@ tbody tr:hover {
       border: 0.05rem solid $border;
       border-bottom-left-radius: $radius;
       border-bottom-right-radius: $radius;
-      // background: #ffcc00;
     }
   }
 }
@@ -1198,10 +1171,6 @@ tbody tr:hover {
     color: $primary;
   }
 }
-
-/* =========================
-   ALERTS
-========================= */
 
 .alert-filter {
   display: flex;
@@ -1615,10 +1584,6 @@ tbody tr:hover {
   font-size: max(0.72rem, 10px);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
 @media (max-width: 1280px) {
   .stats-grid {
     height: auto;
@@ -1662,10 +1627,6 @@ tbody tr:hover {
   align-items: center;
   justify-content: flex-end;
 }
-
-/* =========================
-   TABLE STATE & ACCESS RESTRICTED
-========================= */
 
 .table-state-card {
   display: flex;

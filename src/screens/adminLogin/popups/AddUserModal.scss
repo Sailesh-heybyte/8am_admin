@@ -81,8 +81,6 @@
       .form-section {
         padding-bottom: 1rem;
 
-        // Separator between sections, so the long form reads as
-        // distinct groups instead of one wall of inputs.
         & + .form-section {
           padding-top: 1rem;
           border-top: 0.05rem solid $border;
@@ -99,7 +97,6 @@
           display: flex;
           gap: 0.85rem;
 
-          // Vertical gap when a section has more than one row.
           & + .form-row {
             margin-top: 0.85rem;
           }
@@ -153,9 +150,6 @@
           }
         }
 
-        // ---------- Roles checkbox list ----------
-        // Deliberately NOT using .form-row / .form-field. Those are
-        // sized for text inputs and stretch checkboxes apart.
         .roles-list {
           display: flex;
           flex-wrap: wrap;
@@ -244,7 +238,6 @@
         }
       }
 
-      // Faded, not-allowed cursor while a save is in progress.
       .modal-cancel:disabled,
       .modal-save:disabled {
         opacity: 0.6;

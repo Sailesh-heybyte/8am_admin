@@ -101,7 +101,6 @@ export default function RoleModal({
     }
   };
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSaving) return;
     onClose();

@@ -71,8 +71,6 @@ function App({ onLogout }) {
     onLogout?.();
   };
 
-  // After a password change the refresh token is revoked: sign out and
-  // show a notice on the login page.
   const handlePasswordChanged = async () => {
     sessionStorage.setItem(
       "login_notice",
@@ -81,8 +79,6 @@ function App({ onLogout }) {
     await handleLogout();
   };
 
-  // Runs once per app load. A user still holding a temporary password
-  // cannot reach any screen until they have changed it.
   useEffect(() => {
     getMe()
       .then(async (data) => {
@@ -116,7 +112,6 @@ function App({ onLogout }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Close the profile menu when clicking anywhere else on the page.
   useEffect(() => {
     if (!isProfileMenuOpen) return;
 

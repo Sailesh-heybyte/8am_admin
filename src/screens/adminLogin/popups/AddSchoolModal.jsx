@@ -81,7 +81,6 @@ const AddSchoolModal = ({
         className="add-school-modal"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="add-school-header">
           <div>
             <h2>{title}</h2>
@@ -102,10 +101,8 @@ const AddSchoolModal = ({
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="add-school-body">
-            {/* School Information */}
             <div className="form-section">
               <div className="form-section-title">
                 <h3>School Information</h3>
@@ -127,7 +124,6 @@ const AddSchoolModal = ({
               </div>
             </div>
 
-            {/* School Admin - only when creating */}
             {!isEditing && (
               <div className="form-section">
                 <div className="form-section-title">
@@ -188,7 +184,6 @@ const AddSchoolModal = ({
             </div>
           )}
 
-          {/* Footer */}
           <div className="add-school-footer">
             <button
               type="button"

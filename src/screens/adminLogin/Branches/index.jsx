@@ -17,8 +17,6 @@ export default function Branches() {
   const [schools, setSchools] = useState([]);
   const [schoolsLoading, setSchoolsLoading] = useState(true);
 
-  // Branches are nested under a school, so nothing loads until one
-  // is picked from the dropdown.
   const [selectedSchoolId, setSelectedSchoolId] = useState("");
   const [branches, setBranches] = useState([]);
   const [branchesLoading, setBranchesLoading] = useState(false);
@@ -29,7 +27,6 @@ export default function Branches() {
   const [branchToEdit, setBranchToEdit] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // Load the school list once, to fill the dropdown.
   useEffect(() => {
     getSchools()
       .then((data) => setSchools(data))
@@ -37,7 +34,6 @@ export default function Branches() {
       .finally(() => setSchoolsLoading(false));
   }, []);
 
-  // GET /tenancy/schools/{schoolId}/branches
   const loadBranches = async (schoolId) => {
     if (!schoolId) {
       setBranches([]);
@@ -58,8 +54,6 @@ export default function Branches() {
     }
   };
 
-  // Create is nested under the school, update is not. The backend
-  // paths differ, so the two calls take different ids.
   const handleSaveBranch = async (branch, branchId) => {
     if (branchId) {
       await updateBranch(branchId, branch);
@@ -140,7 +134,6 @@ export default function Branches() {
   }
 
   const renderTable = () => {
-    // No school picked yet.
     if (!selectedSchoolId) {
       return (
         <div className="branch-empty-card">
@@ -162,7 +155,6 @@ export default function Branches() {
       );
     }
 
-    // School picked, but it has no branches.
     if (branches.length === 0) {
       return (
         <div className="branch-empty-card">

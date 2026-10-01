@@ -44,7 +44,6 @@ export default function BranchModal({
     }
   };
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

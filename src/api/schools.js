@@ -1,6 +1,5 @@
 import { apiCall } from "./client.js";
 
-// backend shape  ->  UI shape
 function toUiSchool(school) {
   return {
     id: school.id,

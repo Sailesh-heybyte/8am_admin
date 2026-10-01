@@ -98,13 +98,11 @@ function toApiUser(uiUser = {}) {
   return body;
 }
 
-// GET /api/v1/iam/platform-users
 export const getUsers = async () => {
   const data = await apiCall("/iam/platform-users");
   return data.map(toUiUser);
 };
 
-// POST /api/v1/iam/platform-users
 export const createUser = (data) =>
   apiCall("/iam/platform-users", {
     method: "POST",

@@ -26,7 +26,6 @@ export default function Devices() {
   const [deviceToMap, setDeviceToMap] = useState(null);
   const [deviceToUnmap, setDeviceToUnmap] = useState(null);
 
-  // GET /devices
   const loadDevices = async () => {
     setLoading(true);
     setError(null);
