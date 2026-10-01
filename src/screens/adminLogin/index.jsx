@@ -5,6 +5,7 @@ import "../../App.scss";
 import { logout, getMe } from "../../api/auth.js";
 import { getTokenPermissions, refreshSession } from "../../api/client.js";
 import ProfileModal from "./popups/ProfileModal.jsx";
+import ChangePasswordModal from "./popups/ChangePasswordModal.jsx";
 import ErrorBoundary from "../../components/ErrorBoundary.jsx";
 
 const menuItems = [
@@ -58,6 +59,7 @@ function App({ onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [me, setMe] = useState(null);
   const [loadError, setLoadError] = useState(false);
@@ -67,6 +69,16 @@ function App({ onLogout }) {
   const handleLogout = async () => {
     await logout();
     onLogout?.();
+  };
+
+  // After a password change the refresh token is revoked: sign out and
+  // show a notice on the login page.
+  const handlePasswordChanged = async () => {
+    sessionStorage.setItem(
+      "login_notice",
+      "Password changed. Please sign in with your new password.",
+    );
+    await handleLogout();
   };
 
   // Runs once per app load. A user still holding a temporary password
@@ -197,6 +209,17 @@ function App({ onLogout }) {
               </button>
               <button
                 type="button"
+                className="profile-menu-item"
+                onClick={() => {
+                  setIsProfileMenuOpen(false);
+                  setIsChangePasswordOpen(true);
+                }}
+              >
+                <i className="bi bi-key"></i>
+                <span>Change password</span>
+              </button>
+              <button
+                type="button"
                 className="profile-menu-item danger"
                 onClick={() => {
                   setIsProfileMenuOpen(false);
@@ -270,6 +293,12 @@ function App({ onLogout }) {
         me={me}
         onClose={() => setIsProfileModalOpen(false)}
       />
+      {isChangePasswordOpen && (
+        <ChangePasswordModal
+          onClose={() => setIsChangePasswordOpen(false)}
+          onChanged={handlePasswordChanged}
+        />
+      )}
     </div>
   );
 }
