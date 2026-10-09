@@ -43,10 +43,11 @@
     }
 
     .brand {
-      min-height: 5.5rem;
+      min-height: 5rem;
       display: flex;
       align-items: center;
-      padding: 0 1.15rem;
+      padding: 0 1.5rem;
+      margin-bottom: 0.5rem;
       flex-shrink: 0;
 
       .brand-expanded {
@@ -55,10 +56,10 @@
         width: 100%;
 
         .brand-logo-img {
-          height: 34px;
-          max-width: 160px;
-          object-fit: contain;
           display: block;
+          height: 2.25rem;
+          width: auto;
+          max-width: 100%;
         }
       }
 
@@ -69,10 +70,9 @@
         width: 100%;
 
         .brand-mark-img {
-          width: 34px;
-          height: 34px;
-          object-fit: contain;
           display: block;
+          width: 2rem;
+          height: 2rem;
         }
       }
     }
