@@ -21,20 +21,20 @@
 
     .login-logo {
       display: block;
-      height: 2.25rem;
+      height: 2rem;
       width: auto;
-      margin-bottom: 1rem;
+      margin-bottom: 2.75rem;
     }
 
     .login-header {
       margin-bottom: 1.75rem;
 
       h2 {
-        margin: 0 0 0.4rem;
-        font-size: 1.9rem;
-        font-weight: 600;
+        margin: 0 0 0.35rem;
+        font-size: 1.5rem;
+        font-weight: 500;
         color: $text;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01em;
       }
 
       p {
