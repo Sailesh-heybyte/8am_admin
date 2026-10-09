@@ -7,6 +7,8 @@ import { getTokenPermissions, refreshSession } from "../../api/client.js";
 import ProfileModal from "./popups/ProfileModal.jsx";
 import ChangePasswordModal from "./popups/ChangePasswordModal.jsx";
 import ErrorBoundary from "../../components/ErrorBoundary.jsx";
+import logoImg from "../../assets/8am-logo.png";
+import logoMark from "../../assets/8am-mark.png";
 
 const menuItems = [
   {
@@ -162,12 +164,13 @@ function App({ onLogout }) {
     <div className="admin-app">
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="brand">
-          <i className="bi bi-bus-front"></i>
-          {sidebarOpen && (
-            <div>
-              <h2>
-                8AM<span>Admin</span>
-              </h2>
+          {sidebarOpen ? (
+            <div className="brand-expanded">
+              <img src={logoImg} alt="8AM Logo" className="brand-logo-img" />
+            </div>
+          ) : (
+            <div className="brand-collapsed">
+              <img src={logoMark} alt="8AM" className="brand-mark-img" />
             </div>
           )}
         </div>

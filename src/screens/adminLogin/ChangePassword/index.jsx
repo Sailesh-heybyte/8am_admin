@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import "../Login/Login.scss";
+import logo from "../../../assets/8am-logo.png";
+import loginIllustration from "../../../assets/login-illustration.png";
 import { changePassword, login } from "../../../api/auth.js";
 
 export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
@@ -88,45 +90,20 @@ export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
 
   return (
     <div className="login-page">
-      <aside className="login-hero">
-        <div className="brand-mark">
-          <i className="bi bi-bus-front"></i>
-        </div>
-        <div className="hero-copy">
-          <h1>8AM</h1>
-          <p>
-            Set a permanent password for your platform administrator account to
-            continue to the dashboard.
-          </p>
-        </div>
-
-        <div className="hero-stats">
-          <div>
-            <strong>Step 1</strong>
-            <span>Set new password</span>
-          </div>
-          <div>
-            <strong>Step 2</strong>
-            <span>Secure account</span>
-          </div>
-          <div>
-            <strong>Step 3</strong>
-            <span>Access dashboard</span>
-          </div>
-        </div>
-      </aside>
-
       <section className="login-panel">
         <div className="login-card">
+          <img className="login-logo" src={logo} alt="The 8AM" />
+
           <div className="login-header">
-            <p className="eyebrow">One-time setup</p>
-            <h2>Change Password</h2>
+            <h2>Change your password</h2>
             <p>Replace your temporary password to continue.</p>
           </div>
 
           <form className="login-form" onSubmit={handleSubmit} noValidate>
             <div className="field-group">
-              <label htmlFor="temporaryPassword">Temporary Password</label>
+              <label htmlFor="temporaryPassword">
+                Temporary Password <span className="required">*</span>
+              </label>
               <div className="input-shell">
                 <input
                   id="temporaryPassword"
@@ -154,7 +131,9 @@ export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
             </div>
 
             <div className="field-group">
-              <label htmlFor="newPassword">New Password</label>
+              <label htmlFor="newPassword">
+                New Password <span className="required">*</span>
+              </label>
               <div className="input-shell">
                 <input
                   id="newPassword"
@@ -176,7 +155,9 @@ export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
             </div>
 
             <div className="field-group">
-              <label htmlFor="confirmPassword">Confirm New Password</label>
+              <label htmlFor="confirmPassword">
+                Confirm New Password <span className="required">*</span>
+              </label>
               <div className="input-shell">
                 <input
                   id="confirmPassword"
@@ -217,6 +198,10 @@ export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
           </form>
         </div>
       </section>
+      <aside className="login-hero">
+        <img className="hero-image" src={loginIllustration} alt="" />
+      </aside>
     </div>
+    
   );
 }

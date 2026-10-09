@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./Login.scss";
+import logo from "../../../assets/8am-logo.png";
+import loginIllustration from "../../../assets/login-illustration.png";
 import { login } from "../../../api/auth.js";
 
 function takeLoginNotice() {
@@ -46,46 +48,21 @@ export default function Login({ onLoginSuccess }) {
 
   return (
     <div className="login-page">
-      <aside className="login-hero">
-        <div className="brand-mark">
-          <i className="bi bi-bus-front"></i>
-        </div>
-        <div className="hero-copy">
-          <h1>8AM</h1>
-          <p>
-            Monitor schools, buses, drivers, routes, and live passenger safety
-            from one secure dashboard.
-          </p>
-        </div>
-
-        <div className="hero-stats">
-          <div>
-            <strong>All schools</strong>
-            <span>One dashboard</span>
-          </div>
-          <div>
-            <strong>Every device</strong>
-            <span>Mapped to a bus</span>
-          </div>
-          <div>
-            <strong>Every card</strong>
-            <span>Linked to a student</span>
-          </div>
-        </div>
-      </aside>
-
       <section className="login-panel">
         <div className="login-card">
+          <img className="login-logo" src={logo} alt="The 8AM" />
+
           <div className="login-header">
-            <p className="eyebrow">Secure Login</p>
-            <h2>Welcome back</h2>
-            <p>Sign in to continue.</p>
+            <h2>Sign In</h2>
+            <p>Enter your email and password to sign in.</p>
           </div>
 
           <form className="login-form" onSubmit={handleLogin} noValidate>
             {notice && <div className="status-box">{notice}</div>}
             <div className="field-group">
-              <label htmlFor="identifier">Email or Username</label>
+              <label htmlFor="identifier">
+                Email or Username <span className="required">*</span>
+              </label>
               <div className="input-shell">
                 <input
                   id="identifier"
@@ -98,7 +75,9 @@ export default function Login({ onLoginSuccess }) {
             </div>
 
             <div className="field-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">
+                Password <span className="required">*</span>
+              </label>
               <div className="input-shell">
                 <input
                   id="password"
@@ -134,6 +113,10 @@ export default function Login({ onLoginSuccess }) {
           </form>
         </div>
       </section>
+
+      <aside className="login-hero">
+        <img className="hero-image" src={loginIllustration} alt="" />
+      </aside>
     </div>
   );
 }
