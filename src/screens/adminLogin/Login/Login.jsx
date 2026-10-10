@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./Login.scss";
 import logo from "../../../assets/8am-logo.png";
-import loginIllustration from "../../../assets/login-illustration.png";
+   import loginIllustration from "../../../assets/login-illustration.jpg";
 import { login } from "../../../api/auth.js";
 
 function takeLoginNotice() {

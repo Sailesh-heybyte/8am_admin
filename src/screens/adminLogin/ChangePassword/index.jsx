@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import "../Login/Login.scss";
 import logo from "../../../assets/8am-logo.png";
-import loginIllustration from "../../../assets/login-illustration.png";
+   import loginIllustration from "../../../assets/login-illustration.jpg";
 import { changePassword, login } from "../../../api/auth.js";
 
 export default function ChangePassword({ onPasswordChanged, onSignedOut }) {
