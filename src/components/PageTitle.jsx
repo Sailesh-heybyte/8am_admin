@@ -3,6 +3,7 @@ export default function PageTitle({
   description,
   button,
   onButtonClick,
+  buttonDisabled,
 }) {
   return (
     <div className="page-title">
@@ -11,7 +12,7 @@ export default function PageTitle({
         <p>{description}</p>
       </div>
       {button && (
-        <button className="primary-button" onClick={onButtonClick}>
+        <button className="primary-button" onClick={onButtonClick} disabled={buttonDisabled}>
           {button}
         </button>
       )}
