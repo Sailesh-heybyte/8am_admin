@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import PageTitle from "../../../components/PageTitle.jsx";
 import DataTable from "../../../components/DataTable.jsx";
 import StatusBadge from "../../../components/StatusBadge.jsx";
@@ -26,6 +26,7 @@ export default function Branches() {
   const [typeFilter, setTypeFilter] = useState("");
   const [branchToEdit, setBranchToEdit] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const latestSchoolIdRef = useRef("");
 
   useEffect(() => {
     getSchools()
@@ -35,6 +36,7 @@ export default function Branches() {
   }, []);
 
   const loadBranches = async (schoolId) => {
+    latestSchoolIdRef.current = schoolId;
     if (!schoolId) {
       setBranches([]);
       return;
@@ -45,12 +47,14 @@ export default function Branches() {
 
     try {
       const data = await getBranches(schoolId);
+      if (latestSchoolIdRef.current !== schoolId) return;
       setBranches(data);
     } catch (err) {
+      if (latestSchoolIdRef.current !== schoolId) return;
       setError(err);
       setBranches([]);
     } finally {
-      setBranchesLoading(false);
+      if (latestSchoolIdRef.current === schoolId) setBranchesLoading(false);
     }
   };
 

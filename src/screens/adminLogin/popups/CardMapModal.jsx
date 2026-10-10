@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getSchools } from "../../../api/schools.js";
 import { getStudentsBySchool } from "../../../api/students.js";
 import TypeAhead from "../../../components/TypeAhead.jsx";
@@ -18,6 +18,7 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
 
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const latestSchoolIdRef = useRef("");
 
   useEffect(() => {
     if (!isOpen) return;
@@ -56,7 +57,7 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
     return Array.from(branchMap.entries())
       .map(([branchId, branchName]) => ({
         value: branchId,
-        label: branchName,
+        label: branchName || "Unknown branch",
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [students]);
@@ -70,6 +71,7 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
 
   const handleClose = () => {
     if (isSaving) return;
+    latestSchoolIdRef.current = "";
     setSelectedSchoolId("");
     setSelectedBranchId("");
     setSelectedStudentId("");
@@ -84,6 +86,7 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
       typeof valueOrEvent === "object" && valueOrEvent?.target
         ? valueOrEvent.target.value
         : valueOrEvent || "";
+    latestSchoolIdRef.current = schoolId;
     setSelectedSchoolId(schoolId);
     setSelectedBranchId("");
     setSelectedStudentId("");
@@ -97,6 +100,7 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
     setStudentsLoading(true);
     try {
       const data = await getStudentsBySchool(schoolId);
+      if (latestSchoolIdRef.current !== schoolId) return;
       setStudents(data);
       if (data.length === 0) {
         setError(
@@ -104,10 +108,11 @@ export default function CardMapModal({ isOpen, card, onClose, onMap }) {
         );
       }
     } catch (err) {
+      if (latestSchoolIdRef.current !== schoolId) return;
       setError(err.message || "Failed to load students.");
       setStudents([]);
     } finally {
-      setStudentsLoading(false);
+      if (latestSchoolIdRef.current === schoolId) setStudentsLoading(false);
     }
   };
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getSchools } from "../../../api/schools.js";
 import { getBusesBySchool } from "../../../api/buses.js";
 import TypeAhead from "../../../components/TypeAhead.jsx";
@@ -18,6 +18,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
 
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const latestSchoolIdRef = useRef("");
 
   useEffect(() => {
     if (!isOpen) return;
@@ -56,7 +57,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     return Array.from(branchMap.entries())
       .map(([branchId, branchName]) => ({
         value: branchId,
-        label: branchName,
+        label: branchName || "Unknown branch",
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [buses]);
@@ -70,6 +71,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
 
   const handleClose = () => {
     if (isSaving) return;
+    latestSchoolIdRef.current = "";
     setSelectedSchoolId("");
     setSelectedBranchId("");
     setSelectedBusId("");
@@ -84,6 +86,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
       typeof valueOrEvent === "object" && valueOrEvent?.target
         ? valueOrEvent.target.value
         : valueOrEvent || "";
+    latestSchoolIdRef.current = schoolId;
     setSelectedSchoolId(schoolId);
     setSelectedBranchId("");
     setSelectedBusId("");
@@ -97,6 +100,7 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
     setBusesLoading(true);
     try {
       const data = await getBusesBySchool(schoolId);
+      if (latestSchoolIdRef.current !== schoolId) return;
       setBuses(data);
       if (data.length === 0) {
         setError(
@@ -104,10 +108,11 @@ export default function DeviceMapModal({ isOpen, device, onClose, onMap }) {
         );
       }
     } catch (err) {
+      if (latestSchoolIdRef.current !== schoolId) return;
       setError(err.message || "Failed to load buses.");
       setBuses([]);
     } finally {
-      setBusesLoading(false);
+      if (latestSchoolIdRef.current === schoolId) setBusesLoading(false);
     }
   };
 
